@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Abrir cuenta — VivaBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+  <style>
+    /* ── Indicateur de progression 5 étapes ────────────────── */
+    .steps-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 36px;
+    }
+    .step-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      position: relative;
+    }
+    .step-node:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background: var(--border-card);
+      z-index: 0;
+      transition: background 0.4s;
+    }
+    .step-node.done:not(:last-child)::after,
+    .step-node.active:not(:last-child)::after {
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+    .step-circle {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: var(--font-display);
+      background: var(--bg-card);
+      border: 2px solid var(--border-card);
+      color: var(--text-3);
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s;
+    }
+    .step-node.active .step-circle {
+      background: var(--grad-primary);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(255,81,47,0.4);
+    }
+    .step-node.done .step-circle {
+      background: rgba(16,217,160,0.15);
+      border-color: rgba(16,217,160,0.5);
+      color: var(--mint);
+    }
+    .step-lbl {
+      font-size: 0.62rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-3);
+      text-align: center;
+      max-width: 60px;
+      line-height: 1.2;
+    }
+    .step-node.active .step-lbl { color: var(--text-1); }
+    .step-node.done  .step-lbl  { color: var(--mint); }
+
+    /* ── OTP box 6 digits ───────────────────────────────────── */
+    .otp-grid {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .otp-cell {
+      width: 50px; height: 58px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--bg-surface);
+      border: 2px solid var(--border-card);
+      border-radius: 12px;
+      color: var(--text-1);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      caret-color: var(--primary);
+    }
+    .otp-cell:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255,81,47,0.15);
+    }
+    .otp-cell.filled {
+      border-color: rgba(16,217,160,0.5);
+      background: rgba(16,217,160,0.05);
+    }
+
+    /* ── Upload KYC ─────────────────────────────────────────── */
+    .upload-zone {
+      border: 2px dashed var(--border-card);
+      border-radius: var(--r-lg);
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg-surface);
+      position: relative;
+      overflow: hidden;
+    }
+    .upload-zone:hover,
+    .upload-zone.dragging {
+      border-color: rgba(255,81,47,0.5);
+      background: rgba(255,81,47,0.04);
+    }
+    .upload-zone.uploaded {
+      border-color: rgba(16,217,160,0.5);
+      background: rgba(16,217,160,0.04);
+    }
+    .upload-zone input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+    .upload-label { font-size: 0.88rem; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+    .upload-hint  { font-size: 0.75rem; color: var(--text-3); }
+    .upload-preview {
+      width: 100%; height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* ── Timer renvoi OTP ───────────────────────────────────── */
+    .resend-row {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.82rem;
+      color: var(--text-3);
+    }
+    .resend-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+    .resend-btn:disabled { color: var(--text-3); cursor: default; }
+
+    /* ── Checklist sécurité ─────────────────────────────────── */
+    .security-check {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+    .security-check .check-icon {
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-orbs" aria-hidden="true">
+  <div class="orb orb-1" style="opacity:0.07;"></div>
+  <div class="orb orb-2" style="opacity:0.05;"></div>
+</div>
+
+<div class="auth-page">
+
+  <!-- ── Panneau décoratif gauche ─────────────────────────── -->
+  <aside class="auth-deco">
+    <a href="index.html" class="auth-deco-brand" style="text-decoration:none;color:inherit;">
+      <img src="assets/logo-mark.svg" alt="VivaBank" width="36" height="36" style="border-radius:10px;display:block;"/>
+      Viva<span>Bank</span>
+    </a>
+    <h1 class="auth-deco-headline">
+      Abre tu cuenta con total
+      <span class="text-gradient">seguridad bancaria</span>
+    </h1>
+    <p class="auth-deco-sub">
+      Proceso de verificación conforme a la normativa KYC/AML del Banco de España.
+      Tu identidad y datos están 100% protegidos.
+    </p>
+    <div class="auth-deco-points">
+      <div class="auth-deco-point">
+        <div class="auth-deco-point-icon">✉</div>
+        <div>
+          <div class="auth-deco-point-text">Verificación de email</div>
+          <div class="auth-deco-point-sub">Código OTP de 6 dígitos</div>
+        </div>
+      </div>
+      <div class="auth-deco-point">
+        <div class="auth-deco-point-icon">📱</div>
+        <div>
+          <div class="auth-deco-point-text">Verificación de teléfono</div>
+          <div class="auth-deco-point-sub">SMS con código único</div>
+        </div>
+      </div>
+      <div class="auth-deco-point">
+        <div class="auth-deco-point-icon">🪪</div>
+        <div>
+          <div class="auth-deco-point-text">Verificación KYC</div>
+          <div class="auth-deco-point-sub">DNI / Pasaporte + selfie</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Panneau formulaire ───────────────────────────────── -->
+  <main class="auth-panel">
+
+    <!-- Logo mobile -->
+    <a href="index.html" class="auth-panel-logo" style="text-decoration:none;color:inherit;">
+      <img src="assets/logo-mark.svg" alt="VivaBank" width="36" height="36" style="border-radius:10px;display:block;"/>
+      Viva<span>Bank</span>
+    </a>
+
+    <!-- Alertes -->
+    <div class="alert alert-error"   id="alertError"   role="alert"></div>
+    <div class="alert alert-success" id="alertSuccess" role="alert"></div>
+
+    <!-- ── Barre de progression 5 étapes ──────────────────── -->
+    <div class="steps-bar" id="stepsBar">
+      <div class="step-node active" id="snode1">
+        <div class="step-circle">1</div>
+        <div class="step-lbl">Datos</div>
+      </div>
+      <div class="step-node" id="snode2">
+        <div class="step-circle">2</div>
+        <div class="step-lbl">Email OTP</div>
+      </div>
+      <div class="step-node" id="snode3">
+        <div class="step-circle">3</div>
+        <div class="step-lbl">SMS OTP</div>
+      </div>
+      <div class="step-node" id="snode4">
+        <div class="step-circle">4</div>
+        <div class="step-lbl">Identidad</div>
+      </div>
+      <div class="step-node" id="snode5">
+        <div class="step-circle">5</div>
+        <div class="step-lbl">Acceso</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         ÉTAPE 1 — Données personnelles
+         ══════════════════════════════════════════════════════ -->
+    <div id="step1">
+      <h2 class="auth-title">Datos personales</h2>
+      <p class="auth-sub">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+
+      <form id="form1" class="auth-form" novalidate>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="firstName">Nombre</label>
+            <input type="text" id="firstName" class="form-input" placeholder="Carlos" autocomplete="given-name" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lastName">Apellidos</label>
+            <input type="text" id="lastName" class="form-input" placeholder="Martínez" autocomplete="family-name" required/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regEmail">Correo electrónico</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">✉</span>
+            <input type="email" id="regEmail" class="form-input" placeholder="carlos@email.com" autocomplete="email" required/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Teléfono móvil <span style="color:var(--danger)">*</span></label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📱</span>
+            <input type="tel" id="phone" class="form-input" placeholder="+34 600 000 000" autocomplete="tel" required/>
+          </div>
+          <p class="form-hint">Necesario para la verificación por SMS</p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="birthDate">Fecha de nacimiento</label>
+            <input type="date" id="birthDate" class="form-input" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nationality">Nacionalidad</label>
+            <select id="nationality" class="form-select" required>
+              <option value="">Seleccionar…</option>
+              <option value="ES" selected>🇪🇸 Española</option>
+              <option value="DE">🇩🇪 Alemana</option>
+              <option value="FR">🇫🇷 Francesa</option>
+              <option value="IT">🇮🇹 Italiana</option>
+              <option value="PT">🇵🇹 Portuguesa</option>
+              <option value="GB">🇬🇧 Británica</option>
+              <option value="Other">Otra</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="docType">Tipo de documento de identidad</label>
+          <select id="docType" class="form-select" required>
+            <option value="">Seleccionar…</option>
+            <option value="dni">DNI (Documento Nacional de Identidad)</option>
+            <option value="nie">NIE (Número de Identidad de Extranjero)</option>
+            <option value="passport">Pasaporte</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="docNumber">Número de documento</label>
+          <input type="text" id="docNumber" class="form-input" placeholder="Ej: 12345678A" maxlength="20" required/>
+        </div>
+
+        <button type="submit" class="auth-submit" id="btn1">
+          Continuar
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         ÉTAPE 2 — Vérification OTP email
+         ══════════════════════════════════════════════════════ -->
+    <div id="step2" style="display:none;">
+      <h2 class="auth-title">Verifica tu email</h2>
+      <p class="auth-sub" id="step2Sub">Hemos enviado un código de 6 dígitos a <strong id="emailDisplay">—</strong></p>
+
+      <div style="text-align:center;margin:8px 0 4px;">
+        <div style="font-size:2.5rem;">📧</div>
+      </div>
+
+      <div class="otp-grid" id="emailOtpGrid">
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 1"/>
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 2"/>
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 3"/>
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 4"/>
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 5"/>
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 6"/>
+      </div>
+
+      <p style="text-align:center;font-size:0.78rem;color:var(--text-3);">El código expira en <span id="emailOtpTimer" style="color:var(--warning);font-weight:600;">10:00</span></p>
+
+      <button type="button" class="auth-submit" id="btnVerifyEmail" onclick="verifyEmailOtp()">
+        Verificar email
+      </button>
+
+      <div class="resend-row">
+        ¿No recibiste el código?
+        <button class="resend-btn" id="resendEmailBtn" onclick="resendEmailOtp()" disabled>
+          Reenviar en <span id="resendEmailCountdown">60</span>s
+        </button>
+      </div>
+
+      <button type="button" class="btn btn-ghost btn-block" style="margin-top:12px;" onclick="goToStep(1)">← Volver</button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         ÉTAPE 3 — Vérification OTP SMS
+         ══════════════════════════════════════════════════════ -->
+    <div id="step3" style="display:none;">
+      <h2 class="auth-title">Verifica tu teléfono</h2>
+      <p class="auth-sub">Hemos enviado un SMS con un código de 6 dígitos a <strong id="phoneDisplay">—</strong></p>
+
+      <div style="text-align:center;margin:8px 0 4px;">
+        <div style="font-size:2.5rem;">📱</div>
+      </div>
+
+      <div class="otp-grid" id="smsOtpGrid">
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 1"/>
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 2"/>
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 3"/>
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 4"/>
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 5"/>
+        <input class="otp-cell" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 6"/>
+      </div>
+
+      <p style="text-align:center;font-size:0.78rem;color:var(--text-3);">El código expira en <span id="smsOtpTimer" style="color:var(--warning);font-weight:600;">10:00</span></p>
+
+      <button type="button" class="auth-submit" id="btnVerifySms" onclick="verifySmsOtp()">
+        Verificar teléfono
+      </button>
+
+      <div class="resend-row">
+        ¿No recibiste el SMS?
+        <button class="resend-btn" id="resendSmsBtn" onclick="resendSmsOtp()" disabled>
+          Reenviar en <span id="resendSmsCountdown">60</span>s
+        </button>
+      </div>
+
+      <button type="button" class="btn btn-ghost btn-block" style="margin-top:12px;" onclick="goToStep(2)">← Volver</button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         ÉTAPE 4 — Vérification identité KYC
+         ══════════════════════════════════════════════════════ -->
+    <div id="step4" style="display:none;">
+      <h2 class="auth-title">Verifica tu identidad</h2>
+      <p class="auth-sub">Sube una foto de tu documento y un selfie. Proceso KYC requerido por el Banco de España.</p>
+
+      <form id="form4" novalidate>
+
+        <!-- Document d'identité (recto) -->
+        <div class="form-group">
+          <label class="form-label">Foto del documento (anverso) <span style="color:var(--danger)">*</span></label>
+          <div class="upload-zone" id="docFrontZone" ondragover="handleDrag(event,'docFrontZone')" ondragleave="handleDragLeave('docFrontZone')" ondrop="handleDrop(event,'docFront')">
+            <input type="file" id="docFront" accept="image/*,.pdf" onchange="previewFile('docFront','docFrontZone','previewFront')"/>
+            <div id="docFrontContent">
+              <div class="upload-icon">🪪</div>
+              <div class="upload-label">DNI / NIE / Pasaporte (anverso)</div>
+              <div class="upload-hint">JPG, PNG o PDF · Máx. 5 MB</div>
+            </div>
+            <img id="previewFront" class="upload-preview" alt="Vista previa documento anverso"/>
+          </div>
+        </div>
+
+        <!-- Document d'identité (verso) -->
+        <div class="form-group">
+          <label class="form-label">Foto del documento (reverso) <span style="color:var(--danger)">*</span></label>
+          <div class="upload-zone" id="docBackZone" ondragover="handleDrag(event,'docBackZone')" ondragleave="handleDragLeave('docBackZone')" ondrop="handleDrop(event,'docBack')">
+            <input type="file" id="docBack" accept="image/*,.pdf" onchange="previewFile('docBack','docBackZone','previewBack')"/>
+            <div id="docBackContent">
+              <div class="upload-icon">🪪</div>
+              <div class="upload-label">DNI / NIE / Pasaporte (reverso)</div>
+              <div class="upload-hint">JPG, PNG o PDF · Máx. 5 MB</div>
+            </div>
+            <img id="previewBack" class="upload-preview" alt="Vista previa documento reverso"/>
+          </div>
+        </div>
+
+        <!-- Selfie -->
+        <div class="form-group">
+          <label class="form-label">Selfie sosteniendo tu documento <span style="color:var(--danger)">*</span></label>
+          <div class="upload-zone" id="selfieZone" ondragover="handleDrag(event,'selfieZone')" ondragleave="handleDragLeave('selfieZone')" ondrop="handleDrop(event,'selfie')">
+            <input type="file" id="selfie" accept="image/*" capture="user" onchange="previewFile('selfie','selfieZone','previewSelfie')"/>
+            <div id="selfieContent">
+              <div class="upload-icon">🤳</div>
+              <div class="upload-label">Foto tuya con el documento visible</div>
+              <div class="upload-hint">JPG o PNG · Máx. 5 MB · Iluminación adecuada</div>
+            </div>
+            <img id="previewSelfie" class="upload-preview" alt="Vista previa selfie"/>
+          </div>
+        </div>
+
+        <!-- Checklist conformité -->
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+          <div class="security-check"><span class="check-icon">✓</span><span>El documento debe estar vigente y ser legible</span></div>
+          <div class="security-check"><span class="check-icon">✓</span><span>El selfie debe mostrar tu cara y el documento claramente</span></div>
+          <div class="security-check"><span class="check-icon">🔒</span><span>Tus documentos se cifran y eliminan tras la verificación</span></div>
+        </div>
+
+        <button type="submit" class="auth-submit" id="btn4">
+          Enviar documentos
+        </button>
+        <button type="button" class="btn btn-ghost btn-block" style="margin-top:10px;" onclick="goToStep(3)">← Volver</button>
+      </form>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         ÉTAPE 5 — Mot de passe & finalisation
+         ══════════════════════════════════════════════════════ -->
+    <div id="step5" style="display:none;">
+      <h2 class="auth-title">Crea tu contraseña</h2>
+      <p class="auth-sub">Último paso. Elige una contraseña segura para tu cuenta.</p>
+
+      <form id="form5" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="regPassword">Contraseña</label>
+          <div class="input-icon-wrap" style="position:relative;">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="regPassword" class="form-input" placeholder="Mínimo 8 caracteres"
+                   autocomplete="new-password" style="padding-left:46px;padding-right:48px;" required
+                   oninput="updateStrength(this.value)"/>
+            <button type="button" class="input-toggle" onclick="toggleVis('regPassword',this)">👁</button>
+          </div>
+          <div class="password-strength" style="margin-top:8px;">
+            <div class="password-strength-bars">
+              <div class="strength-bar" id="sb1"></div>
+              <div class="strength-bar" id="sb2"></div>
+              <div class="strength-bar" id="sb3"></div>
+              <div class="strength-bar" id="sb4"></div>
+            </div>
+            <p class="strength-text" id="strText">Introduce una contraseña</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirmPwd">Confirmar contraseña</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="confirmPwd" class="form-input" placeholder="Repite la contraseña" autocomplete="new-password" required/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-wrap">
+            <input type="checkbox" id="acceptTerms" required/>
+            <span class="checkbox-label">
+              Acepto los <a href="#" style="color:var(--primary);">Términos y condiciones</a>,
+              la <a href="#" style="color:var(--primary);">Política de privacidad</a>
+              y el <a href="#" style="color:var(--primary);">tratamiento de datos KYC</a>
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" class="auth-submit" id="btn5">
+          🎉 Crear mi cuenta VivaBank
+        </button>
+        <button type="button" class="btn btn-ghost btn-block" style="margin-top:10px;" onclick="goToStep(4)">← Volver</button>
+      </form>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         ÉCRAN DE SUCCÈS
+         ══════════════════════════════════════════════════════ -->
+    <div id="successScreen" style="display:none;" class="auth-success-screen">
+      <div class="success-icon-wrap">🎉</div>
+      <h2 class="success-title">¡Cuenta creada!</h2>
+      <p class="success-desc" id="successMsg">
+        Tu cuenta VivaBank ha sido creada y está en proceso de verificación KYC.
+        Recibirás un email de bienvenida en breve con todos los detalles.
+      </p>
+      <a href="login.html" class="btn btn-primary btn-lg btn-block">Ir al inicio de sesión</a>
+      <p style="font-size:0.78rem;color:var(--text-3);margin-top:12px;">La verificación KYC puede tardar hasta 24 horas hábiles.</p>
+    </div>
+
+    <div class="auth-footer-link" id="loginLink">
+      <span>¿Ya tienes cuenta?</span>
+      <a href="login.html">Inicia sesión →</a>
+    </div>
+
+  </main>
+</div>
+
+<script src="js/config.js"></script>
+<script>
+/* ============================================================
+   VIVABANK — Registro en 5 pasos con OTP + KYC
+   ============================================================ */
+Auth.redirectIfLogged('dashboard.html');
+
+/* ── Estado del formulario ──────────────────────────────────── */
+const REG = {
+  step: 1,
+  data: {}, /* Données accumulées entre les étapes */
+  emailVerified: false,
+  phoneVerified: false,
+  kycSessionId: null,
+  emailOtpInterval: null,
+  smsOtpInterval:   null,
+  resendEmailTimer: null,
+  resendSmsTimer:   null,
+};
+
+/* ════════════════════════════════════════════════════════════
+   TRACKING D'ABANDON — sauvegarde périodique + envoi au départ
+   ════════════════════════════════════════════════════════════ */
+let abandonTimer = null;
+
+function saveProgress() {
+  const partial = {
+    step:      REG.step,
+    firstName: document.getElementById('firstName')?.value || '',
+    lastName:  document.getElementById('lastName')?.value  || '',
+    email:     document.getElementById('regEmail')?.value  || '',
+    phone:     document.getElementById('phone')?.value     || '',
+    savedAt:   new Date().toISOString(),
+  };
+  localStorage.setItem('vb_reg_progress', JSON.stringify(partial));
+}
+
+/* Sauvegarder toutes les 30 secondes si le formulaire a du contenu */
+setInterval(() => {
+  if (REG.step > 0 && REG.step < 6) saveProgress();
+}, 30000);
+
+/* Envoi au backend à la fermeture/navigation si l'inscription n'est pas terminée */
+window.addEventListener('beforeunload', () => {
+  const email = document.getElementById('regEmail')?.value?.trim();
+  if (!email || REG.step >= 6) return;
+
+  /* sendBeacon : fonctionne même si la page se ferme */
+  const payload = JSON.stringify({
+    email,
+    firstName:   document.getElementById('firstName')?.value || '',
+    step:        REG.step,
+    type:        'registration',
+    partialData: {
+      phone:       document.getElementById('phone')?.value || '',
+      nationality: document.getElementById('nationality')?.value || '',
+    },
+  });
+  navigator.sendBeacon(`${API_URL}/tracking/abandon`, new Blob([payload], { type: 'application/json' }));
+});
+
+/* ════════════════════════════════════════════════════════════
+   NAVIGATION ENTRE ÉTAPES
+   ════════════════════════════════════════════════════════════ */
+function goToStep(n) {
+  /* Masquer toutes les étapes */
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById(`step${i}`);
+    if (el) el.style.display = 'none';
+  }
+  const target = document.getElementById(`step${n}`);
+  if (target) target.style.display = 'block';
+
+  REG.step = n;
+  updateStepsBar(n);
+  clearAlerts();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateStepsBar(current) {
+  for (let i = 1; i <= 5; i++) {
+    const node = document.getElementById(`snode${i}`);
+    if (!node) continue;
+    node.classList.remove('active','done');
+    if (i < current) node.classList.add('done');
+    else if (i === current) node.classList.add('active');
+
+    /* Mettre à jour le contenu des cercles */
+    const circle = node.querySelector('.step-circle');
+    if (i < current) circle.textContent = '✓';
+    else circle.textContent = String(i);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   ÉTAPE 1 — Données personnelles
+   ════════════════════════════════════════════════════════════ */
+document.getElementById('form1').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  clearAlerts();
+
+  const firstName   = document.getElementById('firstName').value.trim();
+  const lastName    = document.getElementById('lastName').value.trim();
+  const email       = document.getElementById('regEmail').value.trim();
+  const phone       = document.getElementById('phone').value.trim();
+  const birthDate   = document.getElementById('birthDate').value;
+  const nationality = document.getElementById('nationality').value;
+  const docType     = document.getElementById('docType').value;
+  const docNumber   = document.getElementById('docNumber').value.trim();
+
+  /* Validations */
+  if (!firstName || firstName.length < 2) { showErr('Introduce tu nombre (mínimo 2 caracteres).'); return; }
+  if (!lastName  || lastName.length  < 2) { showErr('Introduce tus apellidos.'); return; }
+  if (!Validate.email(email))              { showErr('Email no válido.'); return; }
+  if (!phone || phone.length < 9)          { showErr('Introduce un número de teléfono válido.'); return; }
+  if (!birthDate)                          { showErr('Introduce tu fecha de nacimiento.'); return; }
+  if (!nationality)                        { showErr('Selecciona tu nacionalidad.'); return; }
+  if (!docType)                            { showErr('Selecciona el tipo de documento.'); return; }
+  if (!docNumber || docNumber.length < 7)  { showErr('Introduce el número de documento.'); return; }
+
+  /* Verificar mayoría de edad (18 años) */
+  const age = Math.floor((Date.now() - new Date(birthDate)) / (365.25 * 24 * 3600 * 1000));
+  if (age < 18) { showErr('Debes ser mayor de 18 años para abrir una cuenta VivaBank.'); return; }
+
+  /* Verificar que el email no esté ya registrado */
+  setBtnLoading('btn1', true);
+  const checkR = await apiFetch('/auth/check-email', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+  setBtnLoading('btn1', false, 'Continuar →');
+
+  if (checkR?.data?.exists) {
+    showErr('Este email ya está registrado. ¿Quieres <a href="login.html" style="color:var(--primary);">iniciar sesión</a>?');
+    return;
+  }
+
+  /* Guardar datos y enviar OTP email */
+  REG.data = { firstName, lastName, email, phone, birthDate, nationality, docType, docNumber };
+  document.getElementById('emailDisplay').textContent = email;
+
+  setBtnLoading('btn1', true);
+  const otpR = await apiFetch('/auth/otp/send-email', {
+    method: 'POST',
+    body: JSON.stringify({ email, firstName }),
+  });
+  setBtnLoading('btn1', false, 'Continuar →');
+
+  if (!otpR?.ok) {
+    showErr(otpR?.data?.message || 'Error al enviar el código. Inténtalo de nuevo.');
+    return;
+  }
+
+  goToStep(2);
+  startOtpTimer('emailOtpTimer', 600);
+  startResendTimer('resendEmailBtn', 'resendEmailCountdown', 60);
+  document.getElementById('emailOtpGrid').querySelector('.otp-cell').focus();
+});
+
+/* ════════════════════════════════════════════════════════════
+   ÉTAPE 2 — Vérification OTP email
+   ════════════════════════════════════════════════════════════ */
+initOtpGrid('emailOtpGrid');
+
+async function verifyEmailOtp() {
+  clearAlerts();
+  const code = getOtpValue('emailOtpGrid');
+  if (code.length !== 6) { showErr('Introduce los 6 dígitos del código.'); return; }
+
+  setBtnLoading('btnVerifyEmail', true);
+  const r = await apiFetch('/auth/otp/verify-email', {
+    method: 'POST',
+    body: JSON.stringify({ email: REG.data.email, code }),
+  });
+  setBtnLoading('btnVerifyEmail', false, 'Verificar email');
+
+  if (r?.ok && r.data.success) {
+    REG.emailVerified = true;
+    stopOtpTimer('emailOtpTimer');
+
+    /* Envoyer le code SMS */
+    const smsR = await apiFetch('/auth/otp/send-sms', {
+      method: 'POST',
+      body: JSON.stringify({ phone: REG.data.phone }),
+    });
+
+    if (!smsR?.ok) {
+      showErr(smsR?.data?.message || 'Error al enviar el SMS. Verifica el número.');
+      return;
+    }
+
+    document.getElementById('phoneDisplay').textContent = REG.data.phone;
+    goToStep(3);
+    startOtpTimer('smsOtpTimer', 600);
+    startResendTimer('resendSmsBtn', 'resendSmsCountdown', 60);
+    document.getElementById('smsOtpGrid').querySelector('.otp-cell').focus();
+  } else {
+    showErr(r?.data?.message || 'Código incorrecto o expirado.');
+    clearOtpGrid('emailOtpGrid');
+  }
+}
+
+async function resendEmailOtp() {
+  await apiFetch('/auth/otp/send-email', {
+    method: 'POST',
+    body: JSON.stringify({ email: REG.data.email, firstName: REG.data.firstName }),
+  });
+  startResendTimer('resendEmailBtn', 'resendEmailCountdown', 60);
+  startOtpTimer('emailOtpTimer', 600);
+  Toast.info('Nuevo código enviado a tu email.');
+}
+
+/* ════════════════════════════════════════════════════════════
+   ÉTAPE 3 — Vérification OTP SMS
+   ════════════════════════════════════════════════════════════ */
+initOtpGrid('smsOtpGrid');
+
+async function verifySmsOtp() {
+  clearAlerts();
+  const code = getOtpValue('smsOtpGrid');
+  if (code.length !== 6) { showErr('Introduce los 6 dígitos del código SMS.'); return; }
+
+  setBtnLoading('btnVerifySms', true);
+  const r = await apiFetch('/auth/otp/verify-sms', {
+    method: 'POST',
+    body: JSON.stringify({ phone: REG.data.phone, code }),
+  });
+  setBtnLoading('btnVerifySms', false, 'Verificar teléfono');
+
+  if (r?.ok && r.data.success) {
+    REG.phoneVerified = true;
+    stopOtpTimer('smsOtpTimer');
+    goToStep(4);
+  } else {
+    showErr(r?.data?.message || 'Código SMS incorrecto o expirado.');
+    clearOtpGrid('smsOtpGrid');
+  }
+}
+
+async function resendSmsOtp() {
+  await apiFetch('/auth/otp/send-sms', {
+    method: 'POST',
+    body: JSON.stringify({ phone: REG.data.phone }),
+  });
+  startResendTimer('resendSmsBtn', 'resendSmsCountdown', 60);
+  startOtpTimer('smsOtpTimer', 600);
+  Toast.info('Nuevo SMS enviado.');
+}
+
+/* ════════════════════════════════════════════════════════════
+   ÉTAPE 4 — Upload KYC
+   ════════════════════════════════════════════════════════════ */
+document.getElementById('form4').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  clearAlerts();
+
+  const docFront = document.getElementById('docFront').files[0];
+  const docBack  = document.getElementById('docBack').files[0];
+  const selfie   = document.getElementById('selfie').files[0];
+
+  if (!docFront) { showErr('Sube la foto del anverso de tu documento.'); return; }
+  if (!docBack)  { showErr('Sube la foto del reverso de tu documento.'); return; }
+  if (!selfie)   { showErr('Sube tu selfie con el documento.'); return; }
+
+  const maxSize = 5 * 1024 * 1024; /* 5 MB */
+  if (docFront.size > maxSize || docBack.size > maxSize || selfie.size > maxSize) {
+    showErr('Cada archivo debe pesar menos de 5 MB.'); return;
+  }
+
+  setBtnLoading('btn4', true);
+
+  /* Envoyer les documents via FormData */
+  const formData = new FormData();
+  formData.append('docFront',  docFront);
+  formData.append('docBack',   docBack);
+  formData.append('selfie',    selfie);
+  formData.append('docType',   REG.data.docType);
+  formData.append('docNumber', REG.data.docNumber);
+  formData.append('email',     REG.data.email);
+
+  const r = await fetch(`${API_URL}/auth/kyc/upload`, {
+    method: 'POST',
+    body: formData,
+    /* Pas de Content-Type : le navigateur le définit automatiquement avec boundary */
+  });
+  const data = await r.json();
+  setBtnLoading('btn4', false, 'Enviar documentos');
+
+  if (r.ok && data.success) {
+    REG.kycSessionId = data.kycSessionId;
+    goToStep(5);
+  } else {
+    showErr(data.message || 'Error al subir los documentos. Inténtalo de nuevo.');
+  }
+});
+
+/* ════════════════════════════════════════════════════════════
+   ÉTAPE 5 — Création du compte
+   ════════════════════════════════════════════════════════════ */
+document.getElementById('form5').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  clearAlerts();
+
+  const password = document.getElementById('regPassword').value;
+  const confirm  = document.getElementById('confirmPwd').value;
+  const terms    = document.getElementById('acceptTerms').checked;
+
+  if (!Validate.password(password)) {
+    showErr('La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número.'); return;
+  }
+  if (password !== confirm) { showErr('Las contraseñas no coinciden.'); return; }
+  if (!terms) { showErr('Debes aceptar los términos y condiciones.'); return; }
+
+  setBtnLoading('btn5', true);
+
+  const r = await apiFetch('/auth/register', {
+    method: 'POST',
+    body: JSON.stringify({
+      ...REG.data,
+      password,
+      confirmPassword: confirm,
+      kycSessionId: REG.kycSessionId,
+      emailVerified: REG.emailVerified,
+      phoneVerified: REG.phoneVerified,
+    }),
+  });
+
+  setBtnLoading('btn5', false, '🎉 Crear mi cuenta VivaBank');
+
+  if (r?.ok && r.data.success) {
+    /* Limpiar datos de progreso guardados */
+    localStorage.removeItem('vb_reg_progress');
+
+    document.getElementById('step5').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    document.getElementById('loginLink').style.display = 'none';
+    document.getElementById('stepsBar').style.display = 'none';
+  } else {
+    showErr(r?.data?.message || 'Error al crear la cuenta. Inténtalo de nuevo.');
+  }
+});
+
+/* ════════════════════════════════════════════════════════════
+   UTILITAIRES OTP
+   ════════════════════════════════════════════════════════════ */
+function initOtpGrid(gridId) {
+  const cells = document.getElementById(gridId).querySelectorAll('.otp-cell');
+  cells.forEach((cell, i) => {
+    cell.addEventListener('input', () => {
+      cell.value = cell.value.replace(/\D/g, '');
+      cell.classList.toggle('filled', !!cell.value);
+      if (cell.value && i < cells.length - 1) cells[i + 1].focus();
+    });
+    cell.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !cell.value && i > 0) {
+        cells[i - 1].value = '';
+        cells[i - 1].classList.remove('filled');
+        cells[i - 1].focus();
+      }
+    });
+    cell.addEventListener('paste', e => {
+      const digits = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+      digits.split('').forEach((d, j) => {
+        if (cells[j]) { cells[j].value = d; cells[j].classList.add('filled'); }
+      });
+      if (cells[Math.min(digits.length, 5)]) cells[Math.min(digits.length, 5)].focus();
+      e.preventDefault();
+    });
+  });
+}
+
+function getOtpValue(gridId) {
+  return Array.from(document.getElementById(gridId).querySelectorAll('.otp-cell')).map(c => c.value).join('');
+}
+
+function clearOtpGrid(gridId) {
+  document.getElementById(gridId).querySelectorAll('.otp-cell').forEach(c => {
+    c.value = ''; c.classList.remove('filled');
+  });
+  document.getElementById(gridId).querySelector('.otp-cell').focus();
+}
+
+/* ── Timer de décompte OTP ──────────────────────────────────── */
+const _otpTimers = {};
+function startOtpTimer(id, seconds) {
+  clearInterval(_otpTimers[id]);
+  let remaining = seconds;
+  const el = document.getElementById(id);
+  const tick = () => {
+    const m = String(Math.floor(remaining / 60)).padStart(2, '0');
+    const s = String(remaining % 60).padStart(2, '0');
+    if (el) el.textContent = `${m}:${s}`;
+    if (remaining <= 0) { clearInterval(_otpTimers[id]); if (el) el.textContent = 'Expirado'; }
+    remaining--;
+  };
+  tick();
+  _otpTimers[id] = setInterval(tick, 1000);
+}
+function stopOtpTimer(id) { clearInterval(_otpTimers[id]); }
+
+/* ── Timer de renvoi ────────────────────────────────────────── */
+const _resendTimers = {};
+function startResendTimer(btnId, countId, seconds) {
+  const btn   = document.getElementById(btnId);
+  const count = document.getElementById(countId);
+  btn.disabled = true;
+  let remaining = seconds;
+  clearInterval(_resendTimers[btnId]);
+  _resendTimers[btnId] = setInterval(() => {
+    remaining--;
+    if (count) count.textContent = remaining;
+    if (remaining <= 0) {
+      clearInterval(_resendTimers[btnId]);
+      btn.disabled = false;
+      btn.textContent = 'Reenviar código';
+    }
+  }, 1000);
+}
+
+/* ════════════════════════════════════════════════════════════
+   UPLOAD KYC — DRAG & DROP + PREVIEW
+   ════════════════════════════════════════════════════════════ */
+function previewFile(inputId, zoneId, previewId) {
+  const file    = document.getElementById(inputId).files[0];
+  const zone    = document.getElementById(zoneId);
+  const preview = document.getElementById(previewId);
+  if (!file) return;
+  zone.classList.add('uploaded');
+  if (file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
+    reader.readAsDataURL(file);
+  } else {
+    /* PDF : juste afficher le nom */
+    const content = zone.querySelector(`#${inputId.replace('doc','doc')}Content`);
+    if (content) content.querySelector('.upload-label').textContent = `✓ ${file.name}`;
+  }
+}
+
+function handleDrag(e, zoneId) {
+  e.preventDefault();
+  document.getElementById(zoneId).classList.add('dragging');
+}
+function handleDragLeave(zoneId) {
+  document.getElementById(zoneId).classList.remove('dragging');
+}
+function handleDrop(e, inputId) {
+  e.preventDefault();
+  const zoneId = e.currentTarget.id;
+  document.getElementById(zoneId).classList.remove('dragging');
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  /* Injecter le fichier dans l input correspondant */
+  const dt = new DataTransfer(); dt.items.add(file);
+  document.getElementById(inputId).files = dt.files;
+  /* Mapping input ID → preview ID */
+  const previewMap = { docFront: 'previewFront', docBack: 'previewBack', selfie: 'previewSelfie' };
+  previewFile(inputId, zoneId, previewMap[inputId] || 'previewFront');
+}
+
+/* ════════════════════════════════════════════════════════════
+   FORCE DU MOT DE PASSE
+   ════════════════════════════════════════════════════════════ */
+function updateStrength(val) {
+  const bars = ['sb1','sb2','sb3','sb4'].map(id => document.getElementById(id));
+  const text = document.getElementById('strText');
+  bars.forEach(b => { b.className = 'strength-bar'; });
+  if (!val) { text.className = 'strength-text'; text.textContent = 'Introduce una contraseña'; return; }
+  let score = 0;
+  if (val.length >= 8)  score++;
+  if (val.length >= 12) score++;
+  if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+  if (/[0-9]/.test(val) && /[^A-Za-z0-9]/.test(val)) score++;
+  if (score <= 1) {
+    bars[0].className = 'strength-bar filled-weak';
+    text.className = 'strength-text weak'; text.textContent = 'Débil';
+  } else if (score === 2) {
+    bars.slice(0,2).forEach(b => { b.className = 'strength-bar filled-medium'; });
+    text.className = 'strength-text medium'; text.textContent = 'Moderada';
+  } else if (score === 3) {
+    bars.slice(0,3).forEach(b => { b.className = 'strength-bar filled-strong'; });
+    text.className = 'strength-text strong'; text.textContent = 'Buena';
+  } else {
+    bars.forEach(b => { b.className = 'strength-bar filled-strong'; });
+    text.className = 'strength-text strong'; text.textContent = '¡Muy segura! ✓';
+  }
+}
+
+function toggleVis(id, btn) {
+  const el = document.getElementById(id);
+  const isText = el.type === 'text';
+  el.type = isText ? 'password' : 'text';
+  btn.textContent = isText ? '👁' : '🙈';
+}
+
+/* ════════════════════════════════════════════════════════════
+   ALERTES
+   ════════════════════════════════════════════════════════════ */
+function showErr(msg) {
+  const el = document.getElementById('alertError');
+  el.innerHTML = '⚠ ' + msg; el.classList.add('visible');
+  document.getElementById('alertSuccess').classList.remove('visible');
+}
+function clearAlerts() {
+  document.getElementById('alertError').classList.remove('visible');
+  document.getElementById('alertSuccess').classList.remove('visible');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Más de 48.000 clientes españoles confían en VivaBank. Lee sus testimonios reales y descubre por qué nos valoran con 4,9/5."/>
+  <title>Testimonios de clientes — VivaBank</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <style>
+    body{padding-top:72px;}
+    .inner-hero{padding:80px 0 64px;text-align:center;position:relative;overflow:hidden;}
+    .inner-hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(255,81,47,0.1),transparent 70%);pointer-events:none;}
+    .inner-hero-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 16px;border-radius:999px;background:rgba(255,81,47,0.1);border:1px solid rgba(255,81,47,0.25);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#FF7A5C;margin-bottom:20px;}
+    .inner-hero h1{font-family:var(--font-display);font-size:clamp(2rem,4.5vw,3.4rem);font-weight:900;line-height:1.1;margin-bottom:18px;}
+    .inner-hero p{font-size:1.05rem;color:var(--text-2);line-height:1.75;max-width:580px;margin:0 auto 36px;}
+
+    /* Rating overview */
+    .rating-overview{display:grid;grid-template-columns:auto 1fr auto;gap:40px;align-items:center;background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-xl);padding:40px 48px;margin-bottom:48px;}
+    .rating-big{text-align:center;}
+    .rating-num{font-family:var(--font-display);font-size:4.5rem;font-weight:900;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+    .rating-stars{font-size:1.4rem;color:#F09819;letter-spacing:3px;margin:6px 0;}
+    .rating-count{font-size:0.82rem;color:var(--text-3);}
+    .rating-bars{flex:1;}
+    .rbar-row{display:flex;align-items:center;gap:12px;margin-bottom:7px;}
+    .rbar-lbl{font-size:0.78rem;color:var(--text-2);width:40px;text-align:right;flex-shrink:0;}
+    .rbar-track{flex:1;height:7px;background:var(--bg-hover);border-radius:999px;overflow:hidden;}
+    .rbar-fill{height:100%;border-radius:999px;background:var(--grad-primary);}
+    .rbar-count{font-size:0.75rem;color:var(--text-3);width:32px;}
+    .rating-platforms{display:flex;flex-direction:column;gap:14px;}
+    .plat-item{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;}
+    .plat-icon{font-size:1.3rem;flex-shrink:0;}
+    .plat-name{font-size:0.8rem;font-weight:600;color:var(--text-1);}
+    .plat-score{font-family:var(--font-display);font-size:1rem;font-weight:900;color:var(--primary);margin-left:auto;}
+
+    /* Filtres par catégorie */
+    .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+    .filter-btn{padding:7px 18px;border-radius:999px;font-size:0.8rem;font-weight:600;border:1.5px solid var(--border-card);background:none;color:var(--text-2);cursor:pointer;transition:all 0.2s;}
+    .filter-btn:hover{border-color:rgba(255,81,47,0.4);color:var(--text-1);}
+    .filter-btn.active{background:rgba(255,81,47,0.1);border-color:rgba(255,81,47,0.4);color:#FF7A5C;}
+
+    /* Grille de témoignages */
+    .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    .test-card{background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-xl);padding:30px;display:flex;flex-direction:column;gap:14px;transition:all 0.3s;}
+    .test-card:hover{border-color:rgba(255,81,47,0.2);transform:translateY(-4px);box-shadow:0 14px 48px rgba(0,0,0,0.35);}
+    .test-stars{color:#F09819;font-size:0.88rem;letter-spacing:2px;}
+    .test-text{font-size:0.88rem;color:var(--text-2);line-height:1.75;font-style:italic;flex:1;}
+    .test-text strong{color:var(--text-1);font-style:normal;}
+    .test-meta{display:flex;align-items:center;gap:12px;}
+    .test-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:0.85rem;color:#fff;flex-shrink:0;}
+    .test-name{font-size:0.87rem;font-weight:700;color:var(--text-1);}
+    .test-role{font-size:0.74rem;color:var(--text-3);}
+    .test-feature{display:inline-block;padding:3px 10px;border-radius:999px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px;}
+
+    /* Destacado grande */
+    .test-featured{grid-column:span 2;background:linear-gradient(135deg,rgba(255,81,47,0.07),rgba(240,152,25,0.03));border-color:rgba(255,81,47,0.15);}
+
+    /* Counters */
+    .counter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:64px;}
+    .counter-card{background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-lg);padding:24px;text-align:center;}
+    .counter-val{font-family:var(--font-display);font-size:2rem;font-weight:900;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
+    .counter-lbl{font-size:0.78rem;color:var(--text-2);}
+
+    @media(max-width:1024px){.test-grid{grid-template-columns:repeat(2,1fr);}.test-featured{grid-column:span 2;}.rating-overview{grid-template-columns:1fr;gap:24px;padding:28px;}.rating-platforms{flex-direction:row;}}
+    @media(max-width:768px){.test-grid{grid-template-columns:1fr;}.test-featured{grid-column:span 1;}.counter-grid{grid-template-columns:repeat(2,1fr);}.rating-platforms{flex-direction:column;}body{padding-top:62px;}}
+  </style>
+</head>
+<body>
+<div class="bg-orbs" aria-hidden="true"><div class="orb orb-1" style="opacity:0.07;"></div><div class="orb orb-2" style="opacity:0.04;"></div></div>
+<script src="js/public-nav.js"></script>
+
+<section class="inner-hero">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="inner-hero-tag">⭐ Testimonios verificados</div>
+    <h1>48.000 españoles ya<br/><span class="text-gradient">confían en VivaBank</span></h1>
+    <p>Opiniones reales de clientes verificados. Sin filtros, sin publicidad. Solo la experiencia honesta de quienes usan VivaBank cada día.</p>
+  </div>
+</section>
+
+<main style="padding:0 0 80px;">
+  <div class="container">
+
+    <!-- OVERVIEW DE CALIFICACIONES -->
+    <div class="rating-overview">
+      <div class="rating-big">
+        <div class="rating-num">4,9</div>
+        <div class="rating-stars">★★★★★</div>
+        <div class="rating-count">Valoración media</div>
+        <div style="font-size:0.75rem;color:var(--text-3);margin-top:4px;">+12.800 reseñas</div>
+      </div>
+
+      <div class="rating-bars">
+        <div style="font-size:0.75rem;color:var(--text-3);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Distribución de valoraciones</div>
+        <div class="rbar-row"><div class="rbar-lbl">5 ★</div><div class="rbar-track"><div class="rbar-fill" style="width:87%;"></div></div><div class="rbar-count">87%</div></div>
+        <div class="rbar-row"><div class="rbar-lbl">4 ★</div><div class="rbar-track"><div class="rbar-fill" style="width:9%;background:linear-gradient(135deg,#F09819,#FBBF24);"></div></div><div class="rbar-count">9%</div></div>
+        <div class="rbar-row"><div class="rbar-lbl">3 ★</div><div class="rbar-track"><div class="rbar-fill" style="width:3%;background:var(--bg-hover);"></div></div><div class="rbar-count">3%</div></div>
+        <div class="rbar-row"><div class="rbar-lbl">2 ★</div><div class="rbar-track"><div class="rbar-fill" style="width:1%;background:var(--bg-hover);"></div></div><div class="rbar-count">1%</div></div>
+        <div class="rbar-row"><div class="rbar-lbl">1 ★</div><div class="rbar-track"><div class="rbar-fill" style="width:0.5%;background:var(--danger);opacity:0.5;"></div></div><div class="rbar-count">&lt;1%</div></div>
+      </div>
+
+      <div class="rating-platforms">
+        <div style="font-size:0.75rem;color:var(--text-3);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Por plataforma</div>
+        <div class="plat-item"><div class="plat-icon">🍎</div><div><div class="plat-name">App Store</div><div style="font-size:0.7rem;color:var(--text-3);">4.317 valoraciones</div></div><div class="plat-score">4,9</div></div>
+        <div class="plat-item"><div class="plat-icon">🤖</div><div><div class="plat-name">Google Play</div><div style="font-size:0.7rem;color:var(--text-3);">5.924 valoraciones</div></div><div class="plat-score">4,8</div></div>
+        <div class="plat-item"><div class="plat-icon">💻</div><div><div class="plat-name">Trustpilot</div><div style="font-size:0.7rem;color:var(--text-3);">2.559 valoraciones</div></div><div class="plat-score">4,9</div></div>
+      </div>
+    </div>
+
+    <!-- COUNTERS -->
+    <div class="counter-grid">
+      <div class="counter-card"><div class="counter-val">48K+</div><div class="counter-lbl">Clientes activos</div></div>
+      <div class="counter-card"><div class="counter-val">97%</div><div class="counter-lbl">Recomendarían VivaBank</div></div>
+      <div class="counter-card"><div class="counter-val">4,9★</div><div class="counter-lbl">Valoración media</div></div>
+      <div class="counter-card"><div class="counter-val">&lt;2h</div><div class="counter-lbl">Tiempo medio de respuesta soporte</div></div>
+    </div>
+
+    <!-- FILTRES -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterTestimonios('all',this)">Todos</button>
+      <button class="filter-btn" onclick="filterTestimonios('transferencias',this)">Transferencias</button>
+      <button class="filter-btn" onclick="filterTestimonios('prestamos',this)">Préstamos</button>
+      <button class="filter-btn" onclick="filterTestimonios('seguridad',this)">Seguridad</button>
+      <button class="filter-btn" onclick="filterTestimonios('atencion',this)">Atención</button>
+      <button class="filter-btn" onclick="filterTestimonios('app',this)">Aplicación</button>
+    </div>
+
+    <!-- GRILLE DE TÉMOIGNAGES -->
+    <div class="test-grid" id="testimoniosGrid"></div>
+
+    <!-- CTA -->
+    <div style="text-align:center;margin-top:64px;padding:56px;background:rgba(255,81,47,0.05);border:1px solid rgba(255,81,47,0.15);border-radius:var(--r-xl);">
+      <h3 style="font-family:var(--font-display);font-size:1.7rem;font-weight:800;margin-bottom:12px;">Únete a ellos hoy</h3>
+      <p style="color:var(--text-2);margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.7;">Abre tu cuenta en 5 minutos y empieza a disfrutar de la mejor banca digital española.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="register.html" class="btn btn-primary btn-lg">Abrir cuenta gratis →</a>
+        <button class="btn-simulate" data-loan-sim style="padding:17px 28px;">🏦 Simular un crédito</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer style="border-top:1px solid var(--border);padding:36px 0 24px;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <a href="index.html"><img src="assets/logo.svg" alt="VivaBank" height="30" style="display:block;"/></a>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <a href="funcionalidades.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Funcionalidades</a>
+      <a href="seguridad.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Seguridad</a>
+      <a href="testimonios.html" style="font-size:0.83rem;color:var(--primary);font-weight:600;text-decoration:none;">Clientes</a>
+      <a href="tarifas.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Tarifas</a>
+    </div>
+    <p style="font-size:0.77rem;color:var(--text-3);">© 2025 VivaBank S.L.</p>
+  </div>
+</footer>
+
+<script>
+const TESTS = [
+  { name:'Carlos Martínez', role:'Autónomo · Madrid', initials:'CM', grad:'var(--grad-primary)', stars:5, cat:'transferencias', featured:true,
+    text:'Llevo 8 meses con VivaBank y es una revolución total. <strong>Las transferencias son inmediatas</strong> a cualquier banco, a cualquier hora. He dejado de preocuparme por los horarios de los bancos. Nunca volveré a la banca tradicional.' },
+  { name:'Ana López', role:'Profesora · Barcelona', initials:'AL', grad:'linear-gradient(135deg,#3B82F6,#8B5CF6)', stars:5, cat:'prestamos',
+    text:'Pedí un préstamo personal de 8.000 € y me contestaron en <strong>menos de 12 horas</strong>. Sin papeles, sin ir a ninguna oficina. El dinero en mi cuenta al día siguiente. Increíble comparado con lo que tardó mi banco de toda la vida.' },
+  { name:'Pablo Rodríguez', role:'Empresario · Valencia', initials:'PR', grad:'linear-gradient(135deg,#10D9A0,#065F46)', stars:5, cat:'app',
+    text:'El panel financiero es <strong>clarísimo y muy bien diseñado</strong>. Veo de un vistazo mis ingresos, gastos y el estado de mis préstamos. Los extractos PDF para mi gestoría se descargan en segundos.' },
+  { name:'María García', role:'Médica · Sevilla', initials:'MG', grad:'linear-gradient(135deg,#EC4899,#8B5CF6)', stars:5, cat:'seguridad',
+    text:'Lo que más me convenció fue el proceso de seguridad. <strong>El 2FA es muy sencillo de activar</strong> y sé que nadie puede entrar a mi cuenta aunque tenga mi contraseña. Me siento más segura que con cualquier banco tradicional.' },
+  { name:'Juan Sánchez', role:'Ingeniero · Bilbao', initials:'JS', grad:'linear-gradient(135deg,#F59E0B,#FF512F)', stars:5, cat:'transferencias',
+    text:'Hago transferencias semanales a mis trabajadores autónomos y con VivaBank es <strong>cuestión de segundos</strong>. Las transferencias programadas me han ahorrado muchísimo tiempo. Servicio impecable.' },
+  { name:'Laura Fernández', role:'Diseñadora · Málaga', initials:'LF', grad:'linear-gradient(135deg,#06B6D4,#3B82F6)', stars:5, cat:'atencion',
+    text:'Tuve un problema con una transferencia y el <strong>soporte respondió en menos de 1 hora</strong>. Resolvieron el problema de inmediato. Una atención al cliente que no había experimentado en ningún banco antes.' },
+  { name:'Roberto Jiménez', role:'Profesor universitario · Zaragoza', initials:'RJ', grad:'linear-gradient(135deg,#8B5CF6,#EC4899)', stars:5, cat:'prestamos',
+    text:'Solicité un préstamo para reformar mi casa. El proceso online fue <strong>totalmente transparente</strong>, sin comisiones ocultas. El resumen de cuotas que me enviaron por email fue clarísimo y detallado.' },
+  { name:'Carmen Torres', role:'Autónoma · Alicante', initials:'CT', grad:'linear-gradient(135deg,#10D9A0,#3B82F6)', stars:5, cat:'app',
+    text:'La <strong>verificación KYC al registrarme</strong> fue rápida y me dio mucha confianza. Saber que todos los clientes han pasado el mismo proceso de verificación hace que me sienta más segura enviando dinero.' },
+  { name:'David Moreno', role:'Comercial · Madrid', initials:'DM', grad:'linear-gradient(135deg,#FF512F,#EC4899)', stars:4, cat:'transferencias',
+    text:'Muy buena aplicación en general. <strong>Las transferencias son instantáneas</strong> y el historial de movimientos es muy claro. Le daría 5 estrellas cuando lancen la tarjeta física. Por lo demás, perfecto.' },
+];
+
+function buildCard(t) {
+  const stars = '★'.repeat(t.stars) + '☆'.repeat(5 - t.stars);
+  const catColors = {transferencias:'var(--blue)',prestamos:'var(--purple)',seguridad:'var(--mint)',atencion:'var(--primary)',app:'var(--warning)'};
+  const catLabels = {transferencias:'Transferencias',prestamos:'Préstamos',seguridad:'Seguridad',atencion:'Atención',app:'App'};
+  return `
+    <div class="test-card ${t.featured ? 'test-featured' : ''}" data-cat="${t.cat}">
+      <div class="test-stars" style="color:#F09819;">${stars}</div>
+      <div class="test-text">"${t.text}"</div>
+      <div class="test-meta">
+        <div class="test-avatar" style="background:${t.grad};">${t.initials}</div>
+        <div>
+          <div class="test-name">${t.name}</div>
+          <div class="test-role">${t.role}</div>
+          <span class="test-feature" style="background:rgba(255,81,47,0.08);color:${catColors[t.cat] || 'var(--primary)'};border:1px solid rgba(255,81,47,0.15);">
+            ${catLabels[t.cat]}
+          </span>
+        </div>
+        <div style="margin-left:auto;font-size:0.68rem;color:var(--text-3);text-align:right;">Cliente verificado<br/>✓ VivaBank</div>
+      </div>
+    </div>`;
+}
+
+function renderAll(filter) {
+  const grid = document.getElementById('testimoniosGrid');
+  const filtered = filter === 'all' ? TESTS : TESTS.filter(t => t.cat === filter);
+  grid.innerHTML = filtered.map(buildCard).join('');
+  /* Animations */
+  grid.querySelectorAll('.test-card').forEach((el,i) => {
+    el.style.opacity = '0'; el.style.transform = 'translateY(20px)';
+    setTimeout(() => { el.style.transition = 'all 0.4s ease'; el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, i * 60);
+  });
+}
+
+function filterTestimonios(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll(cat);
+}
+
+renderAll('all');
+</script>
+<script src="js/loan-simulator.js"></script>
+</body>
+</html>

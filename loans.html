@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Préstamos — VivaBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+
+  <style>
+    .loan-type-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .loan-type-card {
+      padding: 16px;
+      background: var(--bg-surface);
+      border: 2px solid var(--border-card);
+      border-radius: var(--r-lg);
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+    }
+
+    .loan-type-card:hover,
+    .loan-type-card.selected {
+      background: rgba(255,81,47,0.06);
+      border-color: rgba(255,81,47,0.4);
+    }
+
+    .loan-type-icon { font-size: 1.6rem; margin-bottom: 6px; }
+    .loan-type-name { font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; }
+    .loan-type-rate { font-size: 0.75rem; color: var(--text-3); margin-top: 2px; }
+
+    .loan-calc-box {
+      background: linear-gradient(135deg, rgba(255,81,47,0.06), rgba(240,152,25,0.03));
+      border: 1px solid rgba(255,81,47,0.15);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .loan-calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .loan-calc-item {
+      text-align: center;
+      padding: 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--r-md);
+    }
+
+    .loan-calc-label { font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; }
+    .loan-calc-value { font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; margin-top: 4px; }
+
+    .range-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--bg-hover);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--grad-primary);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(255,81,47,0.4);
+    }
+
+    .loan-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--r-xl);
+      padding: 24px;
+      transition: border-color var(--transition);
+      margin-bottom: 12px;
+    }
+
+    .loan-card:hover { border-color: rgba(255,255,255,0.12); }
+
+    .loan-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .loan-progress-wrap { margin-top: 12px; }
+    .loan-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-3);
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <img src="assets/logo-mark.svg" alt="VivaBank" width="36" height="36" style="border-radius:10px;display:block;"/>
+      Viva<span>Bank</span>
+    </a>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div>Panel principal</a>
+      <div class="nav-section-title">Operaciones</div>
+      <a href="transfer.html" class="nav-item"><div class="nav-icon">↗</div>Transferencias</a>
+      <a href="loans.html" class="nav-item active"><div class="nav-icon">🏦</div>Préstamos</a>
+      <a href="#" class="nav-item" onclick="window.location='dashboard.html'"><div class="nav-icon">💳</div>Añadir fondos</a>
+      <div class="nav-section-title">Cuenta</div>
+      <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div>Mi perfil</a>
+      <a href="#" class="nav-item" onclick="downloadStatement();return false;"><div class="nav-icon">📄</div>Extracto PDF</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="profile.html" class="sidebar-user">
+        <div class="user-avatar-circle" id="sidebarAvatar">??</div>
+        <div style="flex:1;min-width:0;">
+          <div class="user-info-name" id="sidebarName">—</div>
+          <div class="user-info-email" id="sidebarEmail">—</div>
+        </div>
+      </a>
+      <button onclick="logout()" class="nav-item" style="width:100%;border:none;margin-top:4px;color:var(--danger);">
+        <div class="nav-icon" style="background:rgba(255,59,92,0.1);">🚪</div>Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido principal -->
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title">Préstamos</div>
+        <div class="topbar-time" id="topbarDate"></div>
+      </div>
+      <div class="topbar-right">
+        <a href="profile.html" class="user-avatar-circle" id="topbarAvatar" style="text-decoration:none;font-size:0.8rem;">??</a>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- Alertes globales -->
+      <div class="alert alert-error"   id="loanError"   role="alert" style="margin-bottom:16px;"></div>
+      <div class="alert alert-success" id="loanSuccess" role="alert" style="margin-bottom:16px;"></div>
+
+      <!-- ──────────────────────────────────────────────────
+           GRILLE PRINCIPALE : formulaire + préstamos activos
+           ────────────────────────────────────────────────── -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;" id="loansGrid">
+
+        <!-- ── Solicitar préstamo ─────────────────────────── -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">🏦 Solicitar préstamo</span>
+          </div>
+          <div style="padding:24px;">
+
+            <!-- Tipos de préstamo -->
+            <div class="form-label" style="margin-bottom:10px;">Tipo de préstamo</div>
+            <div class="loan-type-grid">
+              <div class="loan-type-card selected" onclick="selectLoanType('personal',this)">
+                <div class="loan-type-icon">👤</div>
+                <div class="loan-type-name">Personal</div>
+                <div class="loan-type-rate">Desde 6,9% TIN</div>
+              </div>
+              <div class="loan-type-card" onclick="selectLoanType('auto',this)">
+                <div class="loan-type-icon">🚗</div>
+                <div class="loan-type-name">Auto</div>
+                <div class="loan-type-rate">Desde 5,5% TIN</div>
+              </div>
+              <div class="loan-type-card" onclick="selectLoanType('business',this)">
+                <div class="loan-type-icon">🏢</div>
+                <div class="loan-type-name">Empresa</div>
+                <div class="loan-type-rate">Desde 7,5% TIN</div>
+              </div>
+            </div>
+
+            <form id="loanForm" novalidate>
+
+              <!-- Importe con slider -->
+              <div class="form-group">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" style="margin:0;">Importe solicitado</label>
+                  <span style="font-family:var(--font-display);font-size:1rem;font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="amountDisplay">5.000 €</span>
+                </div>
+                <input type="range" class="range-slider" id="loanAmountSlider"
+                       min="500" max="50000" step="500" value="5000"
+                       oninput="updateLoanCalc()"/>
+                <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-3);margin-top:4px;">
+                  <span>500 €</span><span>50.000 €</span>
+                </div>
+                <input type="hidden" id="loanAmount" value="5000"/>
+              </div>
+
+              <!-- Plazo con slider -->
+              <div class="form-group">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" style="margin:0;">Plazo de devolución</label>
+                  <span style="font-family:var(--font-display);font-size:1rem;font-weight:800;color:var(--text-1);" id="termDisplay">24 meses</span>
+                </div>
+                <input type="range" class="range-slider" id="loanTermSlider"
+                       min="6" max="84" step="6" value="24"
+                       oninput="updateLoanCalc()"/>
+                <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-3);margin-top:4px;">
+                  <span>6 meses</span><span>84 meses</span>
+                </div>
+                <input type="hidden" id="loanTerm" value="24"/>
+              </div>
+
+              <!-- Calculadora -->
+              <div class="loan-calc-box">
+                <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-2);">
+                  📊 Simulación estimada
+                </div>
+                <div class="loan-calc-grid">
+                  <div class="loan-calc-item">
+                    <div class="loan-calc-label">Cuota mensual</div>
+                    <div class="loan-calc-value text-gradient" id="calcMonthly">—</div>
+                  </div>
+                  <div class="loan-calc-item">
+                    <div class="loan-calc-label">Total a pagar</div>
+                    <div class="loan-calc-value" id="calcTotal">—</div>
+                  </div>
+                  <div class="loan-calc-item">
+                    <div class="loan-calc-label">Intereses totales</div>
+                    <div class="loan-calc-value" style="color:var(--warning);" id="calcInterests">—</div>
+                  </div>
+                  <div class="loan-calc-item">
+                    <div class="loan-calc-label">TIN estimado</div>
+                    <div class="loan-calc-value" id="calcRate">—</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Motivo -->
+              <div class="form-group">
+                <label class="form-label" for="loanReason">Motivo de la solicitud</label>
+                <textarea id="loanReason" class="form-input" rows="3"
+                          placeholder="Describe brevemente para qué necesitas el préstamo…"
+                          maxlength="500" required style="resize:vertical;"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block" id="loanBtn"
+                      style="padding:15px;font-size:1rem;">
+                Solicitar préstamo
+              </button>
+
+              <p style="font-size:0.75rem;color:var(--text-3);text-align:center;margin-top:10px;line-height:1.5;">
+                Respuesta en menos de 24 horas. Sujeto a aprobación.
+              </p>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- ── Mis préstamos activos ──────────────────────── -->
+        <div>
+          <div class="panel" style="margin-bottom:24px;">
+            <div class="panel-header">
+              <span class="panel-title">📋 Mis préstamos</span>
+            </div>
+            <div id="loansListPanel" style="padding:8px 0;">
+              <div style="text-align:center;padding:40px;color:var(--text-3);">
+                <div class="spinner spinner-color" style="margin:0 auto 10px;"></div>
+                Cargando préstamos…
+              </div>
+            </div>
+          </div>
+
+          <!-- Información útil -->
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">ℹ️ Información importante</span>
+            </div>
+            <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:1rem;flex-shrink:0;color:var(--mint);">✓</span>
+                <p style="font-size:0.83rem;color:var(--text-2);line-height:1.5;">Las solicitudes son revisadas por nuestro equipo de riesgos en menos de 24 horas laborables.</p>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:1rem;flex-shrink:0;color:var(--mint);">✓</span>
+                <p style="font-size:0.83rem;color:var(--text-2);line-height:1.5;">Los fondos aprobados se ingresan directamente en tu cuenta VivaBank el mismo día.</p>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:1rem;flex-shrink:0;color:var(--mint);">✓</span>
+                <p style="font-size:0.83rem;color:var(--text-2);line-height:1.5;">Cancelación anticipada sin penalización durante los primeros 14 días.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menú">☰</button>
+
+<script src="js/config.js"></script>
+<script>
+  Auth.requireAuth('login.html');
+
+  /* ── État ─────────────────────────────────────────────────── */
+  const LS = { loanType: 'personal' };
+
+  /* ── Taux par type de prêt ────────────────────────────────── */
+  const RATES = { personal: 0.069, auto: 0.055, business: 0.075 };
+
+  /* ── Init ─────────────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', async () => {
+    document.getElementById('topbarDate').textContent =
+      new Intl.DateTimeFormat('es-ES',{weekday:'long',day:'numeric',month:'long'}).format(new Date());
+
+    const user = Auth.getUser();
+    if (user) {
+      const ini = getInitials(user.firstName, user.lastName);
+      ['sidebarAvatar','topbarAvatar'].forEach(id => document.getElementById(id).textContent = ini);
+      document.getElementById('sidebarName').textContent  = `${user.firstName} ${user.lastName}`;
+      document.getElementById('sidebarEmail').textContent = user.email;
+    }
+
+    updateLoanCalc();
+    await loadMyLoans();
+
+    /* Responsive : une colonne sur mobile */
+    if (window.innerWidth < 900) {
+      document.getElementById('loansGrid').style.gridTemplateColumns = '1fr';
+    }
+  });
+
+  /* ── Sélectionner le type de prêt ────────────────────────── */
+  function selectLoanType(type, el) {
+    LS.loanType = type;
+    document.querySelectorAll('.loan-type-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    updateLoanCalc();
+  }
+
+  /* ── Calculer les mensualités ─────────────────────────────── */
+  function updateLoanCalc() {
+    const amount = parseInt(document.getElementById('loanAmountSlider').value);
+    const term   = parseInt(document.getElementById('loanTermSlider').value);
+    const rate   = RATES[LS.loanType] || 0.069;
+
+    /* Mettre à jour les champs cachés et les libellés */
+    document.getElementById('loanAmount').value = amount;
+    document.getElementById('loanTerm').value   = term;
+    document.getElementById('amountDisplay').textContent = formatMoney(amount).replace(',00','');
+    document.getElementById('termDisplay').textContent   = `${term} meses`;
+
+    /* Formule des mensualités (amortissement constant) */
+    const monthlyRate = rate / 12;
+    let monthly;
+    if (monthlyRate === 0) {
+      monthly = amount / term;
+    } else {
+      monthly = amount * (monthlyRate * Math.pow(1 + monthlyRate, term)) /
+                         (Math.pow(1 + monthlyRate, term) - 1);
+    }
+
+    const total     = monthly * term;
+    const interests = total - amount;
+
+    document.getElementById('calcMonthly').textContent   = formatMoney(monthly);
+    document.getElementById('calcTotal').textContent     = formatMoney(total);
+    document.getElementById('calcInterests').textContent = formatMoney(interests);
+    document.getElementById('calcRate').textContent      = `${(rate * 100).toFixed(1)}% TIN`;
+  }
+
+  /* ── Charger les prêts de l'utilisateur ──────────────────── */
+  async function loadMyLoans() {
+    const r = await apiFetch('/loans/my-loans');
+    const panel = document.getElementById('loansListPanel');
+
+    if (!r?.ok || !r.data.loans?.length) {
+      panel.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🏦</div>
+          <div class="empty-state-text">No tienes préstamos activos.<br>Solicita tu primer préstamo a la izquierda.</div>
+        </div>`;
+      return;
+    }
+
+    panel.innerHTML = r.data.loans.map(loan => buildLoanCard(loan)).join('');
+  }
+
+  /* ── Construire la carte d'un prêt ───────────────────────── */
+  function buildLoanCard(loan) {
+    const statusMap = {
+      pending:  { cls: 'badge-warning', label: 'Pendiente de revisión' },
+      approved: { cls: 'badge-success', label: 'Aprobado' },
+      rejected: { cls: 'badge-danger',  label: 'Rechazado' },
+      active:   { cls: 'badge-blue',    label: 'Activo' },
+    };
+    const s = statusMap[loan.status] || statusMap.pending;
+
+    /* Calcul de la progression de remboursement */
+    const paidPct = loan.paidAmount && loan.amount
+      ? Math.min(100, Math.round((loan.paidAmount / loan.amount) * 100))
+      : 0;
+
+    return `
+      <div class="loan-card" style="padding:20px 24px;">
+        <div class="loan-card-header">
+          <div>
+            <div style="font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:4px;">
+              ${formatMoney(loan.amount)} · ${loan.term || '—'} meses
+            </div>
+            <div style="font-size:0.78rem;color:var(--text-3);">
+              Solicitado el ${formatDate(loan.createdAt)}
+            </div>
+          </div>
+          <span class="badge ${s.cls}">${s.label}</span>
+        </div>
+
+        ${loan.reason ? `<p style="font-size:0.82rem;color:var(--text-2);margin-bottom:12px;line-height:1.5;">"${escHtml(loan.reason)}"</p>` : ''}
+
+        ${loan.status === 'active' ? `
+        <div class="loan-progress-wrap">
+          <div class="loan-progress-label">
+            <span>Devuelto: ${formatMoney(loan.paidAmount||0)}</span>
+            <span>${paidPct}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:${paidPct}%;"></div>
+          </div>
+        </div>` : ''}
+
+        ${loan.status === 'rejected' && loan.rejectionReason ? `
+        <div class="alert alert-error visible" style="margin-top:8px;font-size:0.8rem;">
+          ${escHtml(loan.rejectionReason)}
+        </div>` : ''}
+      </div>`;
+  }
+
+  /* ── Soumission de la demande de prêt ────────────────────── */
+  document.getElementById('loanForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    document.getElementById('loanError').classList.remove('visible');
+    document.getElementById('loanSuccess').classList.remove('visible');
+
+    const amount = parseInt(document.getElementById('loanAmount').value);
+    const term   = parseInt(document.getElementById('loanTerm').value);
+    const reason = document.getElementById('loanReason').value.trim();
+
+    if (!reason || reason.length < 20) {
+      document.getElementById('loanError').textContent = '⚠ Describe el motivo con al menos 20 caracteres.';
+      document.getElementById('loanError').classList.add('visible');
+      return;
+    }
+
+    setBtnLoading('loanBtn', true);
+
+    const r = await apiFetch('/loans/request', {
+      method: 'POST',
+      body: JSON.stringify({ amount, term, reason, loanType: LS.loanType }),
+    });
+
+    setBtnLoading('loanBtn', false, 'Solicitar préstamo');
+
+    if (!r) return;
+
+    if (r.ok && r.data.success) {
+      document.getElementById('loanSuccess').textContent =
+        '✓ Solicitud enviada correctamente. Recibirás una respuesta en menos de 24 horas.';
+      document.getElementById('loanSuccess').classList.add('visible');
+      document.getElementById('loanReason').value = '';
+      await loadMyLoans();
+    } else {
+      document.getElementById('loanError').textContent =
+        '⚠ ' + (r.data.message || 'Error al enviar la solicitud.');
+      document.getElementById('loanError').classList.add('visible');
+    }
+  });
+
+  /* ── Utilitaires ──────────────────────────────────────────── */
+  function escHtml(s) {
+    return String(s||'').replace(/[&<>"']/g, c =>
+      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  }
+  async function downloadStatement() {
+    Toast.info('Generando extracto…');
+    const res = await fetch(`${API_URL}/statements/download`, {
+      headers: { Authorization: `Bearer ${Auth.getToken()}` },
+    });
+    if (!res.ok) { Toast.error('Error al generar el extracto.'); return; }
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = `extracto-vivabank-${new Date().toISOString().slice(0,10)}.pdf`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('open');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+  }
+  async function logout() {
+    await apiFetch('/auth/logout', { method:'POST' });
+    Auth.clear(); window.location.href = 'login.html';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Iniciar sesión — VivaBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+</head>
+<body>
+
+<!-- Orbes de fond -->
+<div class="bg-orbs" aria-hidden="true">
+  <div class="orb orb-1" style="opacity:0.07;"></div>
+  <div class="orb orb-2" style="opacity:0.05;"></div>
+</div>
+
+<div class="auth-page">
+
+  <!-- ── Panneau décoratif gauche ─────────────────────────── -->
+  <aside class="auth-deco">
+
+    <!-- Logo -->
+    <a href="index.html" class="auth-deco-brand" style="text-decoration:none;color:inherit;">
+      <img src="assets/logo-mark.svg" alt="VivaBank" width="36" height="36" style="border-radius:10px;display:block;"/>
+      Viva<span>Bank</span>
+    </a>
+
+    <!-- Titre -->
+    <h1 class="auth-deco-headline">
+      Bienvenido de vuelta a tu
+      <span class="text-gradient">banco digital</span>
+    </h1>
+    <p class="auth-deco-sub">
+      Accede a tu cuenta para gestionar tus finanzas, realizar transferencias
+      y mucho más, todo en un solo lugar.
+    </p>
+
+    <!-- Points clés -->
+    <div class="auth-deco-points">
+      <div class="auth-deco-point">
+        <div class="auth-deco-point-icon">⚡</div>
+        <div>
+          <div class="auth-deco-point-text">Transferencias instantáneas</div>
+          <div class="auth-deco-point-sub">Envía dinero en segundos, 24/7</div>
+        </div>
+      </div>
+      <div class="auth-deco-point">
+        <div class="auth-deco-point-icon">🔐</div>
+        <div>
+          <div class="auth-deco-point-text">Seguridad máxima con 2FA</div>
+          <div class="auth-deco-point-sub">Doble verificación en cada acceso</div>
+        </div>
+      </div>
+      <div class="auth-deco-point">
+        <div class="auth-deco-point-icon">📊</div>
+        <div>
+          <div class="auth-deco-point-text">Panel financiero completo</div>
+          <div class="auth-deco-point-sub">Visualiza y controla todo tu dinero</div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── Panneau formulaire droit ─────────────────────────── -->
+  <main class="auth-panel">
+
+    <!-- Logo mobile -->
+    <a href="index.html" class="auth-panel-logo" style="text-decoration:none;color:inherit;">
+      <img src="assets/logo-mark.svg" alt="VivaBank" width="36" height="36" style="border-radius:10px;display:block;"/>
+      Viva<span>Bank</span>
+    </a>
+
+    <!-- Titre -->
+    <h2 class="auth-title">Iniciar sesión</h2>
+    <p class="auth-sub">
+      ¿Aún no tienes cuenta?
+      <a href="register.html">Créala gratis aquí</a>
+    </p>
+
+    <!-- Alerte de message -->
+    <div class="alert alert-error" id="alertError" role="alert"></div>
+    <div class="alert alert-success" id="alertSuccess" role="alert"></div>
+
+    <!-- ── Formulaire de connexion ──────────────────────── -->
+    <form class="auth-form" id="loginForm" novalidate>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label class="form-label" for="email">Correo electrónico</label>
+        <div class="input-icon-wrap">
+          <span class="input-icon" aria-hidden="true">✉</span>
+          <input
+            type="email"
+            id="email"
+            class="form-input"
+            placeholder="tu@email.com"
+            autocomplete="email"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Mot de passe -->
+      <div class="form-group">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <label class="form-label" for="password" style="margin-bottom:0">Contraseña</label>
+          <a href="forgot-password.html" style="font-size:0.78rem;color:var(--primary);font-weight:600;">
+            ¿La olvidaste?
+          </a>
+        </div>
+        <div class="input-icon-wrap" style="position:relative;">
+          <span class="input-icon" aria-hidden="true">🔒</span>
+          <input
+            type="password"
+            id="password"
+            class="form-input"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            style="padding-left:46px;padding-right:48px;"
+            required
+          />
+          <button type="button" class="input-toggle" id="togglePwd" aria-label="Mostrar contraseña">👁</button>
+        </div>
+      </div>
+
+      <!-- Bouton connexion -->
+      <button type="submit" class="auth-submit" id="loginBtn">
+        Iniciar sesión
+      </button>
+
+    </form>
+
+    <!-- ── Formulaire 2FA (masqué initialement) ─────────── -->
+    <div id="twoFaSection" style="display:none;">
+      <div class="divider-text">Verificación en dos pasos</div>
+
+      <p style="font-size:0.87rem;color:var(--text-2);text-align:center;margin-bottom:8px;line-height:1.6;">
+        Introduce el código de 6 dígitos generado por tu aplicación
+        de autenticación (Google Authenticator, Authy…)
+      </p>
+
+      <!-- Inputs OTP individuels -->
+      <div class="otp-inputs" id="otpInputs">
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 1"/>
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 2"/>
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 3"/>
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 4"/>
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 5"/>
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Dígito 6"/>
+      </div>
+
+      <button type="button" class="auth-submit" id="twoFaBtn">
+        Verificar código
+      </button>
+    </div>
+
+    <!-- Lien vers l'inscription -->
+    <div class="auth-footer-link">
+      <span>¿Nuevo en VivaBank?</span>
+      <a href="register.html">Abre tu cuenta gratis →</a>
+    </div>
+
+  </main>
+</div>
+
+<!-- Scripts -->
+<script src="js/config.js"></script>
+<script>
+  /* ── Rediriger si déjà connecté ─────────────────────────── */
+  Auth.redirectIfLogged('dashboard.html');
+
+  /* ── Toggle mot de passe ─────────────────────────────────── */
+  document.getElementById('togglePwd').addEventListener('click', function() {
+    const input = document.getElementById('password');
+    const isText = input.type === 'text';
+    input.type = isText ? 'password' : 'text';
+    this.textContent = isText ? '👁' : '🙈';
+  });
+
+  /* ── Gestion des inputs OTP (navigation automatique) ──── */
+  const otpInputs = document.querySelectorAll('.otp-input');
+  otpInputs.forEach((input, idx) => {
+    input.addEventListener('input', () => {
+      /* Filtrer pour n'accepter que les chiffres */
+      input.value = input.value.replace(/[^0-9]/g, '');
+      if (input.value && idx < otpInputs.length - 1) {
+        otpInputs[idx + 1].focus();
+      }
+    });
+
+    /* Navigation avec les touches fléchées et Backspace */
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !input.value && idx > 0) {
+        otpInputs[idx - 1].focus();
+      }
+      if (e.key === 'ArrowLeft' && idx > 0) otpInputs[idx - 1].focus();
+      if (e.key === 'ArrowRight' && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+    });
+
+    /* Coller le code d'un coup */
+    input.addEventListener('paste', e => {
+      const paste = (e.clipboardData || window.clipboardData).getData('text');
+      const digits = paste.replace(/\D/g, '').split('').slice(0, 6);
+      digits.forEach((d, i) => {
+        if (otpInputs[i]) otpInputs[i].value = d;
+      });
+      if (otpInputs[digits.length - 1]) otpInputs[digits.length - 1].focus();
+      e.preventDefault();
+    });
+  });
+
+  /* ── Helpers d'alerte ────────────────────────────────────── */
+  function showError(msg) {
+    const el = document.getElementById('alertError');
+    el.textContent = '⚠ ' + msg;
+    el.classList.add('visible');
+    document.getElementById('alertSuccess').classList.remove('visible');
+  }
+
+  function showSuccess(msg) {
+    const el = document.getElementById('alertSuccess');
+    el.textContent = '✓ ' + msg;
+    el.classList.add('visible');
+    document.getElementById('alertError').classList.remove('visible');
+  }
+
+  function hideAlerts() {
+    document.getElementById('alertError').classList.remove('visible');
+    document.getElementById('alertSuccess').classList.remove('visible');
+  }
+
+  /* ── Token temporaire pour le 2FA ────────────────────────── */
+  let tempToken = null;
+
+  /* ── Soumission du formulaire de connexion ───────────────── */
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    hideAlerts();
+
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    /* Validation côté client */
+    if (!Validate.email(email)) {
+      showError('Introduce un correo electrónico válido.');
+      document.getElementById('email').focus();
+      return;
+    }
+    if (!password) {
+      showError('Introduce tu contraseña.');
+      document.getElementById('password').focus();
+      return;
+    }
+
+    /* État chargement */
+    setBtnLoading('loginBtn', true);
+
+    const result = await apiFetch('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    });
+
+    setBtnLoading('loginBtn', false, 'Iniciar sesión');
+
+    if (!result) return;
+
+    if (result.ok && result.data.success) {
+      const { token, refreshToken, user, requires2FA } = result.data;
+
+      /* Si le 2FA est activé sur ce compte */
+      if (requires2FA) {
+        tempToken = result.data.tempToken;
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('twoFaSection').style.display = 'block';
+        otpInputs[0].focus();
+        showSuccess('Introduce el código de tu aplicación autenticadora.');
+        return;
+      }
+
+      /* Connexion réussie sans 2FA */
+      Auth.save({ token, refreshToken, user });
+      showSuccess('¡Bienvenido! Redirigiendo…');
+      setTimeout(() => {
+        window.location.href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
+      }, 800);
+
+    } else {
+      showError(result.data.message || 'Email o contraseña incorrectos.');
+    }
+  });
+
+  /* ── Validation du code 2FA ──────────────────────────────── */
+  document.getElementById('twoFaBtn').addEventListener('click', async function() {
+    hideAlerts();
+    const code = Array.from(otpInputs).map(i => i.value).join('');
+
+    if (code.length !== 6) {
+      showError('Introduce los 6 dígitos del código.');
+      return;
+    }
+
+    setBtnLoading('twoFaBtn', true);
+
+    const result = await apiFetch('/auth/2fa/validate', {
+      method: 'POST',
+      body: JSON.stringify({ tempToken, token: code }),
+    });
+
+    setBtnLoading('twoFaBtn', false, 'Verificar código');
+
+    if (!result) return;
+
+    if (result.ok && result.data.success) {
+      Auth.save(result.data);
+      showSuccess('¡Verificación completada! Redirigiendo…');
+      setTimeout(() => {
+        const user = Auth.getUser();
+        window.location.href = user?.role === 'admin' ? 'admin.html' : 'dashboard.html';
+      }, 800);
+    } else {
+      showError(result.data.message || 'Código incorrecto. Inténtalo de nuevo.');
+      /* Vider les inputs OTP en cas d'erreur */
+      otpInputs.forEach(i => { i.value = ''; });
+      otpInputs[0].focus();
+    }
+  });
+</script>
+
+</body>
+</html>

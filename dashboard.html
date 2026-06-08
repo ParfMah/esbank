@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi Panel — VivaBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     LAYOUT PRINCIPAL
+     ══════════════════════════════════════════════════════════ -->
+<div class="app-layout">
+
+  <!-- ── Overlay mobile (ferme la sidebar) ──────────────────── -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SIDEBAR NAVIGATION
+       ═══════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Logo -->
+    <a href="dashboard.html" class="sidebar-logo">
+      <img src="assets/logo-mark.svg" alt="VivaBank" width="36" height="36" style="border-radius:10px;display:block;"/>
+      Viva<span>Bank</span>
+    </a>
+
+    <!-- Navigation principale -->
+    <nav class="sidebar-nav" role="navigation" aria-label="Navegación principal">
+
+      <a href="dashboard.html" class="nav-item active" id="nav-dashboard">
+        <div class="nav-icon">🏠</div>
+        Panel principal
+      </a>
+
+      <div class="nav-section-title">Operaciones</div>
+
+      <a href="transfer.html" class="nav-item" id="nav-transfer">
+        <div class="nav-icon">↗</div>
+        Transferencias
+      </a>
+
+      <a href="loans.html" class="nav-item" id="nav-loans">
+        <div class="nav-icon">🏦</div>
+        Préstamos
+      </a>
+
+      <a href="#" class="nav-item" onclick="openDepositModal(); return false;" id="nav-deposit">
+        <div class="nav-icon">💳</div>
+        Añadir fondos
+      </a>
+
+      <div class="nav-section-title">Cuenta</div>
+
+      <a href="profile.html" class="nav-item" id="nav-profile">
+        <div class="nav-icon">👤</div>
+        Mi perfil
+      </a>
+
+      <a href="#" class="nav-item" id="nav-statement" onclick="downloadStatement(); return false;">
+        <div class="nav-icon">📄</div>
+        Extracto PDF
+      </a>
+
+    </nav>
+
+    <!-- Pied de sidebar (info utilisateur) -->
+    <div class="sidebar-footer">
+      <a href="profile.html" class="sidebar-user">
+        <div class="user-avatar-circle" id="sidebarAvatar">??</div>
+        <div style="flex:1;min-width:0;">
+          <div class="user-info-name" id="sidebarName">Cargando…</div>
+          <div class="user-info-email" id="sidebarEmail">—</div>
+        </div>
+      </a>
+      <button
+        onclick="logout()"
+        class="nav-item"
+        style="width:100%;border:none;margin-top:4px;color:var(--danger);"
+        title="Cerrar sesión"
+      >
+        <div class="nav-icon" style="background:rgba(255,59,92,0.1);">🚪</div>
+        Cerrar sesión
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+       ═══════════════════════════════════════════════════════ -->
+  <div class="main-content">
+
+    <!-- Barre supérieure -->
+    <header class="topbar">
+      <div>
+        <div class="topbar-title" id="pageTitle">Panel principal</div>
+        <div class="topbar-time" id="topbarDate"></div>
+      </div>
+      <div class="topbar-right">
+        <span class="badge badge-success" id="verifiedBadge" style="display:none;">✓ Verificado</span>
+        <a href="profile.html" class="user-avatar-circle" id="topbarAvatar" style="text-decoration:none;font-size:0.8rem;">??</a>
+      </div>
+    </header>
+
+    <!-- Zone de contenu -->
+    <main class="page-content" id="pageContent">
+
+      <!-- ── Bannière retour Stripe ──
+      <div id="stripeReturnBanner" style="display:none;margin-bottom:20px;"></div>
+
+      <!-- ── Salutation ─────────────────────────────────────── -->
+      <div style="margin-bottom:24px;" class="animate-slide-up">
+        <h1 style="font-family:var(--font-display);font-size:1.6rem;font-weight:800;margin-bottom:4px;" id="greetingText">
+          ¡Bienvenido! 👋
+        </h1>
+        <p style="font-size:0.88rem;color:var(--text-2);">
+          Aquí tienes el resumen de tu actividad financiera
+        </p>
+      </div>
+
+      <!-- ── Carte de solde principale ──────────────────────── -->
+      <div class="balance-card animate-slide-up delay-1" style="margin-bottom:20px;">
+        <div class="balance-card-inner">
+          <div class="balance-card-left">
+            <div class="balance-label">Saldo disponible</div>
+            <div class="balance-amount" id="balanceAmount">—</div>
+            <div class="balance-account-no" id="accountIban">IBAN: ES•• •••• •••• •••• ••••</div>
+          </div>
+          <div class="balance-card-right">
+            <div class="balance-actions">
+              <button class="btn btn-white btn-sm" onclick="openDepositModal()">
+                + Añadir fondos
+              </button>
+              <a href="transfer.html" class="btn btn-white btn-sm">
+                ↗ Transferir
+              </a>
+            </div>
+            <div class="balance-status">
+              <div class="status-dot"></div>
+              Cuenta activa
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Estadísticas rápidas ───────────────────────────── -->
+      <div class="dashboard-grid animate-slide-up delay-2">
+
+        <div class="stat-card">
+          <div class="stat-card-icon icon-mint">⬆</div>
+          <div>
+            <div class="stat-card-label">Ingresos (mes)</div>
+            <div class="stat-card-value" id="monthIncome">—</div>
+            <div class="stat-card-delta delta-pos" id="monthIncomeDelta">+0%</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-icon icon-red">⬇</div>
+          <div>
+            <div class="stat-card-label">Gastos (mes)</div>
+            <div class="stat-card-value" id="monthExpenses">—</div>
+            <div class="stat-card-delta delta-neg" id="monthExpensesDelta">—</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-icon icon-purple">🏦</div>
+          <div>
+            <div class="stat-card-label">Préstamos activos</div>
+            <div class="stat-card-value" id="activeLoans">—</div>
+            <div class="stat-card-delta" style="color:var(--text-3);" id="loanStatus">Sin préstamos</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Grid: Gráfico + Acciones rápidas ──────────────── -->
+      <div class="dashboard-grid-wide animate-slide-up delay-3">
+
+        <!-- Graphique d'activité mensuelle -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Actividad mensual</span>
+            <div style="display:flex;gap:6px;">
+              <button class="filter-tab active" onclick="setChartPeriod(6, this)">6 meses</button>
+              <button class="filter-tab" onclick="setChartPeriod(12, this)">12 meses</button>
+            </div>
+          </div>
+
+          <!-- Légende -->
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--mint)"></div>
+              Ingresos
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--danger)"></div>
+              Gastos
+            </div>
+          </div>
+
+          <!-- Canvas pour le graphique -->
+          <div class="chart-container">
+            <canvas class="chart-canvas" id="activityChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Actions rapides -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Acciones rápidas</span>
+          </div>
+          <div class="quick-actions">
+
+            <a href="transfer.html" class="quick-action-btn">
+              <div class="quick-action-icon" style="background:rgba(255,81,47,0.1);">↗</div>
+              <span class="quick-action-label">Transferir</span>
+            </a>
+
+            <a href="#" class="quick-action-btn" onclick="openDepositModal(); return false;">
+              <div class="quick-action-icon" style="background:rgba(59,130,246,0.1);">💳</div>
+              <span class="quick-action-label">Añadir fondos</span>
+            </a>
+
+            <a href="loans.html" class="quick-action-btn">
+              <div class="quick-action-icon" style="background:rgba(139,92,246,0.1);">🏦</div>
+              <span class="quick-action-label">Solicitar préstamo</span>
+            </a>
+
+            <a href="#" class="quick-action-btn" onclick="downloadStatement(); return false;">
+              <div class="quick-action-icon" style="background:rgba(16,217,160,0.1);">📄</div>
+              <span class="quick-action-label">Extracto PDF</span>
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Movimientos recientes ───────────────────────────── -->
+      <div class="panel animate-slide-up delay-4">
+        <div class="panel-header">
+          <span class="panel-title">Últimos movimientos</span>
+          <a href="transfer.html" class="btn btn-ghost btn-xs">Ver todos →</a>
+        </div>
+
+        <!-- Filtres de transactions -->
+        <div class="filter-tabs" role="tablist">
+          <button class="filter-tab active" onclick="filterTx('all', this)" role="tab">Todos</button>
+          <button class="filter-tab" onclick="filterTx('credit', this)" role="tab">Ingresos</button>
+          <button class="filter-tab" onclick="filterTx('debit', this)" role="tab">Gastos</button>
+          <button class="filter-tab" onclick="filterTx('transfer', this)" role="tab">Transferencias</button>
+        </div>
+
+        <!-- Liste des transactions -->
+        <div id="txList" class="panel-body">
+          <!-- Skeleton de chargement -->
+          <div id="txSkeleton">
+            <div class="tx-item">
+              <div class="skeleton tx-icon" style="width:40px;height:40px;border-radius:10px;flex-shrink:0;"></div>
+              <div style="flex:1;">
+                <div class="skeleton skeleton-line w-3-4"></div>
+                <div class="skeleton skeleton-line w-half"></div>
+              </div>
+              <div class="skeleton skeleton-line" style="width:80px;height:16px;border-radius:6px;"></div>
+            </div>
+            <div class="tx-item">
+              <div class="skeleton tx-icon" style="width:40px;height:40px;border-radius:10px;flex-shrink:0;"></div>
+              <div style="flex:1;">
+                <div class="skeleton skeleton-line w-full"></div>
+                <div class="skeleton skeleton-line w-1-4"></div>
+              </div>
+              <div class="skeleton skeleton-line" style="width:70px;height:16px;border-radius:6px;"></div>
+            </div>
+            <div class="tx-item">
+              <div class="skeleton tx-icon" style="width:40px;height:40px;border-radius:10px;flex-shrink:0;"></div>
+              <div style="flex:1;">
+                <div class="skeleton skeleton-line w-half"></div>
+                <div class="skeleton skeleton-line w-3-4"></div>
+              </div>
+              <div class="skeleton skeleton-line" style="width:90px;height:16px;border-radius:6px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-footer">
+          <a href="transfer.html" style="font-size:0.83rem;color:var(--text-2);transition:color var(--transition);"
+             onmouseover="this.style.color='var(--text-1)'" onmouseout="this.style.color='var(--text-2)'">
+            Ver historial completo →
+          </a>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- /.main-content -->
+</div><!-- /.app-layout -->
+
+<!-- Bouton menu mobile -->
+<button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()" aria-label="Abrir menú">☰</button>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL : AÑADIR FONDOS (STRIPE)
+     ══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="depositModal" role="dialog" aria-modal="true" aria-labelledby="depositModalTitle">
+  <div class="modal" style="max-width:460px;">
+    <button class="modal-close" onclick="closeModal('depositModal')" aria-label="Cerrar">✕</button>
+
+    <div class="modal-title" id="depositModalTitle">💳 Añadir fondos</div>
+    <p class="modal-sub">
+      Añade dinero a tu cuenta VivaBank de forma segura con tu tarjeta bancaria.
+      El saldo aparece al instante.
+    </p>
+
+    <!-- Alertes dans la modal -->
+    <div class="alert alert-error"   id="depositError"   role="alert"></div>
+    <div class="alert alert-success" id="depositSuccess" role="alert"></div>
+
+    <!-- Montants prédéfinis -->
+    <div style="margin-bottom:16px;">
+      <div class="form-label">Selecciona o escribe el importe</div>
+      <div class="deposit-amount-grid">
+        <div class="amount-preset" onclick="selectAmount(50)">50 €</div>
+        <div class="amount-preset" onclick="selectAmount(100)">100 €</div>
+        <div class="amount-preset" onclick="selectAmount(250)">250 €</div>
+        <div class="amount-preset" onclick="selectAmount(500)">500 €</div>
+      </div>
+
+      <!-- Montant personnalisé -->
+      <div class="input-icon-wrap">
+        <span class="input-icon" style="font-weight:700;">€</span>
+        <input
+          type="number"
+          id="depositAmount"
+          class="form-input"
+          placeholder="Otro importe..."
+          min="1" max="10000"
+          step="0.01"
+          oninput="updateDepositSummary(this.value)"
+          style="padding-left:36px;"
+        />
+      </div>
+    </div>
+
+    <!-- Résumé du montant sélectionné -->
+    <div class="deposit-summary-box" id="depositSummaryBox" style="display:none;">
+      <div class="deposit-summary-label">Importe a añadir</div>
+      <div class="deposit-summary-amount" id="depositSummaryAmt">0,00 €</div>
+    </div>
+
+    <!-- Bouton de paiement Stripe -->
+    <button
+      class="btn btn-primary btn-block"
+      id="stripePayBtn"
+      onclick="initiateStripePayment()"
+      style="padding:16px;font-size:1rem;"
+    >
+      🔒 Pagar con Stripe
+    </button>
+
+    <!-- Badge sécurité -->
+    <div class="stripe-secure">
+      <span>🔒</span>
+      Pago seguro cifrado · Procesado por Stripe
+    </div>
+
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/config.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

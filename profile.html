@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi perfil — VivaBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+
+  <style>
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) { .profile-grid { grid-template-columns: 1fr; } }
+
+    /* Carte de profil latérale */
+    .profile-sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--r-xl);
+      padding: 32px 24px;
+      text-align: center;
+      position: sticky;
+      top: 90px;
+    }
+
+    .profile-avatar-big {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      background: var(--grad-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: #fff;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 32px rgba(255,81,47,0.35);
+    }
+
+    .profile-name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; margin-bottom: 4px; }
+    .profile-email { font-size: 0.82rem; color: var(--text-3); margin-bottom: 16px; }
+
+    .profile-stat-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .profile-stat-item { text-align: center; }
+    .profile-stat-val  { font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; }
+    .profile-stat-lbl  { font-size: 0.7rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+    /* Sections du profil */
+    .profile-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .profile-section-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .profile-section-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .profile-section-body { padding: 24px; }
+
+    /* Code QR 2FA */
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 24px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: var(--r-xl);
+      margin: 16px 0;
+    }
+
+    .qr-code-img {
+      width: 180px; height: 180px;
+      border-radius: var(--r-md);
+      background: #fff;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+
+    .qr-secret-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--r-md);
+      padding: 10px 16px;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--text-1);
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--transition);
+    }
+
+    .qr-secret-box:hover { border-color: rgba(255,81,47,0.4); }
+
+    /* Danger zone */
+    .danger-zone {
+      background: rgba(255,59,92,0.04);
+      border: 1px solid rgba(255,59,92,0.2);
+      border-radius: var(--r-xl);
+      padding: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <img src="assets/logo-mark.svg" alt="VivaBank" width="36" height="36" style="border-radius:10px;display:block;"/>
+      Viva<span>Bank</span>
+    </a>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div>Panel principal</a>
+      <div class="nav-section-title">Operaciones</div>
+      <a href="transfer.html" class="nav-item"><div class="nav-icon">↗</div>Transferencias</a>
+      <a href="loans.html" class="nav-item"><div class="nav-icon">🏦</div>Préstamos</a>
+      <a href="#" class="nav-item" onclick="window.location='dashboard.html'"><div class="nav-icon">💳</div>Añadir fondos</a>
+      <div class="nav-section-title">Cuenta</div>
+      <a href="profile.html" class="nav-item active"><div class="nav-icon">👤</div>Mi perfil</a>
+      <a href="#" class="nav-item" onclick="downloadStatement();return false;"><div class="nav-icon">📄</div>Extracto PDF</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="profile.html" class="sidebar-user">
+        <div class="user-avatar-circle" id="sidebarAvatar">??</div>
+        <div style="flex:1;min-width:0;">
+          <div class="user-info-name" id="sidebarName">—</div>
+          <div class="user-info-email" id="sidebarEmail">—</div>
+        </div>
+      </a>
+      <button onclick="logout()" class="nav-item" style="width:100%;border:none;margin-top:4px;color:var(--danger);">
+        <div class="nav-icon" style="background:rgba(255,59,92,0.1);">🚪</div>Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido -->
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title">Mi perfil</div>
+        <div class="topbar-time" id="topbarDate"></div>
+      </div>
+      <div class="topbar-right">
+        <a href="profile.html" class="user-avatar-circle" id="topbarAvatar" style="text-decoration:none;font-size:0.8rem;">??</a>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="profile-grid">
+
+        <!-- ── Colonne gauche: carte de profil ────────────── -->
+        <div>
+          <div class="profile-sidebar-card">
+            <div class="profile-avatar-big" id="profileAvatarBig">??</div>
+            <div class="profile-name" id="profileFullName">—</div>
+            <div class="profile-email" id="profileEmail">—</div>
+
+            <span class="badge badge-success" id="verifiedBadge" style="display:none;">✓ Email verificado</span>
+            <span class="badge badge-warning" id="unverifiedBadge" style="display:none;">⚠ Email no verificado</span>
+
+            <div class="profile-stat-row">
+              <div class="profile-stat-item">
+                <div class="profile-stat-val" id="profileBalance">—</div>
+                <div class="profile-stat-lbl">Saldo</div>
+              </div>
+              <div class="profile-stat-item">
+                <div class="profile-stat-val" id="profileTxCount">—</div>
+                <div class="profile-stat-lbl">Movimientos</div>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+              <div style="font-size:0.75rem;color:var(--text-3);">Miembro desde</div>
+              <div style="font-size:0.85rem;font-weight:600;margin-top:2px;" id="profileMemberSince">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Colonne droite: sections paramètres ─────────── -->
+        <div>
+
+          <!-- SECTION 1: Información personal -->
+          <div class="profile-section">
+            <div class="profile-section-header">
+              <span class="profile-section-title">👤 Información personal</span>
+            </div>
+            <div class="profile-section-body">
+              <div class="alert alert-error"   id="infoError"   role="alert"></div>
+              <div class="alert alert-success" id="infoSuccess" role="alert"></div>
+
+              <form id="infoForm" novalidate>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="editFirstName">Nombre</label>
+                    <input type="text" id="editFirstName" class="form-input" required/>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="editLastName">Apellidos</label>
+                    <input type="text" id="editLastName" class="form-input" required/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="editEmail">Correo electrónico</label>
+                  <div class="input-icon-wrap">
+                    <span class="input-icon">✉</span>
+                    <input type="email" id="editEmail" class="form-input" required/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="editPhone">Teléfono</label>
+                  <div class="input-icon-wrap">
+                    <span class="input-icon">📱</span>
+                    <input type="tel" id="editPhone" class="form-input" placeholder="+34 600 000 000"/>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="saveInfoBtn">
+                  Guardar cambios
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- SECTION 2: Cambiar contraseña -->
+          <div class="profile-section">
+            <div class="profile-section-header">
+              <span class="profile-section-title">🔒 Cambiar contraseña</span>
+            </div>
+            <div class="profile-section-body">
+              <div class="alert alert-error"   id="pwdError"   role="alert"></div>
+              <div class="alert alert-success" id="pwdSuccess" role="alert"></div>
+
+              <form id="pwdForm" novalidate>
+                <div class="form-group">
+                  <label class="form-label" for="currentPwd">Contraseña actual</label>
+                  <div class="input-icon-wrap" style="position:relative;">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="currentPwd" class="form-input"
+                           placeholder="Tu contraseña actual"
+                           style="padding-left:46px;padding-right:48px;" required/>
+                    <button type="button" class="input-toggle" onclick="toggleVis('currentPwd',this)">👁</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="newPwd">Nueva contraseña</label>
+                  <div class="input-icon-wrap" style="position:relative;">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="newPwd" class="form-input"
+                           placeholder="Mínimo 8 caracteres"
+                           style="padding-left:46px;padding-right:48px;" required/>
+                    <button type="button" class="input-toggle" onclick="toggleVis('newPwd',this)">👁</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="confirmPwd">Confirmar contraseña</label>
+                  <div class="input-icon-wrap" style="position:relative;">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="confirmPwd" class="form-input"
+                           placeholder="Repite la nueva contraseña"
+                           style="padding-left:46px;padding-right:48px;" required/>
+                    <button type="button" class="input-toggle" onclick="toggleVis('confirmPwd',this)">👁</button>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="savePwdBtn">
+                  Cambiar contraseña
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- SECTION 3: Autenticación en dos pasos (2FA) -->
+          <div class="profile-section">
+            <div class="profile-section-header">
+              <span class="profile-section-title">🔐 Autenticación en dos pasos (2FA)</span>
+              <span class="badge" id="twoFaBadge" style="display:none;"></span>
+            </div>
+            <div class="profile-section-body">
+
+              <!-- 2FA desactivado -->
+              <div id="twoFaOff">
+                <p style="font-size:0.88rem;color:var(--text-2);line-height:1.6;margin-bottom:20px;">
+                  Añade una capa extra de seguridad a tu cuenta. Cada vez que inicies sesión,
+                  necesitarás introducir un código temporal de 6 dígitos generado por tu
+                  aplicación de autenticación (Google Authenticator, Authy, etc.).
+                </p>
+                <button class="btn btn-primary" id="enable2FABtn" onclick="setup2FA()">
+                  Activar 2FA ahora
+                </button>
+              </div>
+
+              <!-- Processus d'activation 2FA -->
+              <div id="twoFaSetup" style="display:none;">
+                <p style="font-size:0.88rem;color:var(--text-2);line-height:1.6;margin-bottom:16px;">
+                  <strong style="color:var(--text-1);">Paso 1:</strong> Escanea el código QR con tu app de autenticación<br>
+                  <strong style="color:var(--text-1);">Paso 2:</strong> Introduce el código de 6 dígitos para confirmar
+                </p>
+
+                <!-- QR Code -->
+                <div class="qr-container">
+                  <div class="qr-code-img" id="qrCodeImg">
+                    <div class="spinner spinner-color"></div>
+                  </div>
+                  <p style="font-size:0.78rem;color:var(--text-2);text-align:center;">
+                    Si no puedes escanear, introduce este código manualmente:
+                  </p>
+                  <div class="qr-secret-box" id="twoFaSecret" onclick="copySecret()" title="Clic para copiar">
+                    Cargando…
+                  </div>
+                </div>
+
+                <div class="alert alert-error"   id="tfaSetupError"   role="alert"></div>
+                <div class="alert alert-success" id="tfaSetupSuccess" role="alert"></div>
+
+                <div class="form-group">
+                  <label class="form-label" for="verifyCode">Código de verificación (6 dígitos)</label>
+                  <div class="otp-inputs" style="justify-content:flex-start;">
+                    <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"/>
+                    <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"/>
+                    <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"/>
+                    <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"/>
+                    <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"/>
+                    <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"/>
+                  </div>
+                </div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                  <button class="btn btn-primary" id="verify2FABtn" onclick="verify2FA()">
+                    Verificar y activar
+                  </button>
+                  <button class="btn btn-outline" onclick="cancel2FASetup()">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+
+              <!-- 2FA activado -->
+              <div id="twoFaOn" style="display:none;">
+                <div style="display:flex;align-items:center;gap:16px;padding:20px;background:rgba(16,217,160,0.06);border:1px solid rgba(16,217,160,0.2);border-radius:var(--r-lg);margin-bottom:20px;">
+                  <div style="font-size:2rem;flex-shrink:0;">🛡️</div>
+                  <div>
+                    <div style="font-weight:700;margin-bottom:4px;color:var(--mint);">2FA activado</div>
+                    <div style="font-size:0.83rem;color:var(--text-2);line-height:1.5;">
+                      Tu cuenta está protegida con autenticación en dos pasos.
+                      Se requiere un código adicional en cada inicio de sesión.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="alert alert-error"   id="tfaDisableError" role="alert"></div>
+                <div class="alert alert-success" id="tfaDisableSuccess" role="alert"></div>
+
+                <div class="form-group">
+                  <label class="form-label">Confirma tu contraseña para desactivar</label>
+                  <div class="input-icon-wrap" style="position:relative;">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="disablePwd" class="form-input"
+                           placeholder="Tu contraseña actual"
+                           style="padding-left:46px;padding-right:48px;"/>
+                    <button type="button" class="input-toggle" onclick="toggleVis('disablePwd',this)">👁</button>
+                  </div>
+                </div>
+                <button class="btn btn-danger btn-sm" id="disable2FABtn" onclick="disable2FA()">
+                  Desactivar 2FA
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SECTION 4: Zona de peligro -->
+          <div class="danger-zone">
+            <h3 style="font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--danger);margin-bottom:8px;">
+              ⚠ Zona de peligro
+            </h3>
+            <p style="font-size:0.85rem;color:var(--text-2);line-height:1.6;margin-bottom:16px;">
+              Estas acciones son permanentes e irreversibles. Procede con precaución.
+            </p>
+            <button class="btn btn-danger btn-sm" onclick="confirmDeleteAccount()">
+              Eliminar mi cuenta
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menú">☰</button>
+
+<script src="js/config.js"></script>
+<script>
+  Auth.requireAuth('login.html');
+
+  /* ── OTP inputs ─────────────────────────────────────────── */
+  document.querySelectorAll('.otp-input').forEach((input, idx, arr) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/[^0-9]/g,'');
+      if (input.value && idx < arr.length - 1) arr[idx+1].focus();
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !input.value && idx > 0) arr[idx-1].focus();
+    });
+    input.addEventListener('paste', e => {
+      const digits = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').split('');
+      digits.forEach((d,i) => { if (arr[i]) arr[i].value = d; });
+      e.preventDefault();
+    });
+  });
+
+  /* ── Init ────────────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', async () => {
+    document.getElementById('topbarDate').textContent =
+      new Intl.DateTimeFormat('es-ES',{weekday:'long',day:'numeric',month:'long'}).format(new Date());
+    await loadProfile();
+  });
+
+  /* ── Chargement du profil ────────────────────────────────── */
+  async function loadProfile() {
+    const r = await apiFetch('/user/profile');
+    if (!r?.ok) return;
+
+    const u = r.data.user || r.data;
+    const ini = getInitials(u.firstName, u.lastName);
+    const fullName = `${u.firstName} ${u.lastName}`;
+
+    /* Remplir les champs */
+    ['sidebarAvatar','topbarAvatar','profileAvatarBig'].forEach(id =>
+      document.getElementById(id).textContent = ini);
+    document.getElementById('sidebarName').textContent    = fullName;
+    document.getElementById('sidebarEmail').textContent   = u.email;
+    document.getElementById('profileFullName').textContent = fullName;
+    document.getElementById('profileEmail').textContent   = u.email;
+    document.getElementById('profileBalance').textContent = formatMoney(u.balance || 0);
+    document.getElementById('profileTxCount').textContent = u.transactionCount || '0';
+    document.getElementById('profileMemberSince').textContent = formatDate(u.createdAt);
+
+    /* Badge vérification */
+    if (u.isVerified) {
+      document.getElementById('verifiedBadge').style.display = 'inline-flex';
+    } else {
+      document.getElementById('unverifiedBadge').style.display = 'inline-flex';
+    }
+
+    /* Pré-remplir le formulaire info */
+    document.getElementById('editFirstName').value = u.firstName || '';
+    document.getElementById('editLastName').value  = u.lastName  || '';
+    document.getElementById('editEmail').value     = u.email     || '';
+    document.getElementById('editPhone').value     = u.phone     || '';
+
+    /* État 2FA */
+    update2FAStatus(u.twoFactorEnabled);
+
+    /* Sauvegarder en localStorage */
+    Auth.save({
+      token:        Auth.getToken(),
+      refreshToken: Auth.getRefresh(),
+      user: u,
+    });
+  }
+
+  /* ── Mettre à jour l'affichage du statut 2FA ─────────────── */
+  function update2FAStatus(enabled) {
+    const badge = document.getElementById('twoFaBadge');
+    document.getElementById('twoFaOff').style.display   = enabled ? 'none'  : 'block';
+    document.getElementById('twoFaOn').style.display    = enabled ? 'block' : 'none';
+    document.getElementById('twoFaSetup').style.display = 'none';
+
+    badge.style.display = 'inline-flex';
+    badge.className = `badge ${enabled ? 'badge-success' : 'badge-gray'}`;
+    badge.textContent = enabled ? '✓ Activado' : 'Desactivado';
+  }
+
+  /* ── Formulaire info personnelles ────────────────────────── */
+  document.getElementById('infoForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clear('info');
+
+    const firstName = document.getElementById('editFirstName').value.trim();
+    const lastName  = document.getElementById('editLastName').value.trim();
+    const email     = document.getElementById('editEmail').value.trim();
+    const phone     = document.getElementById('editPhone').value.trim();
+
+    if (!firstName || !lastName) { showE('info','Nombre y apellidos son obligatorios.'); return; }
+    if (!Validate.email(email))  { showE('info','Email no válido.'); return; }
+
+    setBtnLoading('saveInfoBtn', true);
+
+    const r = await apiFetch('/user/profile', {
+      method: 'PUT',
+      body: JSON.stringify({ firstName, lastName, email, phone }),
+    });
+
+    setBtnLoading('saveInfoBtn', false, 'Guardar cambios');
+
+    if (r?.ok && r.data.success) {
+      showS('info','✓ Datos actualizados correctamente.');
+      await loadProfile();
+    } else {
+      showE('info', r?.data.message || 'Error al guardar los cambios.');
+    }
+  });
+
+  /* ── Formulaire changement de mot de passe ───────────────── */
+  document.getElementById('pwdForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clear('pwd');
+
+    const currentPwd = document.getElementById('currentPwd').value;
+    const newPwd     = document.getElementById('newPwd').value;
+    const confirmPwd = document.getElementById('confirmPwd').value;
+
+    if (!currentPwd) { showE('pwd','Introduce tu contraseña actual.'); return; }
+    if (!Validate.password(newPwd)) { showE('pwd','La nueva contraseña debe tener mínimo 8 caracteres, una mayúscula y un número.'); return; }
+    if (newPwd !== confirmPwd) { showE('pwd','Las contraseñas nuevas no coinciden.'); return; }
+
+    setBtnLoading('savePwdBtn', true);
+
+    const r = await apiFetch('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ currentPassword: currentPwd, newPassword: newPwd, confirmPassword: confirmPwd }),
+    });
+
+    setBtnLoading('savePwdBtn', false, 'Cambiar contraseña');
+
+    if (r?.ok && r.data.success) {
+      document.getElementById('pwdForm').reset();
+      showS('pwd','✓ Contraseña cambiada correctamente. Se ha cerrado sesión en otros dispositivos.');
+    } else {
+      showE('pwd', r?.data.message || 'Error al cambiar la contraseña.');
+    }
+  });
+
+  /* ── Activer le 2FA : récupérer le QR code ───────────────── */
+  async function setup2FA() {
+    document.getElementById('twoFaOff').style.display   = 'none';
+    document.getElementById('twoFaSetup').style.display = 'block';
+
+    const r = await apiFetch('/auth/2fa/setup', { method: 'POST' });
+
+    if (!r?.ok) {
+      Toast.error('Error al configurar el 2FA. Inténtalo de nuevo.');
+      cancel2FASetup();
+      return;
+    }
+
+    const { qrCodeUrl, secret } = r.data;
+
+    /* Afficher le QR sous forme d'image */
+    const qrEl = document.getElementById('qrCodeImg');
+    if (qrCodeUrl) {
+      qrEl.innerHTML = `<img src="${qrCodeUrl}" alt="Código QR" style="width:100%;height:100%;border-radius:8px;"/>`;
+    } else {
+      qrEl.innerHTML = '📱';
+    }
+
+    document.getElementById('twoFaSecret').textContent = secret || '—';
+  }
+
+  /* ── Vérifier et activer le 2FA ──────────────────────────── */
+  async function verify2FA() {
+    document.getElementById('tfaSetupError').classList.remove('visible');
+    const code = Array.from(document.querySelectorAll('.otp-input')).map(i => i.value).join('');
+
+    if (code.length !== 6) {
+      document.getElementById('tfaSetupError').textContent = '⚠ Introduce los 6 dígitos del código.';
+      document.getElementById('tfaSetupError').classList.add('visible');
+      return;
+    }
+
+    setBtnLoading('verify2FABtn', true);
+
+    const r = await apiFetch('/auth/2fa/enable', {
+      method: 'POST',
+      body: JSON.stringify({ token: code }),
+    });
+
+    setBtnLoading('verify2FABtn', false, 'Verificar y activar');
+
+    if (r?.ok && r.data.success) {
+      document.getElementById('tfaSetupSuccess').textContent = '✓ 2FA activado correctamente.';
+      document.getElementById('tfaSetupSuccess').classList.add('visible');
+      setTimeout(() => update2FAStatus(true), 1200);
+    } else {
+      document.getElementById('tfaSetupError').textContent = '⚠ ' + (r?.data.message || 'Código incorrecto.');
+      document.getElementById('tfaSetupError').classList.add('visible');
+    }
+  }
+
+  /* ── Annuler la configuration 2FA ────────────────────────── */
+  function cancel2FASetup() {
+    document.getElementById('twoFaSetup').style.display = 'none';
+    document.getElementById('twoFaOff').style.display = 'block';
+    document.querySelectorAll('.otp-input').forEach(i => { i.value = ''; });
+  }
+
+  /* ── Désactiver le 2FA ────────────────────────────────────── */
+  async function disable2FA() {
+    const errEl = document.getElementById('tfaDisableError');
+    errEl.classList.remove('visible');
+
+    const password = document.getElementById('disablePwd').value;
+    if (!password) {
+      errEl.textContent = '⚠ Introduce tu contraseña para confirmar.';
+      errEl.classList.add('visible');
+      return;
+    }
+
+    setBtnLoading('disable2FABtn', true);
+
+    const r = await apiFetch('/auth/2fa/disable', {
+      method: 'POST',
+      body: JSON.stringify({ password }),
+    });
+
+    setBtnLoading('disable2FABtn', false, 'Desactivar 2FA');
+
+    if (r?.ok && r.data.success) {
+      document.getElementById('disablePwd').value = '';
+      update2FAStatus(false);
+      Toast.success('2FA desactivado correctamente.');
+    } else {
+      errEl.textContent = '⚠ ' + (r?.data.message || 'Contraseña incorrecta.');
+      errEl.classList.add('visible');
+    }
+  }
+
+  /* ── Copier le secret 2FA ────────────────────────────────── */
+  function copySecret() {
+    const secret = document.getElementById('twoFaSecret').textContent;
+    navigator.clipboard.writeText(secret).then(() => {
+      Toast.success('Código secreto copiado al portapapeles.');
+    });
+  }
+
+  /* ── Confirmation suppression de compte ──────────────────── */
+  function confirmDeleteAccount() {
+    if (confirm('⚠ ¿Estás seguro de que quieres eliminar tu cuenta? Esta acción es permanente e irreversible. Todos tus datos y saldo serán eliminados.')) {
+      deleteAccount();
+    }
+  }
+
+  async function deleteAccount() {
+    const r = await apiFetch('/user/delete', { method: 'DELETE' });
+    if (r?.ok) {
+      Auth.clear();
+      Toast.info('Cuenta eliminada. Hasta pronto.');
+      setTimeout(() => window.location.href = 'index.html', 1500);
+    } else {
+      Toast.error(r?.data.message || 'Error al eliminar la cuenta.');
+    }
+  }
+
+  /* ── Utilitaires ──────────────────────────────────────────── */
+  function showE(p, m) {
+    const el = document.getElementById(`${p}Error`);
+    el.textContent = '⚠ ' + m; el.classList.add('visible');
+  }
+  function showS(p, m) {
+    const el = document.getElementById(`${p}Success`);
+    el.textContent = m; el.classList.add('visible');
+  }
+  function clear(p) {
+    document.getElementById(`${p}Error`).classList.remove('visible');
+    document.getElementById(`${p}Success`).classList.remove('visible');
+  }
+  function toggleVis(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const isText = input.type === 'text';
+    input.type = isText ? 'password' : 'text';
+    btn.textContent = isText ? '👁' : '🙈';
+  }
+  async function downloadStatement() {
+    Toast.info('Generando extracto…');
+    const res = await fetch(`${API_URL}/statements/download`, {
+      headers: { Authorization: `Bearer ${Auth.getToken()}` },
+    });
+    if (!res.ok) { Toast.error('Error al generar el extracto.'); return; }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `extracto-vivabank-${new Date().toISOString().slice(0,10)}.pdf`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('open');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+  }
+  async function logout() {
+    await apiFetch('/auth/logout', { method:'POST' });
+    Auth.clear(); window.location.href = 'login.html';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel de Administración — VivaBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+</head>
+<body>
+
+<div class="app-layout">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SIDEBAR ADMIN
+       ═══════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <a href="admin.html" class="sidebar-logo">
+      <img src="assets/logo-mark.svg" alt="VivaBank" width="36" height="36" style="border-radius:10px;display:block;"/>
+      Viva<span>Bank</span>
+    </a>
+
+    <!-- Badge admin -->
+    <div class="admin-badge">⚙ Administrador</div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active" onclick="switchSection('dashboard')" href="#">
+        <div class="nav-icon">📊</div>Dashboard
+      </a>
+
+      <div class="nav-section-title">Gestión</div>
+
+      <a class="nav-item" onclick="switchSection('users')" href="#">
+        <div class="nav-icon">👥</div>Usuarios
+      </a>
+      <a class="nav-item" onclick="switchSection('loans')" href="#">
+        <div class="nav-icon">🏦</div>Préstamos
+        <span class="nav-badge" id="pendingLoansCount" style="display:none;">0</span>
+      </a>
+      <a class="nav-item" onclick="switchSection('transactions')" href="#">
+        <div class="nav-icon">↗</div>Transacciones
+      </a>
+      <a class="nav-item" onclick="switchSection('deposits')" href="#">
+        <div class="nav-icon">💳</div>Depósitos
+      </a>
+
+      <div class="nav-section-title">Sistema</div>
+      <a class="nav-item" href="dashboard.html">
+        <div class="nav-icon">🏠</div>Vista usuario
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="#" class="sidebar-user">
+        <div class="user-avatar-circle" id="sidebarAvatar"
+             style="background:linear-gradient(135deg,#FF512F,#F09819);">A</div>
+        <div style="flex:1;min-width:0;">
+          <div class="user-info-name" id="sidebarName">Admin</div>
+          <div class="user-info-email" id="sidebarEmail">—</div>
+        </div>
+      </a>
+      <button onclick="logout()" class="nav-item"
+              style="width:100%;border:none;margin-top:4px;color:var(--danger);">
+        <div class="nav-icon" style="background:rgba(255,59,92,0.1);">🚪</div>Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CONTENIDO ADMIN
+       ═══════════════════════════════════════════════════════ -->
+  <div class="main-content">
+    <header class="topbar admin-topbar">
+      <div>
+        <div class="topbar-title" id="sectionTitle">Dashboard</div>
+        <div class="topbar-time" id="topbarDate"></div>
+      </div>
+      <div class="topbar-right">
+        <span class="badge badge-purple">⚙ Admin</span>
+        <div class="user-avatar-circle" id="topbarAvatar"
+             style="font-size:0.8rem;background:linear-gradient(135deg,#FF512F,#F09819);">A</div>
+      </div>
+    </header>
+
+    <main class="page-content" style="max-width:1300px;">
+
+      <!-- ════════════════════════════════════════════════════
+           SECCIÓN 1 — DASHBOARD (estadísticas globales)
+           ════════════════════════════════════════════════════ -->
+      <div id="sec-dashboard">
+
+        <!-- KPIs -->
+        <div class="admin-kpi-grid">
+          <div class="kpi-card kpi-orange">
+            <div class="kpi-top">
+              <div>
+                <div class="kpi-label">Total usuarios</div>
+                <div class="kpi-value" id="kpiUsers">—</div>
+                <div class="kpi-delta delta-pos" id="kpiUsersDelta"></div>
+              </div>
+              <div class="kpi-icon icon-orange">👥</div>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-mint">
+            <div class="kpi-top">
+              <div>
+                <div class="kpi-label">Volumen total (€)</div>
+                <div class="kpi-value" id="kpiVolume">—</div>
+                <div class="kpi-delta delta-pos" id="kpiVolumeDelta"></div>
+              </div>
+              <div class="kpi-icon icon-mint">💰</div>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-blue">
+            <div class="kpi-top">
+              <div>
+                <div class="kpi-label">Transacciones</div>
+                <div class="kpi-value" id="kpiTx">—</div>
+                <div class="kpi-delta" id="kpiTxDelta"></div>
+              </div>
+              <div class="kpi-icon icon-blue">↗</div>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-purple">
+            <div class="kpi-top">
+              <div>
+                <div class="kpi-label">Préstamos pendientes</div>
+                <div class="kpi-value" id="kpiPendingLoans">—</div>
+                <div class="kpi-delta" style="color:var(--warning);" id="kpiLoansDelta"></div>
+              </div>
+              <div class="kpi-icon icon-purple">🏦</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Graphique global + top utilisateurs -->
+        <div class="admin-chart-grid">
+
+          <!-- Activité globale (canvas) -->
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">📈 Actividad global (últimos 6 meses)</span>
+            </div>
+            <div class="chart-container" style="padding:20px 24px;">
+              <canvas id="adminChart" style="width:100%;height:200px;"></canvas>
+            </div>
+          </div>
+
+          <!-- Répartition des transactions -->
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">🥧 Tipos de transacción</span>
+            </div>
+            <div class="donut-wrap" id="txDonut">
+              <div style="text-align:center;padding:20px;color:var(--text-3);">
+                <div class="spinner spinner-color" style="margin:0 auto 8px;"></div>
+                Cargando…
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Últimos registros -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">🆕 Últimos usuarios registrados</span>
+            <button class="btn btn-ghost btn-xs" onclick="switchSection('users')">Ver todos →</button>
+          </div>
+          <div id="recentUsersTable" style="overflow-x:auto;">
+            <div style="text-align:center;padding:32px;color:var(--text-3);">
+              <div class="spinner spinner-color" style="margin:0 auto 8px;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ════════════════════════════════════════════════════
+           SECCIÓN 2 — USUARIOS
+           ════════════════════════════════════════════════════ -->
+      <div id="sec-users" style="display:none;">
+        <div class="panel">
+          <div class="table-toolbar">
+            <div class="toolbar-left">
+              <input type="text" class="search-input" style="width:260px;"
+                     id="userSearch" placeholder="Buscar por nombre, email…"
+                     oninput="filterUsers(this.value)"/>
+              <select class="form-select" id="userStatusFilter"
+                      onchange="filterUsers(document.getElementById('userSearch').value)"
+                      style="width:150px;padding:9px 12px;font-size:0.83rem;">
+                <option value="all">Todos</option>
+                <option value="verified">Verificados</option>
+                <option value="unverified">No verificados</option>
+              </select>
+            </div>
+            <div class="toolbar-right">
+              <span style="font-size:0.78rem;color:var(--text-3);" id="userCount">— usuarios</span>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th onclick="sortUsers('balance')">Saldo ↕</th>
+                  <th onclick="sortUsers('createdAt')">Registro ↕</th>
+                  <th>Estado</th>
+                  <th>2FA</th>
+                  <th style="text-align:right;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <tr><td colspan="6" style="text-align:center;padding:40px;">
+                  <div class="spinner spinner-color" style="margin:0 auto 8px;"></div>
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span style="font-size:0.78rem;color:var(--text-3);" id="userPageInfo"></span>
+            <div class="pagination" id="userPagination"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════
+           SECCIÓN 3 — PRÉSTAMOS
+           ════════════════════════════════════════════════════ -->
+      <div id="sec-loans" style="display:none;">
+        <div class="panel">
+          <div class="table-toolbar">
+            <div class="toolbar-left">
+              <div class="filter-tabs" style="padding:0;border:none;">
+                <button class="filter-tab active" onclick="filterLoans('all',this)">Todos</button>
+                <button class="filter-tab" onclick="filterLoans('pending',this)">Pendientes</button>
+                <button class="filter-tab" onclick="filterLoans('approved',this)">Aprobados</button>
+                <button class="filter-tab" onclick="filterLoans('rejected',this)">Rechazados</button>
+                <button class="filter-tab" onclick="filterLoans('active',this)">Activos</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Solicitante</th>
+                  <th>Importe</th>
+                  <th>Plazo</th>
+                  <th>Motivo</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                  <th style="text-align:right;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="loansTableBody">
+                <tr><td colspan="7" style="text-align:center;padding:40px;">
+                  <div class="spinner spinner-color" style="margin:0 auto 8px;"></div>
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span style="font-size:0.78rem;color:var(--text-3);" id="loansCount"></span>
+            <div class="pagination" id="loansPagination"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════
+           SECCIÓN 4 — TRANSACCIONES GLOBALES
+           ════════════════════════════════════════════════════ -->
+      <div id="sec-transactions" style="display:none;">
+        <div class="panel">
+          <div class="table-toolbar">
+            <div class="toolbar-left">
+              <input type="text" class="search-input" style="width:240px;"
+                     id="txAdminSearch" placeholder="Buscar transacción…"
+                     oninput="filterAdminTx(this.value)"/>
+              <select class="form-select" id="txAdminType"
+                      onchange="filterAdminTx(document.getElementById('txAdminSearch').value)"
+                      style="width:160px;padding:9px 12px;font-size:0.83rem;">
+                <option value="all">Todos los tipos</option>
+                <option value="credit">Ingresos</option>
+                <option value="debit">Gastos</option>
+                <option value="transfer">Transferencias</option>
+                <option value="loan">Préstamos</option>
+              </select>
+            </div>
+            <div class="toolbar-right">
+              <span style="font-size:0.78rem;color:var(--text-3);" id="txAdminCount"></span>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Tipo</th>
+                  <th>Descripción</th>
+                  <th>Fecha</th>
+                  <th style="text-align:right;">Importe</th>
+                  <th style="text-align:right;">Estado</th>
+                </tr>
+              </thead>
+              <tbody id="txAdminBody">
+                <tr><td colspan="6" style="text-align:center;padding:40px;">
+                  <div class="spinner spinner-color" style="margin:0 auto 8px;"></div>
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span style="font-size:0.78rem;color:var(--text-3);" id="txAdminPageInfo"></span>
+            <div class="pagination" id="txAdminPagination"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════
+           SECCIÓN 5 — DEPÓSITOS
+           ════════════════════════════════════════════════════ -->
+      <div id="sec-deposits" style="display:none;">
+        <div class="panel">
+          <div class="table-toolbar">
+            <div class="toolbar-left">
+              <select class="form-select" id="depositStatusFilter"
+                      onchange="loadDeposits()"
+                      style="width:160px;padding:9px 12px;font-size:0.83rem;">
+                <option value="all">Todos</option>
+                <option value="completed">Completados</option>
+                <option value="pending">Pendientes</option>
+                <option value="failed">Fallidos</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Importe</th>
+                  <th>Método</th>
+                  <th>Stripe ID</th>
+                  <th>Fecha</th>
+                  <th style="text-align:right;">Estado</th>
+                </tr>
+              </thead>
+              <tbody id="depositsBody">
+                <tr><td colspan="6" style="text-align:center;padding:40px;">
+                  <div class="spinner spinner-color" style="margin:0 auto 8px;"></div>
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span style="font-size:0.78rem;color:var(--text-3);" id="depositsCount"></span>
+            <div class="pagination" id="depositsPagination"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menú">☰</button>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL : CRÉDITO / DÉBITO MANUAL
+     ══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="creditDebitModal" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:440px;">
+    <button class="modal-close" onclick="closeModal('creditDebitModal')">✕</button>
+    <div class="modal-title" id="cdModalTitle">Ajuste de saldo</div>
+    <p class="modal-sub" id="cdModalSub">Modifica el saldo del usuario seleccionado.</p>
+
+    <!-- Onglets Crédito / Débito -->
+    <div class="credit-debit-tabs">
+      <button class="cd-tab active credit" onclick="setCdType('credit',this)">+ Crédito</button>
+      <button class="cd-tab debit"         onclick="setCdType('debit',this)">− Débito</button>
+    </div>
+
+    <div class="alert alert-error"   id="cdError"   role="alert"></div>
+    <div class="alert alert-success" id="cdSuccess" role="alert"></div>
+
+    <div class="form-group">
+      <label class="form-label">Usuario</label>
+      <div style="font-size:0.88rem;font-weight:600;color:var(--text-1);padding:10px 14px;background:var(--bg-surface);border:1px solid var(--border-card);border-radius:var(--r-md);"
+           id="cdUserName">—</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="cdAmount">Importe (€)</label>
+      <div class="input-icon-wrap">
+        <span class="input-icon" style="font-weight:700;">€</span>
+        <input type="number" id="cdAmount" class="form-input"
+               placeholder="0,00" min="0.01" max="100000" step="0.01"
+               style="padding-left:36px;"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="cdReason">Motivo del ajuste</label>
+      <textarea id="cdReason" class="form-input" rows="2"
+                placeholder="Ej: Corrección de error, bonificación, penalización…"
+                maxlength="200" style="resize:none;"></textarea>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline btn-block" onclick="closeModal('creditDebitModal')">Cancelar</button>
+      <button class="btn btn-primary btn-block" id="cdConfirmBtn" onclick="executeCreditDebit()">
+        Aplicar ajuste
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL : RECHAZO DE PRÉSTAMO (con motivo)
+     ══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="rejectLoanModal" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:420px;">
+    <button class="modal-close" onclick="closeModal('rejectLoanModal')">✕</button>
+    <div class="modal-title">Rechazar préstamo</div>
+    <p class="modal-sub">El solicitante recibirá un email con el motivo del rechazo.</p>
+
+    <div class="alert alert-error" id="rejectError" role="alert"></div>
+
+    <div class="form-group">
+      <label class="form-label" for="rejectReason">Motivo del rechazo</label>
+      <textarea id="rejectReason" class="form-input" rows="3"
+                placeholder="Ej: Historial crediticio insuficiente, documentación incompleta…"
+                maxlength="300" style="resize:none;" required></textarea>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline btn-block" onclick="closeModal('rejectLoanModal')">Cancelar</button>
+      <button class="btn btn-danger btn-block" id="rejectLoanBtn" onclick="confirmRejectLoan()">
+        Confirmar rechazo
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL : DETALLE USUARIO
+     ══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="userDetailModal" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:500px;">
+    <button class="modal-close" onclick="closeModal('userDetailModal')">✕</button>
+    <div class="modal-title">Detalle de usuario</div>
+
+    <div id="userDetailContent">
+      <div style="text-align:center;padding:32px;">
+        <div class="spinner spinner-color" style="margin:0 auto;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

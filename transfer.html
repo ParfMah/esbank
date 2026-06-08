@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transferencias — VivaBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+
+  <style>
+    /* ── Onglets de navigation transfert/programado ─────────── */
+    .transfer-tabs {
+      display: flex;
+      gap: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: var(--r-lg);
+      padding: 4px;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+
+    .transfer-tab {
+      padding: 10px 24px;
+      border-radius: calc(var(--r-lg) - 4px);
+      font-family: var(--font-display);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-2);
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition: all var(--transition);
+    }
+
+    .transfer-tab.active {
+      background: var(--grad-primary);
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(255,81,47,0.3);
+    }
+
+    /* ── Formulaire de virement ─────────────────────────────── */
+    .transfer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .transfer-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Carte de confirmation */
+    .confirm-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-card);
+      border-radius: var(--r-xl);
+      padding: 28px;
+      position: sticky;
+      top: 90px;
+    }
+
+    .confirm-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.75rem;
+    }
+
+    .confirm-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.87rem;
+    }
+
+    .confirm-row:last-of-type { border-bottom: none; }
+
+    .confirm-key  { color: var(--text-2); }
+    .confirm-val  { font-weight: 600; color: var(--text-1); text-align: right; max-width: 60%; }
+
+    .confirm-amount-big {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .confirm-amount-num {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+
+    /* Historial tabla */
+    .tx-type-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+
+    /* Selectores de frecuencia programada */
+    .freq-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .freq-btn {
+      padding: 10px 8px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-card);
+      border-radius: var(--r-md);
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .freq-btn:hover,
+    .freq-btn.selected {
+      background: rgba(255,81,47,0.08);
+      border-color: rgba(255,81,47,0.4);
+      color: var(--text-1);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <img src="assets/logo-mark.svg" alt="VivaBank" width="36" height="36" style="border-radius:10px;display:block;"/>
+      Viva<span>Bank</span>
+    </a>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div>Panel principal</a>
+      <div class="nav-section-title">Operaciones</div>
+      <a href="transfer.html" class="nav-item active"><div class="nav-icon">↗</div>Transferencias</a>
+      <a href="loans.html" class="nav-item"><div class="nav-icon">🏦</div>Préstamos</a>
+      <a href="dashboard.html#deposit" class="nav-item" onclick="window.location='dashboard.html';"><div class="nav-icon">💳</div>Añadir fondos</a>
+      <div class="nav-section-title">Cuenta</div>
+      <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div>Mi perfil</a>
+      <a href="#" class="nav-item" onclick="downloadStatement();return false;"><div class="nav-icon">📄</div>Extracto PDF</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="profile.html" class="sidebar-user">
+        <div class="user-avatar-circle" id="sidebarAvatar">??</div>
+        <div style="flex:1;min-width:0;">
+          <div class="user-info-name" id="sidebarName">—</div>
+          <div class="user-info-email" id="sidebarEmail">—</div>
+        </div>
+      </a>
+      <button onclick="logout()" class="nav-item" style="width:100%;border:none;margin-top:4px;color:var(--danger);">
+        <div class="nav-icon" style="background:rgba(255,59,92,0.1);">🚪</div>Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Contenido principal ──────────────────────────────── -->
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title">Transferencias</div>
+        <div class="topbar-time" id="topbarDate"></div>
+      </div>
+      <div class="topbar-right">
+        <div style="font-family:var(--font-display);font-size:0.9rem;font-weight:700;color:var(--text-2);">
+          Saldo: <span id="topbarBalance" style="color:var(--text-1);">—</span>
+        </div>
+        <a href="profile.html" class="user-avatar-circle" id="topbarAvatar" style="text-decoration:none;font-size:0.8rem;">??</a>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- Onglets Inmediata / Programada -->
+      <div class="transfer-tabs">
+        <button class="transfer-tab active" onclick="switchTab('immediate', this)">⚡ Inmediata</button>
+        <button class="transfer-tab" onclick="switchTab('scheduled', this)">🔄 Programada</button>
+        <button class="transfer-tab" onclick="switchTab('history', this)">📋 Historial</button>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════
+           PESTAÑA 1: TRANSFERENCIA INMEDIATA
+           ══════════════════════════════════════════════════ -->
+      <div id="tabImmediate">
+        <div class="transfer-grid">
+
+          <!-- Formulaire -->
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">⚡ Nueva transferencia</span>
+            </div>
+            <div style="padding:24px;">
+
+              <div class="alert alert-error"   id="txError"   role="alert"></div>
+              <div class="alert alert-success" id="txSuccess" role="alert"></div>
+
+              <form id="immediateForm" novalidate>
+
+                <div class="form-group">
+                  <label class="form-label" for="recipientEmail">Email del destinatario</label>
+                  <div class="input-icon-wrap">
+                    <span class="input-icon">✉</span>
+                    <input type="email" id="recipientEmail" class="form-input"
+                           placeholder="destinatario@email.com"
+                           oninput="updatePreview()" required/>
+                  </div>
+                  <p class="form-hint">El destinatario debe tener cuenta en VivaBank</p>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="txAmount">Importe</label>
+                  <div class="input-icon-wrap">
+                    <span class="input-icon" style="font-weight:700;">€</span>
+                    <input type="number" id="txAmount" class="form-input"
+                           placeholder="0,00" min="0.01" max="10000" step="0.01"
+                           oninput="updatePreview()" style="padding-left:36px;" required/>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="txDesc">Concepto (opcional)</label>
+                  <input type="text" id="txDesc" class="form-input"
+                         placeholder="Ej: Alquiler junio, Cena cumpleaños…"
+                         maxlength="100" oninput="updatePreview()"/>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="sendBtn"
+                        style="padding:15px;font-size:1rem;">
+                  Enviar transferencia
+                </button>
+
+              </form>
+            </div>
+          </div>
+
+          <!-- Résumé / confirmation -->
+          <div class="confirm-card">
+            <div class="confirm-title">📋 Resumen de la operación</div>
+
+            <div class="confirm-amount-big">
+              <div style="font-size:0.75rem;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Importe</div>
+              <div class="confirm-amount-num" id="previewAmount">0,00 €</div>
+            </div>
+
+            <div class="confirm-row">
+              <span class="confirm-key">Destinatario</span>
+              <span class="confirm-val" id="previewRecipient">—</span>
+            </div>
+            <div class="confirm-row">
+              <span class="confirm-key">Concepto</span>
+              <span class="confirm-val" id="previewDesc">Sin concepto</span>
+            </div>
+            <div class="confirm-row">
+              <span class="confirm-key">Saldo actual</span>
+              <span class="confirm-val" id="previewBalance">—</span>
+            </div>
+            <div class="confirm-row">
+              <span class="confirm-key">Saldo tras envío</span>
+              <span class="confirm-val" id="previewAfter">—</span>
+            </div>
+            <div class="confirm-row">
+              <span class="confirm-key">Comisión</span>
+              <span class="confirm-val" style="color:var(--mint);">0,00 € (gratis)</span>
+            </div>
+
+            <div style="margin-top:16px;padding:12px;background:rgba(16,217,160,0.06);border:1px solid rgba(16,217,160,0.15);border-radius:var(--r-md);">
+              <p style="font-size:0.78rem;color:var(--text-2);line-height:1.5;">
+                ✓ Transferencia inmediata · Sin comisiones · Confirmación por email
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════
+           PESTAÑA 2: TRANSFERENCIA PROGRAMADA
+           ══════════════════════════════════════════════════ -->
+      <div id="tabScheduled" style="display:none;">
+        <div class="transfer-grid">
+
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">🔄 Nueva transferencia programada</span>
+            </div>
+            <div style="padding:24px;">
+
+              <div class="alert alert-error"   id="schedError"   role="alert"></div>
+              <div class="alert alert-success" id="schedSuccess" role="alert"></div>
+
+              <form id="scheduledForm" novalidate>
+
+                <div class="form-group">
+                  <label class="form-label" for="schedRecipient">Email del destinatario</label>
+                  <div class="input-icon-wrap">
+                    <span class="input-icon">✉</span>
+                    <input type="email" id="schedRecipient" class="form-input"
+                           placeholder="destinatario@email.com" required/>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="schedAmount">Importe (€)</label>
+                    <input type="number" id="schedAmount" class="form-input"
+                           placeholder="0,00" min="0.01" step="0.01" required/>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="schedStartDate">Primera fecha</label>
+                    <input type="date" id="schedStartDate" class="form-input" required/>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Frecuencia</label>
+                  <div class="freq-grid" id="freqGrid">
+                    <div class="freq-btn selected" data-freq="daily"   onclick="selectFreq('daily',this)">Diaria</div>
+                    <div class="freq-btn"           data-freq="weekly"  onclick="selectFreq('weekly',this)">Semanal</div>
+                    <div class="freq-btn"           data-freq="monthly" onclick="selectFreq('monthly',this)">Mensual</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="schedDesc">Concepto</label>
+                  <input type="text" id="schedDesc" class="form-input"
+                         placeholder="Ej: Cuota Netflix, Alquiler…" maxlength="100"/>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="schedBtn"
+                        style="padding:15px;font-size:1rem;">
+                  Programar transferencia
+                </button>
+
+              </form>
+            </div>
+          </div>
+
+          <!-- Info programado -->
+          <div class="confirm-card">
+            <div style="text-align:center;padding:20px 0 24px;">
+              <div style="font-size:3rem;margin-bottom:12px;">🔄</div>
+              <h3 style="font-family:var(--font-display);font-weight:700;margin-bottom:8px;">
+                Automatiza tus pagos
+              </h3>
+              <p style="font-size:0.87rem;color:var(--text-2);line-height:1.6;">
+                Configura transferencias recurrentes para pagos habituales como el
+                alquiler, suscripciones o cuotas mensuales.
+              </p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:1.1rem;flex-shrink:0;margin-top:2px;">✓</span>
+                <span style="font-size:0.85rem;color:var(--text-2);line-height:1.5;">Se ejecutan automáticamente en la fecha configurada</span>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:1.1rem;flex-shrink:0;margin-top:2px;">✓</span>
+                <span style="font-size:0.85rem;color:var(--text-2);line-height:1.5;">Puedes cancelarlas en cualquier momento desde el historial</span>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:1.1rem;flex-shrink:0;margin-top:2px;">✓</span>
+                <span style="font-size:0.85rem;color:var(--text-2);line-height:1.5;">Sin comisiones adicionales por transferencias programadas</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════
+           PESTAÑA 3: HISTORIAL COMPLETO
+           ══════════════════════════════════════════════════ -->
+      <div id="tabHistory" style="display:none;">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">📋 Historial de movimientos</span>
+            <button class="btn btn-ghost btn-sm" onclick="downloadStatement()">
+              📄 Descargar PDF
+            </button>
+          </div>
+
+          <!-- Barre de recherche + filtres -->
+          <div class="search-bar">
+            <input type="text" class="search-input" id="txSearch"
+                   placeholder="Buscar por concepto, destinatario…"
+                   oninput="searchTransactions(this.value)"/>
+            <select class="form-select" id="txTypeFilter"
+                    onchange="applyHistoryFilters()"
+                    style="width:160px;padding:10px 14px;font-size:0.85rem;">
+              <option value="all">Todos los tipos</option>
+              <option value="credit">Ingresos</option>
+              <option value="debit">Gastos</option>
+              <option value="transfer">Transferencias</option>
+              <option value="loan">Préstamos</option>
+            </select>
+          </div>
+
+          <!-- Filtres de période -->
+          <div class="filter-tabs">
+            <button class="filter-tab active" onclick="setPeriodFilter(30, this)">Último mes</button>
+            <button class="filter-tab" onclick="setPeriodFilter(90, this)">3 meses</button>
+            <button class="filter-tab" onclick="setPeriodFilter(180, this)">6 meses</button>
+            <button class="filter-tab" onclick="setPeriodFilter(365, this)">1 año</button>
+          </div>
+
+          <!-- Tableau -->
+          <div class="table-wrap">
+            <table class="table" id="txTable">
+              <thead>
+                <tr>
+                  <th>Tipo</th>
+                  <th>Descripción</th>
+                  <th>Fecha</th>
+                  <th style="text-align:right;">Importe</th>
+                  <th style="text-align:right;">Estado</th>
+                </tr>
+              </thead>
+              <tbody id="txTableBody">
+                <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-3);">
+                  <div class="spinner spinner-color" style="margin:0 auto 8px;"></div>
+                  Cargando movimientos…
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span style="font-size:0.78rem;color:var(--text-3);" id="txCount">— movimientos</span>
+            <div class="pagination" id="txPagination"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menú">☰</button>
+
+<!-- Modal de confirmation de transfert -->
+<div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:420px;">
+    <button class="modal-close" onclick="closeModal('confirmModal')">✕</button>
+    <div class="modal-title">Confirmar transferencia</div>
+    <p class="modal-sub">¿Confirmas el envío de los siguientes fondos?</p>
+
+    <div style="background:var(--bg-surface);border:1px solid var(--border-card);border-radius:var(--r-lg);padding:20px;margin-bottom:20px;">
+      <div class="confirm-row" style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px;">
+        <span class="confirm-key">A</span>
+        <span class="confirm-val" id="confirmTo">—</span>
+      </div>
+      <div class="confirm-row">
+        <span class="confirm-key">Importe</span>
+        <span class="confirm-val" style="color:var(--primary);font-size:1.1rem;" id="confirmAmt">—</span>
+      </div>
+      <div class="confirm-row">
+        <span class="confirm-key">Concepto</span>
+        <span class="confirm-val" id="confirmDesc">—</span>
+      </div>
+    </div>
+
+    <div class="alert alert-error" id="confirmError" role="alert"></div>
+
+    <div style="display:flex;gap:12px;">
+      <button class="btn btn-outline btn-block" onclick="closeModal('confirmModal')">Cancelar</button>
+      <button class="btn btn-primary btn-block" id="confirmSendBtn" onclick="executeTransfer()">
+        Confirmar envío
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script>
+  Auth.requireAuth('login.html');
+
+  /* ── Estado ─────────────────────────────────────────────── */
+  const S = {
+    balance:       0,
+    transactions:  [],
+    filtered:      [],
+    page:          1,
+    perPage:       10,
+    periodDays:    30,
+    searchQuery:   '',
+    typeFilter:    'all',
+    schedFreq:     'daily',
+    pendingTx:     null,
+  };
+
+  /* ── Init ────────────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', async () => {
+    /* Date topbar */
+    document.getElementById('topbarDate').textContent =
+      new Intl.DateTimeFormat('es-ES',{weekday:'long',day:'numeric',month:'long'}).format(new Date());
+
+    /* Info utilisateur */
+    const user = Auth.getUser();
+    if (user) {
+      const ini = getInitials(user.firstName, user.lastName);
+      document.getElementById('sidebarAvatar').textContent = ini;
+      document.getElementById('topbarAvatar').textContent  = ini;
+      document.getElementById('sidebarName').textContent   = `${user.firstName} ${user.lastName}`;
+      document.getElementById('sidebarEmail').textContent  = user.email;
+    }
+
+    /* Date min pour transfert programmé */
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('schedStartDate').min = tomorrow.toISOString().slice(0,10);
+    document.getElementById('schedStartDate').value = tomorrow.toISOString().slice(0,10);
+
+    await loadBalance();
+    await loadAllTransactions();
+  });
+
+  /* ── Charger le solde ────────────────────────────────────── */
+  async function loadBalance() {
+    const r = await apiFetch('/user/dashboard');
+    if (r?.ok) {
+      S.balance = r.data.balance || 0;
+      document.getElementById('topbarBalance').textContent = formatMoney(S.balance);
+      document.getElementById('previewBalance').textContent = formatMoney(S.balance);
+      document.getElementById('previewAfter').textContent   = formatMoney(S.balance);
+    }
+  }
+
+  /* ── Charger toutes les transactions ─────────────────────── */
+  async function loadAllTransactions() {
+    const r = await apiFetch('/transactions?limit=200');
+    if (r?.ok) {
+      S.transactions = r.data.transactions || [];
+      applyHistoryFilters();
+    }
+  }
+
+  /* ── Navigation entre onglets ────────────────────────────── */
+  function switchTab(tab, btn) {
+    ['tabImmediate','tabScheduled','tabHistory'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    document.querySelectorAll('.transfer-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById(`tab${tab.charAt(0).toUpperCase()+tab.slice(1)}`).style.display = 'block';
+    btn.classList.add('active');
+  }
+
+  /* ── Mise à jour de l'aperçu en temps réel ───────────────── */
+  function updatePreview() {
+    const amount = parseFloat(document.getElementById('txAmount').value) || 0;
+    const email  = document.getElementById('recipientEmail').value.trim();
+    const desc   = document.getElementById('txDesc').value.trim();
+
+    document.getElementById('previewAmount').textContent    = formatMoney(amount);
+    document.getElementById('previewRecipient').textContent = email || '—';
+    document.getElementById('previewDesc').textContent      = desc  || 'Sin concepto';
+    document.getElementById('previewAfter').textContent     = formatMoney(Math.max(0, S.balance - amount));
+  }
+
+  /* ── Soumission du formulaire de transfert immédiat ──────── */
+  document.getElementById('immediateForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    clearAlerts('tx');
+
+    const email  = document.getElementById('recipientEmail').value.trim();
+    const amount = parseFloat(document.getElementById('txAmount').value);
+    const desc   = document.getElementById('txDesc').value.trim();
+
+    if (!Validate.email(email)) { showErr('tx','Introduce un email válido.'); return; }
+    if (!Validate.amount(amount)) { showErr('tx','Introduce un importe válido.'); return; }
+    if (amount > S.balance) { showErr('tx','Saldo insuficiente para realizar esta transferencia.'); return; }
+    if (amount > 10000)     { showErr('tx','El límite por transferencia es de 10.000 €.'); return; }
+
+    /* Ouvrir la modal de confirmation */
+    S.pendingTx = { email, amount, desc };
+    document.getElementById('confirmTo').textContent   = email;
+    document.getElementById('confirmAmt').textContent  = formatMoney(amount);
+    document.getElementById('confirmDesc').textContent = desc || 'Sin concepto';
+    document.getElementById('confirmError').classList.remove('visible');
+    openModal('confirmModal');
+  });
+
+  /* ── Exécuter le transfert après confirmation ────────────── */
+  async function executeTransfer() {
+    const errEl = document.getElementById('confirmError');
+    errEl.classList.remove('visible');
+    setBtnLoading('confirmSendBtn', true);
+
+    const r = await apiFetch('/transactions/transfer', {
+      method: 'POST',
+      body: JSON.stringify({
+        recipientEmail: S.pendingTx.email,
+        amount:         S.pendingTx.amount,
+        description:    S.pendingTx.desc || 'Transferencia VivaBank',
+      }),
+    });
+
+    setBtnLoading('confirmSendBtn', false, 'Confirmar envío');
+
+    if (!r) return;
+    if (r.ok && r.data.success) {
+      closeModal('confirmModal');
+      S.balance -= S.pendingTx.amount;
+      document.getElementById('topbarBalance').textContent = formatMoney(S.balance);
+
+      /* Réinitialiser le formulaire */
+      document.getElementById('immediateForm').reset();
+      updatePreview();
+
+      showSuc('tx','✓ Transferencia enviada correctamente. El destinatario ha sido notificado.');
+      await loadAllTransactions();
+    } else {
+      errEl.textContent = '⚠ ' + (r.data.message || 'Error al enviar la transferencia.');
+      errEl.classList.add('visible');
+    }
+  }
+
+  /* ── Sélection de fréquence de transfert programmé ───────── */
+  function selectFreq(freq, el) {
+    S.schedFreq = freq;
+    document.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  /* ── Soumission du formulaire programmé ──────────────────── */
+  document.getElementById('scheduledForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clearAlerts('sched');
+
+    const recipient = document.getElementById('schedRecipient').value.trim();
+    const amount    = parseFloat(document.getElementById('schedAmount').value);
+    const startDate = document.getElementById('schedStartDate').value;
+    const desc      = document.getElementById('schedDesc').value.trim();
+
+    if (!Validate.email(recipient)) { showErr('sched','Email del destinatario no válido.'); return; }
+    if (!Validate.amount(amount))   { showErr('sched','Introduce un importe válido.'); return; }
+    if (!startDate) { showErr('sched','Selecciona la fecha de inicio.'); return; }
+
+    setBtnLoading('schedBtn', true);
+
+    const r = await apiFetch('/transactions/scheduled', {
+      method: 'POST',
+      body: JSON.stringify({
+        recipientEmail: recipient,
+        amount,
+        frequency: S.schedFreq,
+        startDate,
+        description: desc || 'Transferencia programada',
+      }),
+    });
+
+    setBtnLoading('schedBtn', false, 'Programar transferencia');
+
+    if (!r) return;
+    if (r.ok && r.data.success) {
+      document.getElementById('scheduledForm').reset();
+      showSuc('sched','✓ Transferencia programada con éxito. Se ejecutará automáticamente.');
+    } else {
+      showErr('sched', r.data.message || 'Error al programar la transferencia.');
+    }
+  });
+
+  /* ── Filtres du historial ────────────────────────────────── */
+  function applyHistoryFilters() {
+    const typeF = document.getElementById('txTypeFilter').value;
+    S.typeFilter = typeF;
+
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - S.periodDays);
+
+    S.filtered = S.transactions.filter(tx => {
+      const matchType   = typeF === 'all' || tx.type === typeF;
+      const matchDate   = new Date(tx.createdAt) >= cutoff;
+      const matchSearch = !S.searchQuery ||
+        (tx.description||'').toLowerCase().includes(S.searchQuery) ||
+        (tx.recipientEmail||'').toLowerCase().includes(S.searchQuery);
+      return matchType && matchDate && matchSearch;
+    });
+
+    S.page = 1;
+    renderHistoryTable();
+  }
+
+  function searchTransactions(q) {
+    S.searchQuery = q.toLowerCase().trim();
+    applyHistoryFilters();
+  }
+
+  function setPeriodFilter(days, btn) {
+    S.periodDays = days;
+    document.querySelectorAll('.filter-tabs .filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyHistoryFilters();
+  }
+
+  /* ── Rendu du tableau d'historique ───────────────────────── */
+  function renderHistoryTable() {
+    const tbody = document.getElementById('txTableBody');
+    const start = (S.page - 1) * S.perPage;
+    const slice = S.filtered.slice(start, start + S.perPage);
+
+    document.getElementById('txCount').textContent = `${S.filtered.length} movimiento${S.filtered.length !== 1 ? 's' : ''}`;
+
+    if (!slice.length) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-3);">
+        No hay movimientos con los filtros seleccionados</td></tr>`;
+      document.getElementById('txPagination').innerHTML = '';
+      return;
+    }
+
+    const typeMap = {
+      credit:   { icon:'⬆', color:'var(--mint)',   label:'Ingreso' },
+      debit:    { icon:'⬇', color:'var(--danger)', label:'Gasto' },
+      transfer: { icon:'↗', color:'var(--blue)',   label:'Transferencia' },
+      loan:     { icon:'🏦', color:'var(--purple)', label:'Préstamo' },
+    };
+
+    tbody.innerHTML = slice.map(tx => {
+      const t = typeMap[tx.type] || typeMap.debit;
+      const isPos = tx.type === 'credit' || tx.type === 'loan';
+      return `
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="tx-type-icon" style="background:rgba(255,255,255,0.05);">${t.icon}</div>
+              <span class="badge badge-gray" style="font-size:0.68rem;">${t.label}</span>
+            </div>
+          </td>
+          <td style="color:var(--text-1);font-weight:500;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+            ${escHtml(tx.description || '—')}
+          </td>
+          <td style="color:var(--text-2);font-size:0.82rem;white-space:nowrap;">
+            ${formatDateTime(tx.createdAt)}
+          </td>
+          <td style="text-align:right;font-family:var(--font-display);font-weight:700;color:${t.color};white-space:nowrap;">
+            ${isPos ? '+' : '-'}${formatMoney(Math.abs(tx.amount))}
+          </td>
+          <td style="text-align:right;">
+            <span class="badge ${tx.status === 'completed' ? 'badge-success' : tx.status === 'pending' ? 'badge-warning' : 'badge-gray'}">
+              ${tx.status === 'completed' ? 'Completado' : tx.status === 'pending' ? 'Pendiente' : tx.status || '—'}
+            </span>
+          </td>
+        </tr>`;
+    }).join('');
+
+    renderPagination();
+  }
+
+  /* ── Pagination ──────────────────────────────────────────── */
+  function renderPagination() {
+    const total = Math.ceil(S.filtered.length / S.perPage);
+    const pg = document.getElementById('txPagination');
+    if (total <= 1) { pg.innerHTML = ''; return; }
+
+    let html = '';
+    if (S.page > 1) html += `<button class="page-btn" onclick="goPage(${S.page-1})">‹</button>`;
+    for (let i = 1; i <= total; i++) {
+      if (i === 1 || i === total || Math.abs(i - S.page) <= 1) {
+        html += `<button class="page-btn ${i===S.page?'active':''}" onclick="goPage(${i})">${i}</button>`;
+      } else if (Math.abs(i - S.page) === 2) {
+        html += `<span style="color:var(--text-3);padding:0 4px;">…</span>`;
+      }
+    }
+    if (S.page < total) html += `<button class="page-btn" onclick="goPage(${S.page+1})">›</button>`;
+    pg.innerHTML = html;
+  }
+
+  function goPage(p) { S.page = p; renderHistoryTable(); }
+
+  /* ── Télécharger le relevé PDF ───────────────────────────── */
+  async function downloadStatement() {
+    Toast.info('Generando extracto PDF…');
+    const res = await fetch(`${API_URL}/statements/download`, {
+      headers: { Authorization: `Bearer ${Auth.getToken()}` },
+    });
+    if (!res.ok) { Toast.error('Error al generar el extracto.'); return; }
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `extracto-vivabank-${new Date().toISOString().slice(0,10)}.pdf`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    Toast.success('Extracto descargado.');
+  }
+
+  /* ── Helpers ─────────────────────────────────────────────── */
+  function showErr(prefix, msg) {
+    const el = document.getElementById(`${prefix}Error`);
+    el.textContent = '⚠ ' + msg; el.classList.add('visible');
+  }
+  function showSuc(prefix, msg) {
+    const el = document.getElementById(`${prefix}Success`);
+    el.textContent = msg; el.classList.add('visible');
+  }
+  function clearAlerts(prefix) {
+    document.getElementById(`${prefix}Error`).classList.remove('visible');
+    document.getElementById(`${prefix}Success`).classList.remove('visible');
+  }
+  function escHtml(s) {
+    return String(s||'').replace(/[&<>"']/g, c =>
+      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  }
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('open');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+  }
+  async function logout() {
+    await apiFetch('/auth/logout', { method:'POST' });
+    Auth.clear(); window.location.href = 'login.html';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56" width="220" height="56" role="img" aria-label="VivaBank — Tu banco digital en España">
+  <defs>
+    <linearGradient id="lg-main" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#FF512F"/>
+      <stop offset="100%" stop-color="#F09819"/>
+    </linearGradient>
+    <linearGradient id="lg-text" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#FF512F"/>
+      <stop offset="100%" stop-color="#F09819"/>
+    </linearGradient>
+    <radialGradient id="lg-shine" cx="35%" cy="20%" r="60%">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="lg-shadow">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#FF512F" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- ── Symbole carré arrondi ──────────────────────────── -->
+  <rect x="0" y="4" width="48" height="48" rx="13"
+        fill="url(#lg-main)" filter="url(#lg-shadow)"/>
+  <rect x="0" y="4" width="48" height="48" rx="13"
+        fill="url(#lg-shine)"/>
+
+  <!-- V intérieur -->
+  <path d="M10 16 L24 38" stroke="rgba(255,255,255,0.95)" stroke-width="5.5"
+        stroke-linecap="round" fill="none"/>
+  <path d="M38 16 L24 38" stroke="rgba(255,255,255,0.95)" stroke-width="5.5"
+        stroke-linecap="round" fill="none"/>
+  <polygon points="24,42 27,38 24,34 21,38" fill="rgba(255,255,255,0.9)"/>
+  <line x1="9" y1="14" x2="39" y2="14"
+        stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- ── Mot Viva (dégradé) ─────────────────────────────── -->
+  <text x="62" y="33"
+        font-family="Outfit, 'Segoe UI', Arial, sans-serif"
+        font-size="26" font-weight="800" letter-spacing="-0.5"
+        fill="url(#lg-text)">Viva</text>
+
+  <!-- ── Mot Bank (blanc cassé) ────────────────────────── -->
+  <text x="119" y="33"
+        font-family="Outfit, 'Segoe UI', Arial, sans-serif"
+        font-size="26" font-weight="800" letter-spacing="-0.5"
+        fill="#F0F4FF">Bank</text>
+
+  <!-- ── Tagline sous le nom ────────────────────────────── -->
+  <text x="62" y="46"
+        font-family="Inter, 'Segoe UI', Arial, sans-serif"
+        font-size="8.5" font-weight="500" letter-spacing="0.5"
+        fill="rgba(136,150,171,0.85)">TU BANCO DIGITAL EN ESPAÑA</text>
+</svg>

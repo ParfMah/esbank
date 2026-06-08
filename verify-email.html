@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verificar email — VivaBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+</head>
+<body>
+
+<div class="bg-orbs" aria-hidden="true">
+  <div class="orb orb-1" style="opacity:0.06;"></div>
+  <div class="orb orb-2" style="opacity:0.04;"></div>
+</div>
+
+<div class="auth-page" style="align-items:center;justify-content:center;">
+  <main style="width:100%;max-width:480px;padding:40px 24px;text-align:center;">
+
+    <!-- Logo -->
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-1);text-decoration:none;margin-bottom:48px;cursor:pointer;">
+      <img src="assets/logo-mark.svg" alt="VivaBank" width="36" height="36" style="border-radius:10px;display:block;"/>
+      Viva<span style="background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Bank</span>
+    </a>
+
+    <!-- Estado: verificando -->
+    <div id="stateLoading">
+      <div style="width:80px;height:80px;border-radius:50%;background:rgba(59,130,246,0.1);border:2px solid rgba(59,130,246,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2.2rem;">
+        ⏳
+      </div>
+      <h1 style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;margin-bottom:8px;">Verificando tu email…</h1>
+      <p style="color:var(--text-2);font-size:0.9rem;">Por favor espera un momento.</p>
+    </div>
+
+    <!-- Estado: éxito -->
+    <div id="stateSuccess" style="display:none;" class="auth-success-screen">
+      <div class="success-icon-wrap">✓</div>
+      <h2 class="success-title">¡Email verificado!</h2>
+      <p class="success-desc">
+        Tu cuenta VivaBank está ahora activa y lista para usar.
+        Ya puedes iniciar sesión.
+      </p>
+      <a href="login.html" class="btn btn-primary btn-lg btn-block">
+        Ir al inicio de sesión
+      </a>
+    </div>
+
+    <!-- Estado: error -->
+    <div id="stateError" style="display:none;">
+      <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,59,92,0.1);border:2px solid rgba(255,59,92,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2.2rem;">
+        ✕
+      </div>
+      <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;margin-bottom:8px;">Enlace inválido o expirado</h2>
+      <p style="color:var(--text-2);font-size:0.88rem;line-height:1.6;margin-bottom:28px;" id="errorMsg">
+        El enlace de verificación ha expirado o ya fue utilizado.
+        Inicia sesión y solicita un nuevo email de verificación.
+      </p>
+      <a href="login.html" class="btn btn-primary btn-block">
+        Ir al inicio de sesión
+      </a>
+      <a href="index.html" class="btn btn-ghost btn-block" style="margin-top:10px;">
+        Volver al inicio
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<script src="js/config.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    if (!token) {
+      show('stateError');
+      return;
+    }
+
+    /* Appel API de vérification */
+    const result = await apiFetch(`/auth/verify-email?token=${encodeURIComponent(token)}`);
+
+    if (result?.ok && result.data.success) {
+      show('stateSuccess');
+    } else {
+      document.getElementById('errorMsg').textContent =
+        result?.data?.message || 'El enlace de verificación ha expirado o es inválido.';
+      show('stateError');
+    }
+  });
+
+  function show(id) {
+    ['stateLoading','stateSuccess','stateError'].forEach(s => {
+      document.getElementById(s).style.display = s === id ? 'block' : 'none';
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Conoce al equipo de VivaBank: nuestra misión, valores, historia y el compromiso con la banca digital española."/>
+  <title>Nosotros — VivaBank</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <style>
+    body{padding-top:72px;}
+    .inner-hero{padding:80px 0 64px;text-align:center;position:relative;overflow:hidden;}
+    .inner-hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(255,81,47,0.1),transparent 70%);pointer-events:none;}
+    .inner-hero-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 16px;border-radius:999px;background:rgba(255,81,47,0.1);border:1px solid rgba(255,81,47,0.25);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#FF7A5C;margin-bottom:20px;}
+    .inner-hero h1{font-family:var(--font-display);font-size:clamp(2rem,4.5vw,3.4rem);font-weight:900;line-height:1.1;margin-bottom:18px;}
+    .inner-hero p{font-size:1.05rem;color:var(--text-2);line-height:1.75;max-width:580px;margin:0 auto 36px;}
+
+    /* Misión */
+    .mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-xl);padding:56px;margin-bottom:64px;position:relative;overflow:hidden;}
+    .mission-grid::after{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,81,47,0.07),transparent 70%);pointer-events:none;}
+    .mission-quote{font-family:var(--font-display);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:800;line-height:1.3;margin-bottom:20px;}
+    .mission-quote span{display:block;font-size:3rem;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+    .mission-desc{font-size:0.92rem;color:var(--text-2);line-height:1.75;}
+    .mission-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+    .mission-stat{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;}
+    .mission-stat-val{font-family:var(--font-display);font-size:1.8rem;font-weight:900;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
+    .mission-stat-lbl{font-size:0.75rem;color:var(--text-2);}
+
+    /* Valores */
+    .values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:64px;}
+    .value-card{background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-xl);padding:32px 28px;transition:all 0.3s;}
+    .value-card:hover{transform:translateY(-4px);border-color:rgba(255,81,47,0.2);}
+    .value-icon{font-size:2.2rem;margin-bottom:16px;}
+    .value-title{font-family:var(--font-display);font-size:1rem;font-weight:800;margin-bottom:10px;}
+    .value-desc{font-size:0.85rem;color:var(--text-2);line-height:1.7;}
+
+    /* Équipe */
+    .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:64px;}
+    .team-card{background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-xl);padding:28px 20px;text-align:center;transition:all 0.3s;}
+    .team-card:hover{transform:translateY(-4px);border-color:rgba(255,81,47,0.2);}
+    .team-avatar{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.3rem;font-weight:800;color:#fff;margin:0 auto 16px;box-shadow:0 6px 24px rgba(0,0,0,0.35);}
+    .team-name{font-family:var(--font-display);font-size:0.95rem;font-weight:800;margin-bottom:4px;}
+    .team-role{font-size:0.78rem;color:var(--primary);font-weight:600;margin-bottom:8px;}
+    .team-bio{font-size:0.78rem;color:var(--text-2);line-height:1.6;}
+    .team-links{display:flex;justify-content:center;gap:8px;margin-top:12px;}
+    .team-link{width:30px;height:30px;border-radius:8px;background:var(--bg-surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:var(--text-2);text-decoration:none;transition:all 0.2s;}
+    .team-link:hover{background:rgba(255,81,47,0.1);border-color:rgba(255,81,47,0.3);color:var(--primary);}
+
+    /* Timeline histoire */
+    .timeline{display:flex;flex-direction:column;gap:0;max-width:760px;margin:0 auto 64px;}
+    .tl-item{display:grid;grid-template-columns:120px 1px 1fr;gap:0 28px;align-items:start;padding-bottom:36px;}
+    .tl-item:last-child{padding-bottom:0;}
+    .tl-year{font-family:var(--font-display);font-size:1rem;font-weight:900;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;padding-top:4px;text-align:right;}
+    .tl-line{background:linear-gradient(180deg,rgba(255,81,47,0.5),rgba(255,81,47,0.05));position:relative;}
+    .tl-line::before{content:'';position:absolute;top:4px;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:var(--primary);box-shadow:0 0 12px rgba(255,81,47,0.5);}
+    .tl-item:last-child .tl-line{background:transparent;}
+    .tl-content{padding-top:0;}
+    .tl-title{font-family:var(--font-display);font-size:0.95rem;font-weight:800;margin-bottom:6px;}
+    .tl-desc{font-size:0.84rem;color:var(--text-2);line-height:1.65;}
+
+    /* Presencia */
+    .press-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:64px;}
+    .press-item{background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-lg);padding:22px;display:flex;flex-direction:column;gap:10px;}
+    .press-media{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-3);}
+    .press-quote{font-size:0.83rem;color:var(--text-1);line-height:1.6;font-style:italic;}
+    .press-date{font-size:0.72rem;color:var(--text-3);}
+
+    /* Regulatorio */
+    .reg-box{background:linear-gradient(135deg,rgba(16,217,160,0.06),rgba(59,130,246,0.03));border:1px solid rgba(16,217,160,0.2);border-radius:var(--r-xl);padding:48px;margin-bottom:64px;}
+    .reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
+    .reg-items{display:flex;flex-direction:column;gap:16px;}
+    .reg-item{display:flex;gap:14px;align-items:flex-start;}
+    .reg-item-icon{width:42px;height:42px;border-radius:12px;background:rgba(16,217,160,0.1);border:1px solid rgba(16,217,160,0.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+    .reg-item-title{font-size:0.88rem;font-weight:700;margin-bottom:3px;}
+    .reg-item-desc{font-size:0.79rem;color:var(--text-2);line-height:1.5;}
+
+    @media(max-width:1024px) {
+      .team-grid    { grid-template-columns:repeat(2,1fr); }
+      .press-grid   { grid-template-columns:repeat(2,1fr); }
+      .mission-grid { grid-template-columns:1fr; padding:36px; }
+      .reg-grid     { grid-template-columns:1fr; }
+    }
+    @media(max-width:768px) {
+      body          { padding-top:62px; }
+      .values-grid  { grid-template-columns:1fr; }
+      .team-grid    { grid-template-columns:1fr 1fr; }
+      .press-grid   { grid-template-columns:1fr; }
+      /* Carte double CTA (Empleo + Prensa) : 1 colonne */
+      .cta-double-grid { grid-template-columns:1fr !important; }
+      /* Timeline : colonne gauche réduite */
+      .tl-item { grid-template-columns:72px 1px 1fr; gap:0 16px; }
+      .tl-year { font-size:0.85rem; }
+      /* Reg box */
+      .reg-box  { padding:28px; }
+    }
+    @media(max-width:600px) {
+      div[style*='grid-template-columns:1fr auto'] { grid-template-columns:1fr !important; }
+    }
+    @media(max-width:480px) {
+      .team-grid  { grid-template-columns:1fr; }
+      .tl-item    { grid-template-columns:60px 1px 1fr; gap:0 12px; }
+      .mission-grid { padding:24px; }
+    }
+  </style>
+</head>
+<body>
+<div class="bg-orbs" aria-hidden="true"><div class="orb orb-1" style="opacity:0.07;"></div><div class="orb orb-2" style="opacity:0.04;"></div></div>
+<script src="js/public-nav.js"></script>
+
+<section class="inner-hero">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="inner-hero-tag">🏛️ Sobre VivaBank</div>
+    <h1>Somos el banco digital<br/><span class="text-gradient">que España merecía</span></h1>
+    <p>Un equipo apasionado por la tecnología financiera, comprometido con hacer la banca más justa, transparente y accesible para todos los españoles.</p>
+  </div>
+</section>
+
+<main style="padding:0 0 80px;">
+  <div class="container">
+
+    <!-- MISIÓN -->
+    <div class="mission-grid">
+      <div style="position:relative;z-index:1;">
+        <div class="inner-hero-tag" style="margin-bottom:18px;">💡 Nuestra misión</div>
+        <div class="mission-quote">
+          <span>"</span>
+          Democratizar el acceso a servicios financieros de calidad para todos los españoles, sin importar su nivel de ingresos o conocimientos financieros.
+        </div>
+        <div class="mission-desc">
+          Fundado en 2022 por un equipo de ingenieros y financieros españoles, VivaBank nació con una idea simple pero poderosa:
+          los bancos deberían trabajar <em>para</em> las personas, no al revés. Sin comisiones abusivas, sin burocracia innecesaria,
+          sin letra pequeña. Solo tecnología al servicio del cliente.
+        </div>
+      </div>
+      <div style="position:relative;z-index:1;">
+        <div class="mission-stats">
+          <div class="mission-stat"><div class="mission-stat-val">2022</div><div class="mission-stat-lbl">Año de fundación</div></div>
+          <div class="mission-stat"><div class="mission-stat-val">48K+</div><div class="mission-stat-lbl">Clientes activos</div></div>
+          <div class="mission-stat"><div class="mission-stat-val">€2,1M</div><div class="mission-stat-lbl">Volumen procesado</div></div>
+          <div class="mission-stat"><div class="mission-stat-val">35</div><div class="mission-stat-lbl">Personas en el equipo</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALORES -->
+    <div style="margin-bottom:64px;">
+      <h2 style="font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:800;text-align:center;margin-bottom:8px;">Nuestros <span class="text-gradient">valores</span></h2>
+      <p style="text-align:center;color:var(--text-2);font-size:0.9rem;margin-bottom:32px;">Los principios que guían cada decisión que tomamos en VivaBank.</p>
+      <div class="values-grid">
+        <div class="value-card"><div class="value-icon">🔍</div><div class="value-title">Transparencia total</div><div class="value-desc">Sin comisiones ocultas, sin letra pequeña, sin sorpresas. Todas nuestras tarifas y condiciones están publicadas de forma clara y accesible para cualquier persona.</div></div>
+        <div class="value-card"><div class="value-icon">⚡</div><div class="value-title">Velocidad e innovación</div><div class="value-desc">Creemos que la tecnología puede hacer la banca más rápida y eficiente. Nuestros sistemas procesan transferencias en segundos y mejoramos la plataforma continuamente.</div></div>
+        <div class="value-card"><div class="value-icon">🤝</div><div class="value-title">Cliente primero</div><div class="value-desc">Cada decisión de producto y negocio pasa por la misma pregunta: ¿es bueno para el cliente? Si la respuesta es no, no lo hacemos. Así de simple.</div></div>
+        <div class="value-card"><div class="value-icon">🛡️</div><div class="value-title">Seguridad sin compromisos</div><div class="value-desc">La seguridad de tu dinero y tus datos es innegociable. Invertimos constantemente en las mejores medidas de protección y cumplimos con toda la normativa vigente.</div></div>
+        <div class="value-card"><div class="value-icon">🌱</div><div class="value-title">Sostenibilidad</div><div class="value-desc">Al ser una banca 100% digital, eliminamos el papel, las sucursales físicas y reducimos nuestra huella de carbono. La banca del futuro también es responsable con el planeta.</div></div>
+        <div class="value-card"><div class="value-icon">🇪🇸</div><div class="value-title">Orgullo español</div><div class="value-desc">VivaBank es un proyecto 100% español, creado en España para España. Nos enorgullece contribuir al ecosistema fintech nacional y crear empleo de calidad en el país.</div></div>
+      </div>
+    </div>
+
+    <!-- ÉQUIPE -->
+    <div style="margin-bottom:64px;">
+      <h2 style="font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:800;text-align:center;margin-bottom:8px;">El equipo <span class="text-gradient">fundador</span></h2>
+      <p style="text-align:center;color:var(--text-2);font-size:0.9rem;margin-bottom:32px;">Personas apasionadas por la tecnología y las finanzas, con experiencia en los principales bancos y fintechs de Europa.</p>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar" style="background:var(--grad-primary);">MR</div>
+          <div class="team-name">Miguel Rodríguez</div>
+          <div class="team-role">CEO & Co-fundador</div>
+          <div class="team-bio">Ex-director de producto en Santander Digital. 12 años en tecnología financiera. MBA por IE Business School.</div>
+          <div class="team-links"><a href="#" class="team-link">in</a><a href="#" class="team-link">𝕏</a></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#3B82F6,#8B5CF6);">SP</div>
+          <div class="team-name">Sofía Pérez</div>
+          <div class="team-role">CTO & Co-fundadora</div>
+          <div class="team-bio">Ingeniera de software con 10 años en banca. Ex-lead engineer en BBVA Next Technologies. Experta en seguridad financiera.</div>
+          <div class="team-links"><a href="#" class="team-link">in</a><a href="#" class="team-link">💻</a></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#10D9A0,#065F46);">AL</div>
+          <div class="team-name">Alejandro López</div>
+          <div class="team-role">CFO</div>
+          <div class="team-bio">Doctor en Economía por la UAM. Ex-analista en el Banco de España. Especialista en regulación fintech y cumplimiento normativo.</div>
+          <div class="team-links"><a href="#" class="team-link">in</a></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#F59E0B,#FF512F);">CM</div>
+          <div class="team-name">Carmen Morales</div>
+          <div class="team-role">CPO — Producto</div>
+          <div class="team-bio">Diseñadora de experiencia de usuario con foco en fintech. Ex-Revolut y N26. Apasionada por la inclusión financiera digital.</div>
+          <div class="team-links"><a href="#" class="team-link">in</a><a href="#" class="team-link">🎨</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div style="margin-bottom:64px;">
+      <h2 style="font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:800;text-align:center;margin-bottom:40px;">Nuestra <span class="text-gradient">historia</span></h2>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-year">2022<br/>Ene</div>
+          <div class="tl-line"></div>
+          <div class="tl-content"><div class="tl-title">💡 El origen</div><div class="tl-desc">Miguel y Sofía se conocen en una conferencia fintech en Madrid. Coinciden en la misma visión: España necesita un banco digital 100% español, sin comisiones y con seguridad de verdad.</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2022<br/>Jun</div>
+          <div class="tl-line"></div>
+          <div class="tl-content"><div class="tl-title">🚀 Constitución y primeros inversores</div><div class="tl-desc">Se constituye VivaBank S.L. y se obtiene una ronda pre-seed de 1,2 M€ de inversores españoles y del fondo de capital riesgo Iberian Tech Ventures.</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2023<br/>Mar</div>
+          <div class="tl-line"></div>
+          <div class="tl-content"><div class="tl-title">🏛️ Registro en el Banco de España</div><div class="tl-desc">VivaBank obtiene su registro como entidad de pago ante el Banco de España, cumpliendo todos los requisitos de capital, seguridad y gobierno corporativo.</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2023<br/>Sep</div>
+          <div class="tl-line"></div>
+          <div class="tl-content"><div class="tl-title">🎉 Lanzamiento público beta</div><div class="tl-desc">Apertura de VivaBank al público general en versión beta. Los primeros 5.000 clientes se registran en las primeras 48 horas. Las transferencias instantáneas se convierten en el hit del momento.</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2024<br/>Feb</div>
+          <div class="tl-line"></div>
+          <div class="tl-content"><div class="tl-title">🏦 Lanzamiento de préstamos personales</div><div class="tl-desc">VivaBank lanza su servicio de préstamos personales con respuesta en 24 horas. En el primer mes se conceden más de 200 préstamos por un valor total de 1,8 M€.</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2024<br/>Nov</div>
+          <div class="tl-line"></div>
+          <div class="tl-content"><div class="tl-title">📈 Serie A: 8 M€ de inversión</div><div class="tl-desc">Cerramos una ronda Serie A de 8 millones de euros liderada por European Fintech Fund. Los fondos se destinan a ampliar el equipo y desarrollar nuevas funcionalidades.</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2025<br/>Hoy</div>
+          <div class="tl-line"></div>
+          <div class="tl-content"><div class="tl-title">🎯 48.000 clientes y creciendo</div><div class="tl-desc">VivaBank supera los 48.000 clientes activos, procesa más de 2,1 M€ en transferencias y mantiene una valoración media de 4,9/5 estrellas. El viaje continúa.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRESSE -->
+    <div style="margin-bottom:64px;">
+      <h2 style="font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:800;text-align:center;margin-bottom:32px;">Lo que dice la <span class="text-gradient">prensa</span></h2>
+      <div class="press-grid">
+        <div class="press-item">
+          <div class="press-media">Expansión</div>
+          <div class="press-quote">"VivaBank se perfila como la alternativa fintech española más completa del mercado, con una propuesta de valor difícil de igualar."</div>
+          <div class="press-date">Octubre 2024</div>
+        </div>
+        <div class="press-item">
+          <div class="press-media">El País Economía</div>
+          <div class="press-quote">"La startup madrileña demuestra que es posible construir un banco digital de calidad hecho en España para los españoles."</div>
+          <div class="press-date">Septiembre 2024</div>
+        </div>
+        <div class="press-item">
+          <div class="press-media">TechCrunch España</div>
+          <div class="press-quote">"Uno de los proyectos fintech más prometedores del ecosistema español. La experiencia de usuario es simplemente excelente."</div>
+          <div class="press-date">Noviembre 2024</div>
+        </div>
+        <div class="press-item">
+          <div class="press-media">Forbes España</div>
+          <div class="press-quote">"VivaBank entra en nuestra lista de las 50 startups españolas más innovadoras de 2024. Un ejemplo a seguir."</div>
+          <div class="press-date">Diciembre 2024</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGULATORIO -->
+    <div class="reg-box">
+      <div class="reg-grid">
+        <div style="position:relative;z-index:1;">
+          <div class="inner-hero-tag" style="margin-bottom:18px;">🏛️ Marco regulatorio</div>
+          <h2 style="font-family:var(--font-display);font-size:clamp(1.3rem,2.5vw,1.7rem);font-weight:800;margin-bottom:14px;">Operamos bajo la supervisión directa del <span class="text-gradient">Banco de España</span></h2>
+          <p style="font-size:0.9rem;color:var(--text-2);line-height:1.75;">VivaBank no es una startup sin regulación. Somos una entidad de pago registrada, supervisada y auditada conforme a toda la normativa bancaria española y europea vigente.</p>
+        </div>
+        <div class="reg-items">
+          <div class="reg-item">
+            <div class="reg-item-icon">🏛️</div>
+            <div><div class="reg-item-title">Banco de España</div><div class="reg-item-desc">Registrados como Entidad de Dinero Electrónico bajo la Ley 21/2011 y la Directiva PSD2 de la UE.</div></div>
+          </div>
+          <div class="reg-item">
+            <div class="reg-item-icon">🔍</div>
+            <div><div class="reg-item-title">Auditorías externas anuales</div><div class="reg-item-desc">Sometidos a auditorías externas independientes de seguridad, cumplimiento y cuentas anuales.</div></div>
+          </div>
+          <div class="reg-item">
+            <div class="reg-item-icon">🇪🇺</div>
+            <div><div class="reg-item-title">Normativa europea (PSD2, RGPD)</div><div class="reg-item-desc">Cumplimos con PSD2, AMLD5, RGPD y toda la normativa financiera de la Unión Europea aplicable.</div></div>
+          </div>
+          <div class="reg-item">
+            <div class="reg-item-icon">💼</div>
+            <div><div class="reg-item-title">Segregación de fondos</div><div class="reg-item-desc">Los fondos de los clientes están segregados de los fondos propios de VivaBank, conforme a la normativa de protección de fondos de clientes.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA TRABAJAR -->
+    <div class="cta-double-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px;">
+      <div style="padding:40px;background:rgba(255,81,47,0.05);border:1px solid rgba(255,81,47,0.15);border-radius:var(--r-xl);">
+        <div style="font-size:1.8rem;margin-bottom:12px;">💼</div>
+        <h3 style="font-family:var(--font-display);font-size:1.2rem;font-weight:800;margin-bottom:10px;">¿Quieres trabajar en VivaBank?</h3>
+        <p style="font-size:0.85rem;color:var(--text-2);line-height:1.65;margin-bottom:20px;">Buscamos personas apasionadas que quieran transformar la banca española. Trabajo en remoto, salario competitivo y stock options.</p>
+        <a href="#" class="btn btn-primary btn-sm">Ver ofertas de empleo →</a>
+      </div>
+      <div style="padding:40px;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:var(--r-xl);">
+        <div style="font-size:1.8rem;margin-bottom:12px;">📰</div>
+        <h3 style="font-family:var(--font-display);font-size:1.2rem;font-weight:800;margin-bottom:10px;">Sala de prensa</h3>
+        <p style="font-size:0.85rem;color:var(--text-2);line-height:1.65;margin-bottom:20px;">¿Eres periodista o analista? Accede a nuestra sala de prensa para notas de prensa, imágenes de marca y datos corporativos.</p>
+        <a href="#" class="btn btn-ghost btn-sm" style="border-color:rgba(59,130,246,0.3);color:var(--blue);">Acceder a prensa →</a>
+      </div>
+    </div>
+
+    <!-- Bloc simulateur -->
+    <div style="background:linear-gradient(135deg,rgba(255,81,47,0.07),rgba(240,152,25,0.03));
+                border:1px solid rgba(255,81,47,0.15);border-radius:var(--r-xl);
+                padding:40px;margin-bottom:20px;
+                display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;">
+      <div>
+        <div style="font-size:1.8rem;margin-bottom:8px;">🏦</div>
+        <h3 style="font-family:var(--font-display);font-size:1.2rem;font-weight:800;margin-bottom:8px;">
+          ¿Necesitas financiación para tu proyecto?
+        </h3>
+        <p style="font-size:0.85rem;color:var(--text-2);line-height:1.65;max-width:400px;">
+          Simula tu préstamo personal, para tu coche o para tu negocio.
+          Sin registrarte, sin compromiso, en menos de 10 segundos.
+        </p>
+      </div>
+      <button class="btn-simulate" data-loan-sim
+              style="flex-shrink:0;padding:14px 24px;font-size:0.9rem;">
+        🏦 Simular mi crédito
+      </button>
+    </div>
+
+    <!-- CTA FINAL -->
+    <div style="text-align:center;padding:56px;background:linear-gradient(135deg,rgba(255,81,47,0.07),rgba(240,152,25,0.03));border:1px solid rgba(255,81,47,0.15);border-radius:var(--r-xl);">
+      <h3 style="font-family:var(--font-display);font-size:1.7rem;font-weight:800;margin-bottom:12px;">Forma parte de nuestra historia</h3>
+      <p style="color:var(--text-2);margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.7;">Únete a los 48.000 españoles que ya han elegido una banca más justa, transparente y tecnológica.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="register.html" class="btn btn-primary btn-lg">Abrir mi cuenta gratis →</a>
+        <button class="btn-simulate" data-loan-sim style="padding:17px 28px;">🏦 Simular crédito</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer style="border-top:1px solid var(--border);padding:36px 0 24px;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <a href="index.html"><img src="assets/logo.svg" alt="VivaBank" height="30" style="display:block;"/></a>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <a href="funcionalidades.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Funcionalidades</a>
+      <a href="seguridad.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Seguridad</a>
+      <a href="tarifas.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Tarifas</a>
+      <a href="nosotros.html" style="font-size:0.83rem;color:var(--primary);font-weight:600;text-decoration:none;">Nosotros</a>
+    </div>
+    <p style="font-size:0.77rem;color:var(--text-3);">© 2025 VivaBank S.L.</p>
+  </div>
+</footer>
+
+<script>
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('animate-slide-up');io.unobserve(x.target);}}),{threshold:0.1});
+document.querySelectorAll('.value-card,.team-card,.press-item,.tl-item').forEach(el=>io.observe(el));
+</script>
+<script src="js/loan-simulator.js"></script>
+</body>
+</html>
