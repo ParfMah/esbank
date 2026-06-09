@@ -207,22 +207,33 @@
         margin-bottom: 10px;
       }
 
+      /* ==========================================
+   RESPONSIVE GRILLE DE TEMPS (COMO FUNCIONA)
+   ========================================== */
+
+      /* Écrans PC classiques : 5 colonnes par défaut */
+      .timer-steps-grid {
+        display: grid !important;
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 12px !important;
+      }
+
+      /* Tablettes (Sous 960px) : 3 colonnes */
       @media (max-width: 960px) {
         .timer-steps-grid {
           grid-template-columns: repeat(3, 1fr) !important;
           gap: 8px !important;
         }
       }
-      @media (max-width: 640px) {
-        .timer-steps-grid {
-          grid-template-columns: repeat(2, 1fr) !important;
-        }
-      }
+
+      /* Petites tablettes / Mobiles larges (Sous 768px) */
       @media (max-width: 768px) {
         body {
           padding-top: 62px;
         }
-        /* Cartes timer : pas de débordement */
+        .timer-steps-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
         .timer-steps-grid > div {
           min-width: 0 !important;
           word-break: break-word;
@@ -238,11 +249,6 @@
         .req-grid {
           grid-template-columns: 1fr;
         }
-        /* 5 cartes temps : 2 colonnes */
-        .timer-steps-grid {
-          grid-template-columns: repeat(2, 1fr) !important;
-        }
-        /* Grand step : texte compact */
         .big-step-body {
           padding-bottom: 32px;
         }
@@ -256,12 +262,18 @@
           font-size: 0.79rem;
         }
       }
+
+      /* Mobiles standards (Sous 640px) : 2 colonnes */
+      @media (max-width: 640px) {
+        .timer-steps-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+      }
+
+      /* Petits mobiles (Sous 480px) */
       @media (max-width: 480px) {
         .big-step {
           grid-template-columns: 44px 1fr;
-        }
-        .timer-steps-grid {
-          grid-template-columns: 1fr 1fr !important;
         }
         .big-step-body {
           min-width: 0;
@@ -271,9 +283,6 @@
           width: 42px;
           height: 42px;
           font-size: 0.95rem;
-        }
-        .timer-steps-grid {
-          grid-template-columns: 1fr 1fr !important;
         }
       }
     </style>
@@ -310,37 +319,11 @@
           class="timer-steps-grid"
           style="
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
             gap: 12px;
             margin-bottom: 64px;
             text-align: center;
           "
         >
-          <div
-            style="
-              padding: 16px;
-              background: var(--bg-card);
-              border: 1px solid var(--border-card);
-              border-radius: 12px;
-            "
-          >
-            <div
-              style="
-                font-family: var(--font-display);
-                font-size: 1.3rem;
-                font-weight: 900;
-                color: var(--primary);
-              "
-            >
-              ~1 min
-            </div>
-            <div
-              style="font-size: 0.74rem; color: var(--text-3); margin-top: 4px"
-            >
-              Datos personales
-            </div>
-          </div>
-
           <div
             style="
               padding: 16px;
