@@ -1,372 +1,801 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="VivaBank: seguridad bancaria de primer nivel. SSL/TLS 256 bits, verificación KYC, 2FA, RGPD y supervisión del Banco de España."/>
-  <title>Seguridad — VivaBank</title>
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css"/>
-  <style>
-    body { padding-top: 72px; }
-    .inner-hero { padding: 80px 0 64px; text-align: center; position: relative; overflow: hidden; }
-    .inner-hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:600px; height:300px; background:radial-gradient(ellipse,rgba(255,81,47,0.1),transparent 70%); pointer-events:none; }
-    .inner-hero-tag { display:inline-flex; align-items:center; gap:7px; padding:5px 16px; border-radius:999px; background:rgba(255,81,47,0.1); border:1px solid rgba(255,81,47,0.25); font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#FF7A5C; margin-bottom:20px; }
-    .inner-hero h1 { font-family:var(--font-display); font-size:clamp(2rem,4.5vw,3.4rem); font-weight:900; line-height:1.1; margin-bottom:18px; }
-    .inner-hero p  { font-size:1.05rem; color:var(--text-2); line-height:1.75; max-width:580px; margin:0 auto 36px; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="VivaBank: seguridad bancaria de primer nivel. SSL/TLS 256 bits, verificación KYC, 2FA, RGPD y supervisión del Banco de España."
+    />
+    <title>Seguridad — VivaBank</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/main.css" />
+    <style>
+      body { padding-top: 72px; }
+      .inner-hero { padding: 80px 0 64px; text-align: center; position: relative; overflow: hidden; }
+      .inner-hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:600px; height:300px; background:radial-gradient(ellipse,rgba(255,81,47,0.1),transparent 70%); pointer-events:none; }
+      .inner-hero-tag { display:inline-flex; align-items:center; gap:7px; padding:5px 16px; border-radius:999px; background:rgba(255,81,47,0.1); border:1px solid rgba(255,81,47,0.25); font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#FF7A5C; margin-bottom:20px; }
+      .inner-hero h1 { font-family:var(--font-display); font-size:clamp(2rem,4.5vw,3.4rem); font-weight:900; line-height:1.1; margin-bottom:18px; }
+      .inner-hero p  { font-size:1.05rem; color:var(--text-2); line-height:1.75; max-width:580px; margin:0 auto 36px; }
 
-    /* Piliers de sécurité */
-    .sec-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
-    .sec-pillar {
-      background:var(--bg-card); border:1px solid var(--border-card); border-radius:var(--r-xl); padding:36px 30px;
-      display:flex; align-items:flex-start; gap:20px; transition:all 0.3s;
-    }
-    .sec-pillar:hover { border-color:rgba(16,217,160,0.25); transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,0.3); }
-    .sec-pillar-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; background:rgba(16,217,160,0.1); border:1px solid rgba(16,217,160,0.2); }
-    .sec-pillar h3 { font-family:var(--font-display); font-size:1rem; font-weight:800; margin-bottom:8px; }
-    .sec-pillar p  { font-size:0.85rem; color:var(--text-2); line-height:1.7; margin-bottom:12px; }
-    .sec-pillar ul { display:flex; flex-direction:column; gap:5px; }
-    .sec-pillar li { font-size:0.79rem; color:var(--text-2); padding-left:16px; position:relative; line-height:1.4; }
-    .sec-pillar li::before { content:'✓'; position:absolute; left:0; color:var(--mint); font-weight:700; }
-
-    /* Timeline KYC */
-    .kyc-steps { display:flex; flex-direction:column; gap:0; }
-    .kyc-step { display:flex; gap:24px; align-items:flex-start; position:relative; padding-bottom:32px; }
-    .kyc-step:last-child { padding-bottom:0; }
-    .kyc-step-left { display:flex; flex-direction:column; align-items:center; gap:0; flex-shrink:0; }
-    .kyc-step-circle { width:48px; height:48px; border-radius:50%; background:var(--grad-primary); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:800; font-size:1rem; color:#fff; box-shadow:0 4px 16px rgba(255,81,47,0.3); z-index:1; }
-    .kyc-step-line { width:2px; flex:1; background:linear-gradient(180deg,rgba(255,81,47,0.4),rgba(255,81,47,0.05)); min-height:40px; }
-    .kyc-step:last-child .kyc-step-line { display:none; }
-    .kyc-step-content { padding-top:10px; }
-    .kyc-step-title { font-family:var(--font-display); font-size:1rem; font-weight:700; margin-bottom:6px; }
-    .kyc-step-desc  { font-size:0.85rem; color:var(--text-2); line-height:1.65; }
-
-    /* Badges normatifs */
-    .norm-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
-    .norm-badge { background:var(--bg-card); border:1px solid var(--border-card); border-radius:var(--r-lg); padding:24px 16px; text-align:center; transition:all 0.3s; }
-    .norm-badge:hover { border-color:rgba(16,217,160,0.3); transform:translateY(-3px); }
-    .norm-badge-ico { font-size:2.2rem; margin-bottom:10px; }
-    .norm-badge-title { font-family:var(--font-display); font-size:0.9rem; font-weight:800; margin-bottom:4px; }
-    .norm-badge-sub   { font-size:0.75rem; color:var(--text-2); line-height:1.5; }
-
-    /* Section RGPD */
-    .gdpr-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-    .gdpr-item { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:var(--r-lg); padding:20px; }
-    .gdpr-item h4 { font-family:var(--font-display); font-size:0.88rem; font-weight:700; margin-bottom:6px; }
-    .gdpr-item p  { font-size:0.79rem; color:var(--text-2); line-height:1.6; }
-
-    @media (max-width:1024px) { .sec-grid { grid-template-columns:1fr; } .norm-grid { grid-template-columns:repeat(2,1fr); } }
-    @media (max-width:768px) {
-      .gdpr-grid { grid-template-columns:1fr; }
-      body { padding-top:62px; }
-      .kyc-step {
-        display: grid !important;
-        grid-template-columns: 48px 2px 1fr !important;
-        gap: 0 12px; align-items: stretch;
+      /* Piliers de sécurité */
+      .sec-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+      .sec-pillar {
+        background:var(--bg-card); border:1px solid var(--border-card); border-radius:var(--r-xl); padding:36px 30px;
+        display:flex; align-items:flex-start; gap:20px; transition:all 0.3s;
       }
-      .kyc-step-circle { width:42px !important; height:42px !important; font-size:0.9rem; }
-      .kyc-step-content { min-width:0; overflow:hidden; }
-      .kyc-step-desc { font-size:0.8rem; }
-      .sec-pillar { flex-direction: column; }
-    }
-    @media (max-width:480px) {
-      .norm-grid { grid-template-columns:1fr; }
-      .sec-pillar { padding:20px 16px; }
-    }
-  
-    /* ── Fix responsive KYC section ────────────────────── */
-    /* Layout géré entièrement via CSS (pas d'inline styles) */
-    .kyc-mission-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: start;
-      padding: 48px;
-      overflow: visible;
-    }
-    @media (max-width: 900px) {
+      .sec-pillar:hover { border-color:rgba(16,217,160,0.25); transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,0.3); }
+      .sec-pillar-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; background:rgba(16,217,160,0.1); border:1px solid rgba(16,217,160,0.2); }
+      .sec-pillar h3 { font-family:var(--font-display); font-size:1rem; font-weight:800; margin-bottom:8px; }
+      .sec-pillar p  { font-size:0.85rem; color:var(--text-2); line-height:1.7; margin-bottom:12px; }
+      .sec-pillar ul { display:flex; flex-direction:column; gap:5px; }
+      .sec-pillar li { font-size:0.79rem; color:var(--text-2); padding-left:16px; position:relative; line-height:1.4; }
+      .sec-pillar li::before { content:'✓'; position:absolute; left:0; color:var(--mint); font-weight:700; }
+
+      /* Timeline KYC */
+      .kyc-steps { display:flex; flex-direction:column; gap:0; }
+      .kyc-step { display:flex; gap:24px; align-items:flex-start; position:relative; padding-bottom:32px; }
+      .kyc-step:last-child { padding-bottom:0; }
+      .kyc-step-left { display:flex; flex-direction:column; align-items:center; gap:0; flex-shrink:0; }
+      .kyc-step-circle { width:48px; height:48px; border-radius:50%; background:var(--grad-primary); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:800; font-size:1rem; color:#fff; box-shadow:0 4px 16px rgba(255,81,47,0.3); z-index:1; }
+      .kyc-step-line { width:2px; flex:1; background:linear-gradient(180deg,rgba(255,81,47,0.4),rgba(255,81,47,0.05)); min-height:40px; }
+      .kyc-step:last-child .kyc-step-line { display:none; }
+      .kyc-step-content { padding-top:10px; }
+      .kyc-step-title { font-family:var(--font-display); font-size:1rem; font-weight:700; margin-bottom:6px; }
+      .kyc-step-desc  { font-size:0.85rem; color:var(--text-2); line-height:1.65; }
+
+      /* Badges normatifs */
+      .norm-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+      .norm-badge { background:var(--bg-card); border:1px solid var(--border-card); border-radius:var(--r-lg); padding:24px 16px; text-align:center; transition:all 0.3s; }
+      .norm-badge:hover { border-color:rgba(16,217,160,0.3); transform:translateY(-3px); }
+      .norm-badge-ico { font-size:2.2rem; margin-bottom:10px; }
+      .norm-badge-title { font-family:var(--font-display); font-size:0.9rem; font-weight:800; margin-bottom:4px; }
+      .norm-badge-sub   { font-size:0.75rem; color:var(--text-2); line-height:1.5; }
+
+      /* Section RGPD */
+      .gdpr-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+      .gdpr-item { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:var(--r-lg); padding:20px; }
+      .gdpr-item h4 { font-family:var(--font-display); font-size:0.88rem; font-weight:700; margin-bottom:6px; }
+      .gdpr-item p  { font-size:0.79rem; color:var(--text-2); line-height:1.6; }
+
+      @media (max-width:1024px) { .sec-grid { grid-template-columns:1fr; } .norm-grid { grid-template-columns:repeat(2,1fr); } }
+      @media (max-width:768px) {
+        .gdpr-grid { grid-template-columns:1fr; }
+        body { padding-top:62px; }
+        .kyc-step {
+          display: grid !important;
+          grid-template-columns: 48px 2px 1fr !important;
+          gap: 0 12px; align-items: stretch;
+        }
+        .kyc-step-circle { width:42px !important; height:42px !important; font-size:0.9rem; }
+        .kyc-step-content { min-width:0; overflow:hidden; }
+        .kyc-step-desc { font-size:0.8rem; }
+        .sec-pillar { flex-direction: column; }
+      }
+      @media (max-width:480px) {
+        .norm-grid { grid-template-columns:1fr; }
+        .sec-pillar { padding:20px 16px; }
+      }
+
+      /* ── Fix responsive KYC section ────────────────────── */
+      /* Layout géré entièrement via CSS (pas d'inline styles) */
       .kyc-mission-grid {
-        grid-template-columns: 1fr;
-        padding: 32px;
-        gap: 28px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        align-items: start;
+        padding: 48px;
+        overflow: visible;
       }
-    }
-    @media (max-width: 768px) {
-      .kyc-mission-grid {
-        grid-template-columns: 1fr;
-        padding: 24px;
-        gap: 20px;
+      @media (max-width: 900px) {
+        .kyc-mission-grid {
+          grid-template-columns: 1fr;
+          padding: 32px;
+          gap: 28px;
+        }
       }
-      /* Timeline KYC : colonnes adaptées mobile */
-      .kyc-step {
-        display: grid !important;
-        grid-template-columns: 44px 2px 1fr !important;
-        gap: 0 12px !important;
-        align-items: stretch;
-        overflow: visible !important;
+      @media (max-width: 768px) {
+        .kyc-mission-grid {
+          grid-template-columns: 1fr;
+          padding: 24px;
+          gap: 20px;
+        }
+        /* Timeline KYC : alignement fluide sur mobile */
+        .kyc-step {
+          display: flex !important;
+          flex-direction: row !important;
+          gap: 16px !important;
+          align-items: flex-start !important;
+        }
+        .kyc-step-left {
+          width: 40px !important;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          flex-shrink: 0;
+        }
+        .kyc-step-circle {
+          width: 40px !important;
+          height: 40px !important;
+          font-size: 0.88rem !important;
+        }
+        .kyc-step-line {
+          min-height: 60px !important;
+        }
+        .kyc-step-content {
+          flex: 1 !important;
+          min-width: 0;
+          padding-top: 4px;
+        }
+        .kyc-step-title { font-size: 0.95rem !important; }
+        .kyc-step-desc { font-size: 0.82rem !important; line-height: 1.5 !important; }
       }
-      .kyc-step-circle {
-        width: 40px !important;
-        height: 40px !important;
-        font-size: 0.88rem !important;
-      }
-      .kyc-step-content {
-        min-width: 0;
-        overflow-wrap: break-word;
-        word-break: break-word;
-      }
-      .kyc-step-title { font-size: 0.9rem !important; }
-      .kyc-step-desc  { font-size: 0.8rem !important; line-height: 1.5 !important; }
-    }
-</style>
-</head>
-<body>
-<div class="bg-orbs" aria-hidden="true"><div class="orb orb-1" style="opacity:0.06;"></div><div class="orb orb-2" style="opacity:0.04;"></div></div>
-<script src="js/public-nav.js"></script>
+    </style>
+  </head>
+  <body>
+    <div class="bg-orbs" aria-hidden="true">
+      <div class="orb orb-1" style="opacity: 0.06"></div>
+      <div class="orb orb-2" style="opacity: 0.04"></div>
+    </div>
+    <script src="js/public-nav.js"></script>
 
-<section class="inner-hero">
-  <div class="container" style="position:relative;z-index:1;">
-    <div class="inner-hero-tag">🛡️ Seguridad bancaria</div>
-    <h1>Tu dinero protegido con<br/><span class="text-gradient">los más altos estándares</span></h1>
-    <p>VivaBank cumple con toda la normativa bancaria española y europea. Cada euro que depositas está protegido por múltiples capas de seguridad tecnológica y legal.</p>
-  </div>
-</section>
+    <section class="inner-hero">
+      <div class="container" style="position: relative; z-index: 1">
+        <div class="inner-hero-tag">🛡️ Seguridad bancaria</div>
+        <h1>
+          Tu dinero protegido con<br /><span class="text-gradient"
+            >los más altos estándares</span
+          >
+        </h1>
+        <p>
+          VivaBank cumple con toda la normativa bancaria española y europea.
+          Cada euro que depositas está protegido por múltiples capas de
+          seguridad tecnológica y legal.
+        </p>
+      </div>
+    </section>
 
-<main style="padding:0 0 80px;">
-  <div class="container">
+    <main style="padding: 0 0 80px">
+      <div class="container">
+        <!-- 6 PILIERS DE SÉCURITÉ -->
+        <div style="margin-bottom: 64px">
+          <h2
+            style="
+              font-family: var(--font-display);
+              font-size: clamp(1.5rem, 3vw, 2rem);
+              font-weight: 800;
+              text-align: center;
+              margin-bottom: 8px;
+            "
+          >
+            Los 6 pilares de seguridad de
+            <span class="text-gradient">VivaBank</span>
+          </h2>
+          <p
+            style="
+              text-align: center;
+              color: var(--text-2);
+              font-size: 0.9rem;
+              margin-bottom: 36px;
+              max-width: 520px;
+              margin-left: auto;
+              margin-right: auto;
+            "
+          >
+            Cada medida ha sido diseñada para garantizar la máxima protección de
+            tu dinero e identidad.
+          </p>
+          <div class="sec-grid">
+            <div class="sec-pillar">
+              <div class="sec-pillar-icon">🔒</div>
+              <div>
+                <h3>Cifrado SSL/TLS 256 bits</h3>
+                <p>
+                  Todas las comunicaciones entre tu dispositivo y nuestros
+                  servidores se cifran con el mismo protocolo que utilizan los
+                  principales bancos del mundo.
+                </p>
+                <ul>
+                  <li>Certificado SSL/TLS activo en todos los endpoints</li>
+                  <li>HTTPS obligatorio, HTTP rechazado automáticamente</li>
+                  <li>Cabeceras HSTS con preload activado</li>
+                  <li>Renovación automática de certificados cada 90 días</li>
+                </ul>
+              </div>
+            </div>
 
-    <!-- 6 PILIERS DE SÉCURITÉ -->
-    <div style="margin-bottom:64px;">
-      <h2 style="font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:800;text-align:center;margin-bottom:8px;">Los 6 pilares de seguridad de <span class="text-gradient">VivaBank</span></h2>
-      <p style="text-align:center;color:var(--text-2);font-size:0.9rem;margin-bottom:36px;max-width:520px;margin-left:auto;margin-right:auto;">Cada medida ha sido diseñada para garantizar la máxima protección de tu dinero e identidad.</p>
-      <div class="sec-grid">
+            <div class="sec-pillar">
+              <div class="sec-pillar-icon">📱</div>
+              <div>
+                <h3>Doble factor de autenticación (2FA)</h3>
+                <p>
+                  Además de tu contraseña, cada acceso puede requerir un código
+                  TOTP de 6 dígitos que cambia cada 30 segundos. Nadie puede
+                  entrar sin tu dispositivo físico.
+                </p>
+                <ul>
+                  <li>Compatible con Google Authenticator, Authy, 1Password</li>
+                  <li>Código único que expira en 30 segundos</li>
+                  <li>Alertas automáticas por email en cada acceso</li>
+                  <li>Activación opcional pero muy recomendada</li>
+                </ul>
+              </div>
+            </div>
 
-        <div class="sec-pillar">
-          <div class="sec-pillar-icon">🔒</div>
-          <div>
-            <h3>Cifrado SSL/TLS 256 bits</h3>
-            <p>Todas las comunicaciones entre tu dispositivo y nuestros servidores se cifran con el mismo protocolo que utilizan los principales bancos del mundo.</p>
-            <ul>
-              <li>Certificado SSL/TLS activo en todos los endpoints</li>
-              <li>HTTPS obligatorio, HTTP rechazado automáticamente</li>
-              <li>Cabeceras HSTS con preload activado</li>
-              <li>Renovación automática de certificados cada 90 días</li>
-            </ul>
+            <div class="sec-pillar">
+              <div class="sec-pillar-icon">🪪</div>
+              <div>
+                <h3>Verificación de identidad KYC</h3>
+                <p>
+                  Antes de activar tu cuenta, verificamos tu identidad mediante
+                  un proceso KYC (Know Your Customer) conforme a la normativa
+                  AML española.
+                </p>
+                <ul>
+                  <li>Verificación OTP por email (código 6 dígitos)</li>
+                  <li>Verificación OTP por SMS (código 6 dígitos)</li>
+                  <li>Fotografía de DNI/NIE/Pasaporte (anverso y reverso)</li>
+                  <li>Selfie con documento para confirmación biométrica</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sec-pillar">
+              <div class="sec-pillar-icon">🔑</div>
+              <div>
+                <h3>Gestión segura de contraseñas</h3>
+                <p>
+                  Nunca almacenamos tu contraseña en texto plano. Usamos bcrypt
+                  con 12 rondas de salting, el estándar de la industria para el
+                  almacenamiento seguro de credenciales.
+                </p>
+                <ul>
+                  <li>Hashing con bcrypt (12 rondas de salt)</li>
+                  <li>Tokens JWT de corta duración (15 minutos)</li>
+                  <li>Refresh tokens con rotación automática</li>
+                  <li>Invalidación total de sesiones al cambiar contraseña</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sec-pillar">
+              <div class="sec-pillar-icon">🚫</div>
+              <div>
+                <h3>Protección anti-fraude y rate limiting</h3>
+                <p>
+                  Nuestros sistemas detectan y bloquean automáticamente intentos
+                  de acceso sospechosos, ataques de fuerza bruta y actividades
+                  anómalas en tiempo real.
+                </p>
+                <ul>
+                  <li>Máximo 5 intentos de código OTP antes del bloqueo</li>
+                  <li>Límite de 20 intentos de autenticación por 15 minutos</li>
+                  <li>Bloqueo automático de IPs sospechosas</li>
+                  <li>Alertas inmediatas ante actividad inusual</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sec-pillar">
+              <div class="sec-pillar-icon">🏛️</div>
+              <div>
+                <h3>Supervisión regulatoria</h3>
+                <p>
+                  VivaBank opera bajo la supervisión directa del Banco de España
+                  y cumple con toda la normativa PSD2, AMLD5 y MiCA vigente en
+                  la Unión Europea.
+                </p>
+                <ul>
+                  <li>Registrado en el Banco de España</li>
+                  <li>Cumplimiento PSD2 (Strong Customer Authentication)</li>
+                  <li>Normativa AML/CFT (prevención blanqueo de capitales)</li>
+                  <li>Auditorías externas anuales obligatorias</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="sec-pillar">
-          <div class="sec-pillar-icon">📱</div>
+        <!-- PROCESO KYC DETALLADO -->
+        <div
+          class="kyc-mission-grid"
+          style="
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--r-xl);
+            margin-bottom: 64px;
+          "
+        >
           <div>
-            <h3>Doble factor de autenticación (2FA)</h3>
-            <p>Además de tu contraseña, cada acceso puede requerir un código TOTP de 6 dígitos que cambia cada 30 segundos. Nadie puede entrar sin tu dispositivo físico.</p>
-            <ul>
-              <li>Compatible con Google Authenticator, Authy, 1Password</li>
-              <li>Código único que expira en 30 segundos</li>
-              <li>Alertas automáticas por email en cada acceso</li>
-              <li>Activación opcional pero muy recomendada</li>
-            </ul>
+            <div class="inner-hero-tag" style="margin-bottom: 18px">
+              🪪 Verificación KYC
+            </div>
+            <h2
+              style="
+                font-family: var(--font-display);
+                font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+                font-weight: 800;
+                margin-bottom: 14px;
+              "
+            >
+              Proceso de verificación<br />de identidad paso a paso
+            </h2>
+            <p
+              style="
+                font-size: 0.9rem;
+                color: var(--text-2);
+                line-height: 1.7;
+                margin-bottom: 28px;
+              "
+            >
+              Para protegerte a ti y al sistema financiero, verificamos la
+              identidad de cada cliente antes de activar su cuenta. Es un
+              proceso rápido, seguro y 100% online.
+            </p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 7px;
+                  font-size: 0.8rem;
+                  color: var(--mint);
+                "
+              >
+                <span>✓</span> Solo 5 minutos
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 7px;
+                  font-size: 0.8rem;
+                  color: var(--mint);
+                "
+              >
+                <span>✓</span> 100% online
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 7px;
+                  font-size: 0.8rem;
+                  color: var(--mint);
+                "
+              >
+                <span>✓</span> Datos cifrados
+              </div>
+            </div>
+          </div>
+          <div class="kyc-steps">
+            <div class="kyc-step">
+              <div class="kyc-step-left">
+                <div class="kyc-step-circle">1</div>
+                <div class="kyc-step-line"></div>
+              </div>
+              <div class="kyc-step-content">
+                <div class="kyc-step-title">Datos personales</div>
+                <div class="kyc-step-desc">
+                  Nombre, apellidos, fecha de nacimiento, nacionalidad y número
+                  de documento de identidad.
+                </div>
+              </div>
+            </div>
+            <div class="kyc-step">
+              <div class="kyc-step-left">
+                <div class="kyc-step-circle">2</div>
+                <div class="kyc-step-line"></div>
+              </div>
+              <div class="kyc-step-content">
+                <div class="kyc-step-title">Verificación OTP por email</div>
+                <div class="kyc-step-desc">
+                  Enviamos un código de 6 dígitos a tu dirección de email que
+                  debes introducir en 10 minutos.
+                </div>
+              </div>
+            </div>
+            <div class="kyc-step">
+              <div class="kyc-step-left">
+                <div class="kyc-step-circle">3</div>
+                <div class="kyc-step-line"></div>
+              </div>
+              <div class="kyc-step-content">
+                <div class="kyc-step-title">Verificación OTP por SMS</div>
+                <div class="kyc-step-desc">
+                  Un segundo código de 6 dígitos llega a tu teléfono móvil. Dos
+                  canales independientes = doble seguridad.
+                </div>
+              </div>
+            </div>
+            <div class="kyc-step">
+              <div class="kyc-step-left">
+                <div class="kyc-step-circle">4</div>
+                <div class="kyc-step-line"></div>
+              </div>
+              <div class="kyc-step-content">
+                <div class="kyc-step-title">Upload de documentos</div>
+                <div class="kyc-step-desc">
+                  Fotografía del anverso y reverso de tu DNI/NIE/Pasaporte más
+                  un selfie sosteniendo el documento.
+                </div>
+              </div>
+            </div>
+            <div class="kyc-step">
+              <div class="kyc-step-left">
+                <div class="kyc-step-circle">5</div>
+                <div class="kyc-step-line"></div>
+              </div>
+              <div class="kyc-step-content">
+                <div class="kyc-step-title">Cuenta activada</div>
+                <div class="kyc-step-desc">
+                  Tras la verificación (máx. 24h hábiles), tu cuenta queda
+                  completamente activa y lista para usar.
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="sec-pillar">
-          <div class="sec-pillar-icon">🪪</div>
-          <div>
-            <h3>Verificación de identidad KYC</h3>
-            <p>Antes de activar tu cuenta, verificamos tu identidad mediante un proceso KYC (Know Your Customer) conforme a la normativa AML española.</p>
-            <ul>
-              <li>Verificación OTP por email (código 6 dígitos)</li>
-              <li>Verificación OTP por SMS (código 6 dígitos)</li>
-              <li>Fotografía de DNI/NIE/Pasaporte (anverso y reverso)</li>
-              <li>Selfie con documento para confirmación biométrica</li>
-            </ul>
+        <!-- BADGES NORMATIFS -->
+        <div style="margin-bottom: 64px">
+          <h2
+            style="
+              font-family: var(--font-display);
+              font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+              font-weight: 800;
+              text-align: center;
+              margin-bottom: 8px;
+            "
+          >
+            Certificaciones y
+            <span class="text-gradient">cumplimiento normativo</span>
+          </h2>
+          <p
+            style="
+              text-align: center;
+              color: var(--text-2);
+              font-size: 0.88rem;
+              margin-bottom: 28px;
+            "
+          >
+            VivaBank cumple con todas las normativas bancarias y de protección
+            de datos vigentes.
+          </p>
+          <div class="norm-grid">
+            <div class="norm-badge">
+              <div class="norm-badge-ico">🏛️</div>
+              <div class="norm-badge-title">Banco de España</div>
+              <div class="norm-badge-sub">
+                Registrado y supervisado por el regulador español
+              </div>
+            </div>
+            <div class="norm-badge">
+              <div class="norm-badge-ico">🇪🇺</div>
+              <div class="norm-badge-title">RGPD / GDPR</div>
+              <div class="norm-badge-sub">
+                Reglamento General de Protección de Datos de la UE
+              </div>
+            </div>
+            <div class="norm-badge">
+              <div class="norm-badge-ico">💳</div>
+              <div class="norm-badge-title">PSD2 / SCA</div>
+              <div class="norm-badge-sub">
+                Strong Customer Authentication — Directiva europea de pagos
+              </div>
+            </div>
+            <div class="norm-badge">
+              <div class="norm-badge-ico">🔍</div>
+              <div class="norm-badge-title">AML / AMLD5</div>
+              <div class="norm-badge-sub">
+                Prevención del blanqueo de capitales y financiación del
+                terrorismo
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="sec-pillar">
-          <div class="sec-pillar-icon">🔑</div>
-          <div>
-            <h3>Gestión segura de contraseñas</h3>
-            <p>Nunca almacenamos tu contraseña en texto plano. Usamos bcrypt con 12 rondas de salting, el estándar de la industria para el almacenamiento seguro de credenciales.</p>
-            <ul>
-              <li>Hashing con bcrypt (12 rondas de salt)</li>
-              <li>Tokens JWT de corta duración (15 minutos)</li>
-              <li>Refresh tokens con rotación automática</li>
-              <li>Invalidación total de sesiones al cambiar contraseña</li>
-            </ul>
+        <!-- SECTION RGPD DÉTAILLÉE -->
+        <div style="margin-bottom: 64px">
+          <h2
+            style="
+              font-family: var(--font-display);
+              font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+              font-weight: 800;
+              text-align: center;
+              margin-bottom: 8px;
+            "
+          >
+            Tus derechos <span class="text-gradient">RGPD</span> garantizados
+          </h2>
+          <p
+            style="
+              text-align: center;
+              color: var(--text-2);
+              font-size: 0.88rem;
+              margin-bottom: 28px;
+              max-width: 500px;
+              margin-left: auto;
+              margin-right: auto;
+            "
+          >
+            Como cliente de VivaBank, tienes pleno control sobre tus datos
+            personales en todo momento.
+          </p>
+          <div class="gdpr-grid">
+            <div class="gdpr-item">
+              <h4>📋 Derecho de acceso</h4>
+              <p>
+                Puedes solicitar en cualquier momento una copia completa de
+                todos los datos personales que tenemos sobre ti.
+              </p>
+            </div>
+            <div class="gdpr-item">
+              <h4>✏️ Derecho de rectificación</h4>
+              <p>
+                Puedes corregir o actualizar tus datos personales directamente
+                desde el panel de tu perfil.
+              </p>
+            </div>
+            <div class="gdpr-item">
+              <h4>🗑️ Derecho al olvido</h4>
+              <p>
+                Puedes solicitar la eliminación completa de tu cuenta y todos
+                tus datos en cualquier momento.
+              </p>
+            </div>
+            <div class="gdpr-item">
+              <h4>📦 Portabilidad de datos</h4>
+              <p>
+                Puedes exportar todos tus datos en formato estándar para
+                migrarlos a otro servicio financiero.
+              </p>
+            </div>
+            <div class="gdpr-item">
+              <h4>🚫 Derecho de oposición</h4>
+              <p>
+                Puedes oponerte al tratamiento de tus datos para fines de
+                marketing o comunicaciones comerciales.
+              </p>
+            </div>
+            <div class="gdpr-item">
+              <h4>🔒 Limitación del tratamiento</h4>
+              <p>
+                Puedes solicitar que limitemos el uso de tus datos mientras se
+                resuelve una reclamación o disputa.
+              </p>
+            </div>
           </div>
         </div>
 
-        <div class="sec-pillar">
-          <div class="sec-pillar-icon">🚫</div>
-          <div>
-            <h3>Protección anti-fraude y rate limiting</h3>
-            <p>Nuestros sistemas detectan y bloquean automáticamente intentos de acceso sospechosos, ataques de fuerza bruta y actividades anómalas en tiempo real.</p>
-            <ul>
-              <li>Máximo 5 intentos de código OTP antes del bloqueo</li>
-              <li>Límite de 20 intentos de autenticación por 15 minutos</li>
-              <li>Bloqueo automático de IPs sospechosas</li>
-              <li>Alertas inmediatas ante actividad inusual</li>
-            </ul>
+        <!-- FAQ SÉCURITÉ -->
+        <div style="margin-bottom: 64px">
+          <h2
+            style="
+              font-family: var(--font-display);
+              font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+              font-weight: 800;
+              text-align: center;
+              margin-bottom: 28px;
+            "
+          >
+            Preguntas frecuentes
+            <span class="text-gradient">sobre seguridad</span>
+          </h2>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+              max-width: 760px;
+              margin: 0 auto;
+            "
+            id="faqList"
+          >
+            <!-- Las FAQs se inyectan dinámicamente -->
           </div>
         </div>
 
-        <div class="sec-pillar">
-          <div class="sec-pillar-icon">🏛️</div>
-          <div>
-            <h3>Supervisión regulatoria</h3>
-            <p>VivaBank opera bajo la supervisión directa del Banco de España y cumple con toda la normativa PSD2, AMLD5 y MiCA vigente en la Unión Europea.</p>
-            <ul>
-              <li>Registrado en el Banco de España</li>
-              <li>Cumplimiento PSD2 (Strong Customer Authentication)</li>
-              <li>Normativa AML/CFT (prevención blanqueo de capitales)</li>
-              <li>Auditorías externas anuales obligatorias</li>
-            </ul>
+        <!-- CTA -->
+        <div
+          style="
+            text-align: center;
+            padding: 56px;
+            background: rgba(16, 217, 160, 0.05);
+            border: 1px solid rgba(16, 217, 160, 0.15);
+            border-radius: var(--r-xl);
+          "
+        >
+          <div style="font-size: 2.5rem; margin-bottom: 12px">🛡️</div>
+          <h3
+            style="
+              font-family: var(--font-display);
+              font-size: 1.7rem;
+              font-weight: 800;
+              margin-bottom: 12px;
+            "
+          >
+            Banca segura desde el primer día
+          </h3>
+          <p
+            style="
+              color: var(--text-2);
+              margin-bottom: 28px;
+              max-width: 440px;
+              margin-left: auto;
+              margin-right: auto;
+              line-height: 1.7;
+            "
+          >
+            Abre tu cuenta con la confianza de que tus datos y tu dinero están
+            protegidos con los más altos estándares.
+          </p>
+          <div
+            style="
+              display: flex;
+              gap: 12px;
+              justify-content: center;
+              flex-wrap: wrap;
+            "
+          >
+            <a href="register.html" class="btn btn-primary btn-lg"
+              >Abrir cuenta segura →</a
+            >
+            <button
+              class="btn-simulate"
+              data-loan-sim
+              style="
+                padding: 17px 28px;
+                border-color: rgba(16, 217, 160, 0.35);
+                color: var(--mint);
+              "
+            >
+              🏦 Simular crédito
+            </button>
           </div>
         </div>
-
       </div>
-    </div>
+    </main>
 
-    <!-- PROCESO KYC DETALLADO -->
-    <div class="kyc-mission-grid" style="background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-xl);margin-bottom:64px;">
-      <div>
-        <div class="inner-hero-tag" style="margin-bottom:18px;">🪪 Verificación KYC</div>
-        <h2 style="font-family:var(--font-display);font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:800;margin-bottom:14px;">Proceso de verificación<br/>de identidad paso a paso</h2>
-        <p style="font-size:0.9rem;color:var(--text-2);line-height:1.7;margin-bottom:28px;">Para protegerte a ti y al sistema financiero, verificamos la identidad de cada cliente antes de activar su cuenta. Es un proceso rápido, seguro y 100% online.</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <div style="display:flex;align-items:center;gap:7px;font-size:0.8rem;color:var(--mint);"><span>✓</span> Solo 5 minutos</div>
-          <div style="display:flex;align-items:center;gap:7px;font-size:0.8rem;color:var(--mint);"><span>✓</span> 100% online</div>
-          <div style="display:flex;align-items:center;gap:7px;font-size:0.8rem;color:var(--mint);"><span>✓</span> Datos cifrados</div>
+    <footer style="border-top: 1px solid var(--border); padding: 36px 0 24px">
+      <div
+        class="container"
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 16px;
+        "
+      >
+        <a href="index.html"
+          ><img
+            src="assets/logo.svg"
+            alt="VivaBank"
+            height="30"
+            style="display: block"
+        /></a>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap">
+          <a
+            href="funcionalidades.html"
+            style="
+              font-size: 0.83rem;
+              color: var(--text-2);
+              text-decoration: none;
+            "
+            >Funcionalidades</a
+          >
+          <a
+            href="seguridad.html"
+            style="
+              font-size: 0.83rem;
+              color: var(--primary);
+              font-weight: 600;
+              text-decoration: none;
+            "
+            >Seguridad</a
+          >
+          <a
+            href="tarifas.html"
+            style="
+              font-size: 0.83rem;
+              color: var(--text-2);
+              text-decoration: none;
+            "
+            >Tarifas</a
+          >
+          <a
+            href="nosotros.html"
+            style="
+              font-size: 0.83rem;
+              color: var(--text-2);
+              text-decoration: none;
+            "
+            >Nosotros</a
+          >
         </div>
+        <p style="font-size: 0.77rem; color: var(--text-3)">
+          © 2025 VivaBank S.L.
+        </p>
       </div>
-      <div class="kyc-steps">
-        <div class="kyc-step">
-          <div class="kyc-step-left"><div class="kyc-step-circle">1</div><div class="kyc-step-line"></div></div>
-          <div class="kyc-step-content"><div class="kyc-step-title">Datos personales</div><div class="kyc-step-desc">Nombre, apellidos, fecha de nacimiento, nacionalidad y número de documento de identidad.</div></div>
-        </div>
-        <div class="kyc-step">
-          <div class="kyc-step-left"><div class="kyc-step-circle">2</div><div class="kyc-step-line"></div></div>
-          <div class="kyc-step-content"><div class="kyc-step-title">Verificación OTP por email</div><div class="kyc-step-desc">Enviamos un código de 6 dígitos a tu dirección de email que debes introducir en 10 minutos.</div></div>
-        </div>
-        <div class="kyc-step">
-          <div class="kyc-step-left"><div class="kyc-step-circle">3</div><div class="kyc-step-line"></div></div>
-          <div class="kyc-step-content"><div class="kyc-step-title">Verificación OTP por SMS</div><div class="kyc-step-desc">Un segundo código de 6 dígitos llega a tu teléfono móvil. Dos canales independientes = doble seguridad.</div></div>
-        </div>
-        <div class="kyc-step">
-          <div class="kyc-step-left"><div class="kyc-step-circle">4</div><div class="kyc-step-line"></div></div>
-          <div class="kyc-step-content"><div class="kyc-step-title">Upload de documentos</div><div class="kyc-step-desc">Fotografía del anverso y reverso de tu DNI/NIE/Pasaporte más un selfie sosteniendo el documento.</div></div>
-        </div>
-        <div class="kyc-step">
-          <div class="kyc-step-left"><div class="kyc-step-circle">5</div><div class="kyc-step-line"></div></div>
-          <div class="kyc-step-content"><div class="kyc-step-title">Cuenta activada</div><div class="kyc-step-desc">Tras la verificación (máx. 24h hábiles), tu cuenta queda completamente activa y lista para usar.</div></div>
-        </div>
-      </div>
-    </div>
+    </footer>
 
-    <!-- BADGES NORMATIFS -->
-    <div style="margin-bottom:64px;">
-      <h2 style="font-family:var(--font-display);font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:800;text-align:center;margin-bottom:8px;">Certificaciones y <span class="text-gradient">cumplimiento normativo</span></h2>
-      <p style="text-align:center;color:var(--text-2);font-size:0.88rem;margin-bottom:28px;">VivaBank cumple con todas las normativas bancarias y de protección de datos vigentes.</p>
-      <div class="norm-grid">
-        <div class="norm-badge"><div class="norm-badge-ico">🏛️</div><div class="norm-badge-title">Banco de España</div><div class="norm-badge-sub">Registrado y supervisado por el regulador español</div></div>
-        <div class="norm-badge"><div class="norm-badge-ico">🇪🇺</div><div class="norm-badge-title">RGPD / GDPR</div><div class="norm-badge-sub">Reglamento General de Protección de Datos de la UE</div></div>
-        <div class="norm-badge"><div class="norm-badge-ico">💳</div><div class="norm-badge-title">PSD2 / SCA</div><div class="norm-badge-sub">Strong Customer Authentication — Directiva europea de pagos</div></div>
-        <div class="norm-badge"><div class="norm-badge-ico">🔍</div><div class="norm-badge-title">AML / AMLD5</div><div class="norm-badge-sub">Prevención del blanqueo de capitales y financiación del terrorismo</div></div>
-      </div>
-    </div>
+    <script>
+      /* FAQ accordéon */
+      const faqs = [
+        {
+          q: "¿Está mi dinero garantizado?",
+          a: "VivaBank opera bajo la supervisión del Banco de España. Los fondos de los clientes están protegidos conforme a la normativa española de entidades de pago. Consulta nuestra política completa de garantía de fondos.",
+        },
+        {
+          q: "¿Qué pasa si pierdo el acceso a mi 2FA?",
+          a: "Tienes acceso a un proceso de recuperación alternativo a través de email verificado y un proceso de re-identificación KYC. Contacta con soporte para iniciar el proceso de recuperación segura.",
+        },
+        {
+          q: "¿Cómo se almacenan mis contraseñas?",
+          a: "Nunca almacenamos contraseñas en texto plano. Usamos bcrypt con 12 rondas de salting, lo que significa que incluso en el improbable caso de una brecha, las contraseñas no serían recuperables.",
+        },
+        {
+          q: "¿Qué ocurre con mis documentos KYC?",
+          a: "Los documentos de identidad se cifran en tránsito, se procesan para la verificación y se eliminan de forma segura. Nunca se almacenan permanentemente en nuestros servidores.",
+        },
+        {
+          q: "¿Cómo notifico una actividad sospechosa?",
+          a: "Desde el panel de tu cuenta puedes bloquear la tarjeta al instante y contactar con nuestro soporte 24/7. También puedes escribir a seguridad@vivabank.es para reportar cualquier incidencia.",
+        },
+        {
+          q: "¿Vivabank vende mis datos a terceros?",
+          a: "No. VivaBank nunca vende ni comparte tus datos personales con terceros para fines comerciales. Solo compartimos datos cuando es estrictamente necesario por obligación legal o para prestarte el servicio.",
+        },
+      ];
 
-    <!-- SECTION RGPD DÉTAILLÉE -->
-    <div style="margin-bottom:64px;">
-      <h2 style="font-family:var(--font-display);font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:800;text-align:center;margin-bottom:8px;">Tus derechos <span class="text-gradient">RGPD</span> garantizados</h2>
-      <p style="text-align:center;color:var(--text-2);font-size:0.88rem;margin-bottom:28px;max-width:500px;margin-left:auto;margin-right:auto;">Como cliente de VivaBank, tienes pleno control sobre tus datos personales en todo momento.</p>
-      <div class="gdpr-grid">
-        <div class="gdpr-item"><h4>📋 Derecho de acceso</h4><p>Puedes solicitar en cualquier momento una copia completa de todos los datos personales que tenemos sobre ti.</p></div>
-        <div class="gdpr-item"><h4>✏️ Derecho de rectificación</h4><p>Puedes corregir o actualizar tus datos personales directamente desde el panel de tu perfil.</p></div>
-        <div class="gdpr-item"><h4>🗑️ Derecho al olvido</h4><p>Puedes solicitar la eliminación completa de tu cuenta y todos tus datos en cualquier momento.</p></div>
-        <div class="gdpr-item"><h4>📦 Portabilidad de datos</h4><p>Puedes exportar todos tus datos en formato estándar para migrarlos a otro servicio financiero.</p></div>
-        <div class="gdpr-item"><h4>🚫 Derecho de oposición</h4><p>Puedes oponerte al tratamiento de tus datos para fines de marketing o comunicaciones comerciales.</p></div>
-        <div class="gdpr-item"><h4>🔒 Limitación del tratamiento</h4><p>Puedes solicitar que limitemos el uso de tus datos mientras se resuelve una reclamación o disputa.</p></div>
-      </div>
-    </div>
-
-    <!-- FAQ SÉCURITÉ -->
-    <div style="margin-bottom:64px;">
-      <h2 style="font-family:var(--font-display);font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:800;text-align:center;margin-bottom:28px;">Preguntas frecuentes <span class="text-gradient">sobre seguridad</span></h2>
-      <div style="display:flex;flex-direction:column;gap:12px;max-width:760px;margin:0 auto;" id="faqList">
-        <!-- Las FAQs se inyectan dinámicamente -->
-      </div>
-    </div>
-
-    <!-- CTA -->
-    <div style="text-align:center;padding:56px;background:rgba(16,217,160,0.05);border:1px solid rgba(16,217,160,0.15);border-radius:var(--r-xl);">
-      <div style="font-size:2.5rem;margin-bottom:12px;">🛡️</div>
-      <h3 style="font-family:var(--font-display);font-size:1.7rem;font-weight:800;margin-bottom:12px;">Banca segura desde el primer día</h3>
-      <p style="color:var(--text-2);margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.7;">Abre tu cuenta con la confianza de que tus datos y tu dinero están protegidos con los más altos estándares.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <a href="register.html" class="btn btn-primary btn-lg">Abrir cuenta segura →</a>
-        <button class="btn-simulate" data-loan-sim style="padding:17px 28px;border-color:rgba(16,217,160,0.35);color:var(--mint);">
-          🏦 Simular crédito
-        </button>
-      </div>
-    </div>
-
-  </div>
-</main>
-
-<footer style="border-top:1px solid var(--border);padding:36px 0 24px;">
-  <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
-    <a href="index.html"><img src="assets/logo.svg" alt="VivaBank" height="30" style="display:block;"/></a>
-    <div style="display:flex;gap:20px;flex-wrap:wrap;">
-      <a href="funcionalidades.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Funcionalidades</a>
-      <a href="seguridad.html" style="font-size:0.83rem;color:var(--primary);font-weight:600;text-decoration:none;">Seguridad</a>
-      <a href="tarifas.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Tarifas</a>
-      <a href="nosotros.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Nosotros</a>
-    </div>
-    <p style="font-size:0.77rem;color:var(--text-3);">© 2025 VivaBank S.L.</p>
-  </div>
-</footer>
-
-<script>
-/* FAQ accordéon */
-const faqs = [
-  { q: '¿Está mi dinero garantizado?', a: 'VivaBank opera bajo la supervisión del Banco de España. Los fondos de los clientes están protegidos conforme a la normativa española de entidades de pago. Consulta nuestra política completa de garantía de fondos.' },
-  { q: '¿Qué pasa si pierdo el acceso a mi 2FA?', a: 'Tienes acceso a un proceso de recuperación alternativo a través de email verificado y un proceso de re-identificación KYC. Contacta con soporte para iniciar el proceso de recuperación segura.' },
-  { q: '¿Cómo se almacenan mis contraseñas?', a: 'Nunca almacenamos contraseñas en texto plano. Usamos bcrypt con 12 rondas de salting, lo que significa que incluso en el improbable caso de una brecha, las contraseñas no serían recuperables.' },
-  { q: '¿Qué ocurre con mis documentos KYC?', a: 'Los documentos de identidad se cifran en tránsito, se procesan para la verificación y se eliminan de forma segura. Nunca se almacenan permanentemente en nuestros servidores.' },
-  { q: '¿Cómo notifico una actividad sospechosa?', a: 'Desde el panel de tu cuenta puedes bloquear la tarjeta al instante y contactar con nuestro soporte 24/7. También puedes escribir a seguridad@vivabank.es para reportar cualquier incidencia.' },
-  { q: '¿Vivabank vende mis datos a terceros?', a: 'No. VivaBank nunca vende ni comparte tus datos personales con terceros para fines comerciales. Solo compartimos datos cuando es estrictamente necesario por obligación legal o para prestarte el servicio.' },
-];
-
-const list = document.getElementById('faqList');
-faqs.forEach((f, i) => {
-  const item = document.createElement('div');
-  item.style.cssText = 'background:var(--bg-card);border:1px solid var(--border-card);border-radius:14px;overflow:hidden;';
-  item.innerHTML = `
+      const list = document.getElementById("faqList");
+      faqs.forEach((f, i) => {
+        const item = document.createElement("div");
+        item.style.cssText =
+          "background:var(--bg-card);border:1px solid var(--border-card);border-radius:14px;overflow:hidden;";
+        item.innerHTML = `
     <button onclick="toggleFaq(this)" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;background:none;border:none;cursor:pointer;text-align:left;">
       <span style="font-family:var(--font-display);font-size:0.92rem;font-weight:700;color:var(--text-1);">${f.q}</span>
       <span style="font-size:1rem;flex-shrink:0;transition:transform 0.25s;color:var(--text-3);" class="faq-arrow">▼</span>
     </button>
     <div class="faq-body" style="display:none;padding:0 22px 18px;font-size:0.86rem;color:var(--text-2);line-height:1.7;">${f.a}</div>`;
-  list.appendChild(item);
-});
+        list.appendChild(item);
+      });
 
-function toggleFaq(btn) {
-  const body  = btn.nextElementSibling;
-  const arrow = btn.querySelector('.faq-arrow');
-  const open  = body.style.display === 'block';
-  body.style.display  = open ? 'none'  : 'block';
-  arrow.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
-  arrow.style.color     = open ? 'var(--text-3)' : 'var(--primary)';
-}
+      function toggleFaq(btn) {
+        const body = btn.nextElementSibling;
+        const arrow = btn.querySelector(".faq-arrow");
+        const open = body.style.display === "block";
+        body.style.display = open ? "none" : "block";
+        arrow.style.transform = open ? "rotate(0deg)" : "rotate(180deg)";
+        arrow.style.color = open ? "var(--text-3)" : "var(--primary)";
+      }
 
-/* Animations */
-const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting){x.target.classList.add('animate-slide-up');io.unobserve(x.target);}}),{threshold:0.1});
-document.querySelectorAll('.sec-pillar,.norm-badge,.gdpr-item').forEach(el=>io.observe(el));
-</script>
-<script src="js/loan-simulator.js"></script>
-</body>
+      /* Animations */
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((x) => {
+            if (x.isIntersecting) {
+              x.target.classList.add("animate-slide-up");
+              io.unobserve(x.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document
+        .querySelectorAll(".sec-pillar, .norm-badge, .gdpr-item")
+        .forEach((el) => io.observe(el));
+    </script>
+
+    <script src="js/loan-simulator.js"></script>
+  </body>
 </html>
