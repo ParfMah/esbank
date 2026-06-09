@@ -1,5 +1,5 @@
 /* ============================================================
-   VIVABANK — Composant Navbar partagé (pages publiques)
+VIVABANK — Composant Navbar partagé (pages publiques)
    Injecte la barre de navigation avant la balise <script>
    qui l'appelle dans chaque page publique
    ============================================================ */
@@ -17,24 +17,24 @@
     { href: 'nosotros.html',        label: 'Nosotros' },
   ];
 
-  /* Bouton spécial "Simular crédito" dans la navbar */
-  const simBtn = \`<button
-    class="btn-sim-nav"
-    onclick="if(window.LoanSim){LoanSim.open()}else{window.location='tarifas.html#simulador'}"
-    aria-label="Simular crédito">
-    🏦 Simular crédito
-  </button>\`;
-
   /* ── Générer les liens avec état actif ──────────────────── */
   const navLinks = links.map(l => {
     const isActive = page === l.href;
     return `<a href="${l.href}" class="pub-nav-link${isActive ? ' active' : ''}">${l.label}</a>`;
   }).join('');
 
+  /* Bouton spécial "Simular crédito" dans la navbar */
+  const simBtn = `<button
+    class="btn-sim-nav"
+    onclick="if(window.LoanSim){window.LoanSim.open()}else{window.location='tarifas.html#simulador'}"
+    aria-label="Simular crédito">
+    🏦 Simular crédito
+  </button>`;
+
   /* ── HTML de la navbar ──────────────────────────────────── */
   /* Le drawer ET l'overlay sont injectés HORS de la navbar
    pour éviter le clipping dû au stacking context position:fixed */
-const html = `
+  const html = `
 <nav class="pub-navbar" id="pubNavbar" role="navigation" aria-label="Navegación principal">
   <div class="pub-navbar-inner">
     <a href="index.html" class="pub-nav-brand" aria-label="VivaBank — Inicio">
@@ -44,6 +44,9 @@ const html = `
       ${navLinks}
     </div>
     <div class="pub-nav-actions">
+      <div class="pub-nav-sim">
+        ${simBtn}
+      </div>
       <a href="login.html"    class="btn btn-ghost   btn-sm">Iniciar sesión</a>
       <a href="register.html" class="btn btn-primary btn-sm">Abrir cuenta</a>
     </div>
@@ -55,8 +58,8 @@ const html = `
   </div>
 </nav>`;
 
-/* Drawer + overlay : injectés directement dans <body> */
-const drawerHtml = `
+  /* Drawer + overlay : injectés directement dans <body> */
+  const drawerHtml = `
 <div class="pub-nav-overlay" id="pubNavOverlay" aria-hidden="true"></div>
 <div class="pub-nav-mobile" id="pubNavMobile" aria-hidden="true"
      role="dialog" aria-label="Menú de navegación">
@@ -65,6 +68,9 @@ const drawerHtml = `
     <img src="assets/logo.svg" alt="VivaBank" height="30" style="display:block;"/>
   </div>
   ${navLinks}
+  <div style="margin-top:15px; margin-bottom: 5px;">
+    ${simBtn}
+  </div>
   <div class="pub-nav-mobile-actions">
     <a href="login.html"    class="btn btn-ghost   btn-block">Iniciar sesión</a>
     <a href="register.html" class="btn btn-primary btn-block">Abrir cuenta</a>
@@ -92,7 +98,7 @@ const drawerHtml = `
 }
 .pub-nav-brand { flex-shrink: 0; text-decoration: none; }
 .pub-nav-links {
-  flex: 1; display: flex; align-items: center; gap: 4px;
+  display: flex; align-items: center; gap: 4px;
 }
 .pub-nav-link {
   padding: 7px 13px; border-radius: 8px;
@@ -105,7 +111,7 @@ const drawerHtml = `
 .pub-nav-link:hover  { color: #F0F4FF; background: rgba(255,255,255,0.05); }
 .pub-nav-link.active { color: #FF7A5C; font-weight: 700; background: rgba(255,81,47,0.08); }
 .pub-nav-actions {
-  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-left: auto;
 }
 /* Hamburger */
 .pub-nav-burger {
@@ -155,6 +161,7 @@ const drawerHtml = `
   font-family: 'Outfit', sans-serif;
   font-size: 0.82rem; font-weight: 700;
   transition: all 0.2s; white-space: nowrap;
+  width: 100%; text-align: center;
 }
 .btn-sim-nav:hover {
   background: rgba(255,81,47,0.2);
@@ -181,13 +188,10 @@ const drawerHtml = `
   const target = document.currentScript || document.scripts[document.scripts.length - 1];
   target.insertAdjacentHTML('beforebegin', css + html);
 
-  /* ── Injection drawer + overlay dans <body> (hors navbar) ────────
-     Le drawer doit être enfant direct de body pour éviter le clipping
-     causé par le stacking context de la navbar position:fixed       */
+  /* ── Injection drawer + overlay dans <body> (hors navbar) ──────── */
   const injectDrawer = () => {
     const tmp = document.createElement('div');
     tmp.innerHTML = drawerHtml;
-    /* Ajouter overlay puis drawer comme enfants directs de body */
     while (tmp.firstChild) {
       document.body.appendChild(tmp.firstChild);
     }
@@ -204,15 +208,17 @@ const drawerHtml = `
   }, { passive: true });
 
   /* ── Toggle menu mobile ──────────────────────────────────── */
-  document.addEventListener('DOMContentLoaded', () => {
+  const initNavbarLogic = () => {
     const burger  = document.getElementById('pubNavBurger');
     const mobile  = document.getElementById('pubNavMobile');
     const overlay = document.getElementById('pubNavOverlay');
     const closeBtn= document.getElementById('pubNavClose');
 
+    if (!burger || !mobile) return; // Sécurité si les éléments manquent
+
     function openDrawer() {
       mobile.classList.add('open');
-      overlay.classList.add('open');
+      overlay?.classList.add('open');
       burger.classList.add('open');
       burger.setAttribute('aria-expanded', 'true');
       mobile.setAttribute('aria-hidden', 'false');
@@ -221,28 +227,32 @@ const drawerHtml = `
 
     function closeDrawer() {
       mobile.classList.remove('open');
-      overlay.classList.remove('open');
+      overlay?.classList.remove('open');
       burger.classList.remove('open');
       burger.setAttribute('aria-expanded', 'false');
       mobile.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
 
-    burger?.addEventListener('click', () => {
+    burger.addEventListener('click', () => {
       mobile.classList.contains('open') ? closeDrawer() : openDrawer();
     });
 
     closeBtn?.addEventListener('click', closeDrawer);
     overlay?.addEventListener('click', closeDrawer);
 
-    /* Fermer sur clic d'un lien nav */
-    mobile?.querySelectorAll('.pub-nav-link').forEach(l => {
+    mobile.querySelectorAll('.pub-nav-link').forEach(l => {
       l.addEventListener('click', closeDrawer);
     });
 
-    /* Fermer avec Escape */
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeDrawer();
     });
-  });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNavbarLogic);
+  } else {
+    initNavbarLogic();
+  }
 })();
