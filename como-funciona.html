@@ -1,271 +1,883 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Descubre cómo abrir tu cuenta VivaBank en 5 minutos: verificación email OTP, SMS OTP, identidad KYC y acceso inmediato."/>
-  <title>Cómo funciona — VivaBank</title>
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css"/>
-  <style>
-    body { padding-top: 72px; overflow-x: hidden; }
-    *, *::before, *::after { box-sizing: border-box; }
-    .inner-hero{padding:80px 0 64px;text-align:center;position:relative;overflow:hidden;}
-    .inner-hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(255,81,47,0.1),transparent 70%);pointer-events:none;}
-    .inner-hero-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 16px;border-radius:999px;background:rgba(255,81,47,0.1);border:1px solid rgba(255,81,47,0.25);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#FF7A5C;margin-bottom:20px;}
-    .inner-hero h1{font-family:var(--font-display);font-size:clamp(2rem,4.5vw,3.4rem);font-weight:900;line-height:1.1;margin-bottom:18px;}
-    .inner-hero p{font-size:1.05rem;color:var(--text-2);line-height:1.75;max-width:580px;margin:0 auto 36px;}
-
-    /* Steps grande */
-    .big-steps{display:flex;flex-direction:column;gap:0;max-width:900px;margin:0 auto;}
-    .big-step{display:grid;grid-template-columns:80px 1fr;gap:0;align-items:stretch;}
-    .big-step-left{display:flex;flex-direction:column;align-items:center;}
-    .big-step-num{width:64px;height:64px;border-radius:50%;background:var(--grad-primary);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:#fff;box-shadow:0 6px 24px rgba(255,81,47,0.35);flex-shrink:0;z-index:1;}
-    .big-step-connector{width:2px;flex:1;background:linear-gradient(180deg,rgba(255,81,47,0.35),rgba(255,81,47,0.05));margin:0 auto;}
-    .big-step:last-child .big-step-connector{display:none;}
-    .big-step-body{padding:0 0 48px 28px;}
-    .big-step-title{font-family:var(--font-display);font-size:1.2rem;font-weight:800;margin-bottom:10px;padding-top:14px;}
-    .big-step-desc{font-size:0.9rem;color:var(--text-2);line-height:1.75;margin-bottom:16px;}
-    .big-step-detail{background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-lg);padding:20px;font-size:0.82rem;color:var(--text-2);line-height:1.6;}
-    .big-step-detail strong{color:var(--text-1);}
-    .big-step-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-    .chip{padding:5px 12px;border-radius:999px;background:rgba(255,81,47,0.08);border:1px solid rgba(255,81,47,0.2);font-size:0.75rem;font-weight:600;color:#FF7A5C;}
-
-    /* Requisitos */
-    .req-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-    .req-card{background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-lg);padding:24px;text-align:center;}
-    .req-icon{font-size:2rem;margin-bottom:10px;}
-    .req-title{font-family:var(--font-display);font-size:0.88rem;font-weight:700;margin-bottom:6px;}
-    .req-desc{font-size:0.78rem;color:var(--text-2);line-height:1.5;}
-
-    /* FAQ */
-    .faq-item{background:var(--bg-card);border:1px solid var(--border-card);border-radius:14px;overflow:hidden;margin-bottom:10px;}
-
-    @media(max-width:960px) {
-      .timer-steps-grid { grid-template-columns: repeat(3,1fr) !important; gap:8px !important; }
-    }
-    @media(max-width:640px) {
-      .timer-steps-grid { grid-template-columns: repeat(2,1fr) !important; }
-    }
-    @media(max-width:768px) {
-      body { padding-top:62px; }
-      /* Cartes timer : pas de débordement */
-      .timer-steps-grid > div {
-        min-width: 0 !important;
-        word-break: break-word;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Descubre cómo abrir tu cuenta VivaBank en 5 minutos: verificación email OTP, SMS OTP, identidad KYC y acceso inmediato."
+    />
+    <title>Cómo funciona — VivaBank</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/main.css" />
+    <style>
+      body {
+        padding-top: 72px;
+        overflow-x: hidden;
       }
-      .big-step  { grid-template-columns: 56px 1fr; }
-      .big-step-num  { width:50px; height:50px; font-size:1.1rem; }
-      .req-grid  { grid-template-columns:1fr; }
-      /* 5 cartes temps : 2 colonnes */
-      .timer-steps-grid { grid-template-columns: repeat(2,1fr) !important; }
-      /* Grand step : texte compact */
-      .big-step-body   { padding-bottom:32px; }
-      .big-step-title  { font-size:1rem; }
-      .big-step-desc   { font-size:0.85rem; }
-      .big-step-detail { font-size:0.79rem; }
-    }
-    @media(max-width:480px) {
-      .big-step { grid-template-columns: 44px 1fr; }
-      .timer-steps-grid { grid-template-columns: 1fr 1fr !important; }
-      .big-step-body { min-width: 0; overflow: hidden; }
-      .big-step-num { width:42px; height:42px; font-size:0.95rem; }
-      .timer-steps-grid { grid-template-columns: 1fr 1fr !important; }
-    }
-  </style>
-</head>
-<body>
-<div class="bg-orbs" aria-hidden="true"><div class="orb orb-1" style="opacity:0.07;"></div><div class="orb orb-2" style="opacity:0.04;"></div></div>
-<script src="js/public-nav.js"></script>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      .inner-hero {
+        padding: 80px 0 64px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .inner-hero::before {
+        content: "";
+        position: absolute;
+        top: -80px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        height: 300px;
+        background: radial-gradient(
+          ellipse,
+          rgba(255, 81, 47, 0.1),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .inner-hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 5px 16px;
+        border-radius: 999px;
+        background: rgba(255, 81, 47, 0.1);
+        border: 1px solid rgba(255, 81, 47, 0.25);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: #ff7a5c;
+        margin-bottom: 20px;
+      }
+      .inner-hero h1 {
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 4.5vw, 3.4rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 18px;
+      }
+      .inner-hero p {
+        font-size: 1.05rem;
+        color: var(--text-2);
+        line-height: 1.75;
+        max-width: 580px;
+        margin: 0 auto 36px;
+      }
 
-<section class="inner-hero">
-  <div class="container" style="position:relative;z-index:1;">
-    <div class="inner-hero-tag">🚀 Cómo funciona</div>
-    <h1>De cero a cuenta bancaria<br/><span class="text-gradient">en menos de 5 minutos</span></h1>
-    <p>Proceso 100% online, sin colas, sin sucursales y con verificación de identidad conforme a la normativa del Banco de España.</p>
-    <a href="register.html" class="btn btn-primary btn-lg">Empezar ahora →</a>
-  </div>
-</section>
+      /* Steps grande */
+      .big-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .big-step {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 0;
+        align-items: stretch;
+      }
+      .big-step-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .big-step-num {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: var(--grad-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-display);
+        font-size: 1.3rem;
+        font-weight: 900;
+        color: #fff;
+        box-shadow: 0 6px 24px rgba(255, 81, 47, 0.35);
+        flex-shrink: 0;
+        z-index: 1;
+      }
+      .big-step-connector {
+        width: 2px;
+        flex: 1;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 81, 47, 0.35),
+          rgba(255, 81, 47, 0.05)
+        );
+        margin: 0 auto;
+      }
+      .big-step:last-child .big-step-connector {
+        display: none;
+      }
+      .big-step-body {
+        padding: 0 0 48px 28px;
+      }
+      .big-step-title {
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        padding-top: 14px;
+      }
+      .big-step-desc {
+        font-size: 0.9rem;
+        color: var(--text-2);
+        line-height: 1.75;
+        margin-bottom: 16px;
+      }
+      .big-step-detail {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: var(--r-lg);
+        padding: 20px;
+        font-size: 0.82rem;
+        color: var(--text-2);
+        line-height: 1.6;
+      }
+      .big-step-detail strong {
+        color: var(--text-1);
+      }
+      .big-step-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .chip {
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: rgba(255, 81, 47, 0.08);
+        border: 1px solid rgba(255, 81, 47, 0.2);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #ff7a5c;
+      }
 
-<main style="padding:0 0 80px;">
-  <div class="container">
+      /* Requisitos */
+      .req-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      .req-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: var(--r-lg);
+        padding: 24px;
+        text-align: center;
+      }
+      .req-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+      .req-title {
+        font-family: var(--font-display);
+        font-size: 0.88rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .req-desc {
+        font-size: 0.78rem;
+        color: var(--text-2);
+        line-height: 1.5;
+      }
 
-    <!-- TIEMPO ESTIMADO -->
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:64px;text-align:center;">
-      <div style="padding:16px;background:var(--bg-card);border:1px solid var(--border-card);border-radius:12px;">
-        <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--primary);">~1 min</div>
-        <div style="font-size:0.74rem;color:var(--text-3);margin-top:4px;">Datos personales</div>
-      </div>
-      <div style="padding:16px;background:var(--bg-card);border:1px solid var(--border-card);border-radius:12px;">
-        <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--primary);">~1 min</div>
-        <div style="font-size:0.74rem;color:var(--text-3);margin-top:4px;">OTP Email</div>
-      </div>
-      <div style="padding:16px;background:var(--bg-card);border:1px solid var(--border-card);border-radius:12px;">
-        <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--primary);">~1 min</div>
-        <div style="font-size:0.74rem;color:var(--text-3);margin-top:4px;">OTP SMS</div>
-      </div>
-      <div style="padding:16px;background:var(--bg-card);border:1px solid var(--border-card);border-radius:12px;">
-        <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--primary);">~2 min</div>
-        <div style="font-size:0.74rem;color:var(--text-3);margin-top:4px;">Documentos KYC</div>
-      </div>
-      <div style="padding:16px;background:rgba(16,217,160,0.08);border:1px solid rgba(16,217,160,0.25);border-radius:12px;">
-        <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--mint);">¡Listo!</div>
-        <div style="font-size:0.74rem;color:var(--mint);margin-top:4px;">Cuenta activa</div>
-      </div>
+      /* FAQ */
+      .faq-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: 14px;
+        overflow: hidden;
+        margin-bottom: 10px;
+      }
+
+      @media (max-width: 960px) {
+        .timer-steps-grid {
+          grid-template-columns: repeat(3, 1fr) !important;
+          gap: 8px !important;
+        }
+      }
+      @media (max-width: 640px) {
+        .timer-steps-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+      }
+      @media (max-width: 768px) {
+        body {
+          padding-top: 62px;
+        }
+        /* Cartes timer : pas de débordement */
+        .timer-steps-grid > div {
+          min-width: 0 !important;
+          word-break: break-word;
+        }
+        .big-step {
+          grid-template-columns: 56px 1fr;
+        }
+        .big-step-num {
+          width: 50px;
+          height: 50px;
+          font-size: 1.1rem;
+        }
+        .req-grid {
+          grid-template-columns: 1fr;
+        }
+        /* 5 cartes temps : 2 colonnes */
+        .timer-steps-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+        /* Grand step : texte compact */
+        .big-step-body {
+          padding-bottom: 32px;
+        }
+        .big-step-title {
+          font-size: 1rem;
+        }
+        .big-step-desc {
+          font-size: 0.85rem;
+        }
+        .big-step-detail {
+          font-size: 0.79rem;
+        }
+      }
+      @media (max-width: 480px) {
+        .big-step {
+          grid-template-columns: 44px 1fr;
+        }
+        .timer-steps-grid {
+          grid-template-columns: 1fr 1fr !important;
+        }
+        .big-step-body {
+          min-width: 0;
+          overflow: hidden;
+        }
+        .big-step-num {
+          width: 42px;
+          height: 42px;
+          font-size: 0.95rem;
+        }
+        .timer-steps-grid {
+          grid-template-columns: 1fr 1fr !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-orbs" aria-hidden="true">
+      <div class="orb orb-1" style="opacity: 0.07"></div>
+      <div class="orb orb-2" style="opacity: 0.04"></div>
     </div>
+    <script src="js/public-nav.js"></script>
 
-    <!-- 5 PASOS DETALLADOS -->
-    <div style="margin-bottom:72px;">
-      <h2 style="font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:800;text-align:center;margin-bottom:44px;">Los 5 pasos del proceso</h2>
-      <div class="big-steps">
+    <section class="inner-hero">
+      <div class="container" style="position: relative; z-index: 1">
+        <div class="inner-hero-tag">🚀 Cómo funciona</div>
+        <h1>
+          De cero a cuenta bancaria<br /><span class="text-gradient"
+            >en menos de 5 minutos</span
+          >
+        </h1>
+        <p>
+          Proceso 100% online, sin colas, sin sucursales y con verificación de
+          identidad conforme a la normativa del Banco de España.
+        </p>
+        <a href="register.html" class="btn btn-primary btn-lg"
+          >Empezar ahora →</a
+        >
+      </div>
+    </section>
 
-        <div class="big-step">
-          <div class="big-step-left"><div class="big-step-num">1</div><div class="big-step-connector"></div></div>
-          <div class="big-step-body">
-            <div class="big-step-title">Datos personales e identidad</div>
-            <div class="big-step-desc">Introduce tu nombre, apellidos, email, teléfono móvil, fecha de nacimiento, nacionalidad y el tipo y número de tu documento de identidad. Verificamos automáticamente que seas mayor de 18 años y que el email no esté ya registrado.</div>
-            <div class="big-step-detail">
-              <strong>Documentos aceptados:</strong> DNI, NIE o Pasaporte vigente.<br/>
-              <strong>¿Por qué necesitamos estos datos?</strong> Es requisito legal de la normativa KYC/AML del Banco de España para la apertura de cuentas de pago.
+    <main style="padding: 0 0 80px">
+      <div class="container">
+        <!-- TIEMPO ESTIMADO -->
+        <div
+          class="timer-steps-grid"
+          style="
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 64px;
+            text-align: center;
+          "
+        >
+          <div
+            style="
+              padding: 16px;
+              background: var(--bg-card);
+              border: 1px solid var(--border-card);
+              border-radius: 12px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--font-display);
+                font-size: 1.3rem;
+                font-weight: 900;
+                color: var(--primary);
+              "
+            >
+              ~1 min
             </div>
-            <div class="big-step-chips">
-              <span class="chip">DNI / NIE / Pasaporte</span>
-              <span class="chip">+18 años obligatorio</span>
-              <span class="chip">Residencia en España</span>
+            <div
+              style="font-size: 0.74rem; color: var(--text-3); margin-top: 4px"
+            >
+              Datos personales
+            </div>
+          </div>
+
+          <div
+            style="
+              padding: 16px;
+              background: var(--bg-card);
+              border: 1px solid var(--border-card);
+              border-radius: 12px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--font-display);
+                font-size: 1.3rem;
+                font-weight: 900;
+                color: var(--primary);
+              "
+            >
+              ~1 min
+            </div>
+            <div
+              style="font-size: 0.74rem; color: var(--text-3); margin-top: 4px"
+            >
+              Datos personales
+            </div>
+          </div>
+          <div
+            style="
+              padding: 16px;
+              background: var(--bg-card);
+              border: 1px solid var(--border-card);
+              border-radius: 12px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--font-display);
+                font-size: 1.3rem;
+                font-weight: 900;
+                color: var(--primary);
+              "
+            >
+              ~1 min
+            </div>
+            <div
+              style="font-size: 0.74rem; color: var(--text-3); margin-top: 4px"
+            >
+              OTP Email
+            </div>
+          </div>
+          <div
+            style="
+              padding: 16px;
+              background: var(--bg-card);
+              border: 1px solid var(--border-card);
+              border-radius: 12px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--font-display);
+                font-size: 1.3rem;
+                font-weight: 900;
+                color: var(--primary);
+              "
+            >
+              ~1 min
+            </div>
+            <div
+              style="font-size: 0.74rem; color: var(--text-3); margin-top: 4px"
+            >
+              OTP SMS
+            </div>
+          </div>
+          <div
+            style="
+              padding: 16px;
+              background: var(--bg-card);
+              border: 1px solid var(--border-card);
+              border-radius: 12px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--font-display);
+                font-size: 1.3rem;
+                font-weight: 900;
+                color: var(--primary);
+              "
+            >
+              ~2 min
+            </div>
+            <div
+              style="font-size: 0.74rem; color: var(--text-3); margin-top: 4px"
+            >
+              Documentos KYC
+            </div>
+          </div>
+          <div
+            style="
+              padding: 16px;
+              background: rgba(16, 217, 160, 0.08);
+              border: 1px solid rgba(16, 217, 160, 0.25);
+              border-radius: 12px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--font-display);
+                font-size: 1.3rem;
+                font-weight: 900;
+                color: var(--mint);
+              "
+            >
+              ¡Listo!
+            </div>
+            <div
+              style="font-size: 0.74rem; color: var(--mint); margin-top: 4px"
+            >
+              Cuenta activa
             </div>
           </div>
         </div>
 
-        <div class="big-step">
-          <div class="big-step-left"><div class="big-step-num">2</div><div class="big-step-connector"></div></div>
-          <div class="big-step-body">
-            <div class="big-step-title">Verificación OTP por email</div>
-            <div class="big-step-desc">Enviamos un código único de 6 dígitos a tu dirección de email. Tienes 10 minutos para introducirlo. Si no lo recibes, puedes solicitar un reenvío tras 60 segundos.</div>
-            <div class="big-step-detail">
-              <strong>Máx. 5 intentos</strong> antes del bloqueo de seguridad.<br/>
-              <strong>Válido 10 minutos</strong> — caduca automáticamente.<br/>
-              Comprueba tu carpeta de spam si no lo ves en la bandeja de entrada.
+        <!-- 5 PASOS DETALLADOS -->
+        <div style="margin-bottom: 72px">
+          <h2
+            style="
+              font-family: var(--font-display);
+              font-size: clamp(1.5rem, 3vw, 2rem);
+              font-weight: 800;
+              text-align: center;
+              margin-bottom: 44px;
+            "
+          >
+            Los 5 pasos del proceso
+          </h2>
+          <div class="big-steps">
+            <div class="big-step">
+              <div class="big-step-left">
+                <div class="big-step-num">1</div>
+                <div class="big-step-connector"></div>
+              </div>
+              <div class="big-step-body">
+                <div class="big-step-title">Datos personales e identidad</div>
+                <div class="big-step-desc">
+                  Introduce tu nombre, apellidos, email, teléfono móvil, fecha
+                  de nacimiento, nacionalidad y el tipo y número de tu documento
+                  de identidad. Verificamos automáticamente que seas mayor de 18
+                  años y que el email no esté ya registrado.
+                </div>
+                <div class="big-step-detail">
+                  <strong>Documentos aceptados:</strong> DNI, NIE o Pasaporte
+                  vigente.<br />
+                  <strong>¿Por qué necesitamos estos datos?</strong> Es
+                  requisito legal de la normativa KYC/AML del Banco de España
+                  para la apertura de cuentas de pago.
+                </div>
+                <div class="big-step-chips">
+                  <span class="chip">DNI / NIE / Pasaporte</span>
+                  <span class="chip">+18 años obligatorio</span>
+                  <span class="chip">Residencia en España</span>
+                </div>
+              </div>
             </div>
-            <div class="big-step-chips">
-              <span class="chip">6 dígitos</span><span class="chip">10 min de validez</span><span class="chip">Reenvío tras 60s</span>
+
+            <div class="big-step">
+              <div class="big-step-left">
+                <div class="big-step-num">2</div>
+                <div class="big-step-connector"></div>
+              </div>
+              <div class="big-step-body">
+                <div class="big-step-title">Verificación OTP por email</div>
+                <div class="big-step-desc">
+                  Enviamos un código único de 6 dígitos a tu dirección de email.
+                  Tienes 10 minutos para introducirlo. Si no lo recibes, puedes
+                  solicitar un reenvío tras 60 segundos.
+                </div>
+                <div class="big-step-detail">
+                  <strong>Máx. 5 intentos</strong> antes del bloqueo de
+                  seguridad.<br />
+                  <strong>Válido 10 minutos</strong> — caduca
+                  automáticamente.<br />
+                  Comprueba tu carpeta de spam si no lo ves en la bandeja de
+                  entrada.
+                </div>
+                <div class="big-step-chips">
+                  <span class="chip">6 dígitos</span
+                  ><span class="chip">10 min de validez</span
+                  ><span class="chip">Reenvío tras 60s</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="big-step">
+              <div class="big-step-left">
+                <div class="big-step-num">3</div>
+                <div class="big-step-connector"></div>
+              </div>
+              <div class="big-step-body">
+                <div class="big-step-title">Verificación OTP por SMS</div>
+                <div class="big-step-desc">
+                  Un segundo código de 6 dígitos se envía por SMS a tu teléfono
+                  móvil. Esta doble verificación en dos canales independientes
+                  garantiza que tanto el email como el número de teléfono son
+                  tuyos.
+                </div>
+                <div class="big-step-detail">
+                  <strong>Formato aceptado:</strong> números españoles (+34 6XX
+                  / 7XX XXX XXX).<br />
+                  <strong>¿Por qué dos canales?</strong> La verificación en dos
+                  factores de registro es un estándar de seguridad bancaria
+                  PSD2.
+                </div>
+                <div class="big-step-chips">
+                  <span class="chip">SMS instantáneo</span
+                  ><span class="chip">Números españoles</span
+                  ><span class="chip">PSD2 compliant</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="big-step">
+              <div class="big-step-left">
+                <div class="big-step-num">4</div>
+                <div class="big-step-connector"></div>
+              </div>
+              <div class="big-step-body">
+                <div class="big-step-title">Verificación de identidad KYC</div>
+                <div class="big-step-desc">
+                  Sube una foto del anverso y reverso de tu documento de
+                  identidad, más un selfie sosteniéndolo. Puedes hacerlo
+                  directamente con la cámara de tu móvil o subiendo una imagen
+                  desde tu dispositivo.
+                </div>
+                <div class="big-step-detail">
+                  <strong>Formatos:</strong> JPG, PNG, PDF · Máximo 5 MB por
+                  archivo.<br />
+                  <strong>Requisitos:</strong> documentos vigentes, legibles,
+                  sin reflejos ni sombras.<br />
+                  <strong>¿Qué pasa con mis documentos?</strong> Se cifran en
+                  tránsito, se usan solo para la verificación y se eliminan de
+                  forma segura. No se almacenan permanentemente.
+                </div>
+                <div class="big-step-chips">
+                  <span class="chip">DNI anverso + reverso</span
+                  ><span class="chip">Selfie con documento</span
+                  ><span class="chip">Cifrado AES-256</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="big-step">
+              <div class="big-step-left">
+                <div class="big-step-num">5</div>
+                <div class="big-step-connector"></div>
+              </div>
+              <div class="big-step-body">
+                <div class="big-step-title">Contraseña y activación</div>
+                <div class="big-step-desc">
+                  Crea una contraseña segura (mínimo 8 caracteres, una mayúscula
+                  y un número), acepta los términos y condiciones y ¡listo!
+                  Recibirás un email de bienvenida con todos los detalles de tu
+                  nueva cuenta.
+                </div>
+                <div class="big-step-detail">
+                  Tras completar el registro recibirás de inmediato:<br />
+                  <strong>✉ Email de bienvenida</strong> con los datos de tu
+                  cuenta<br />
+                  <strong>📋 Número de cuenta VivaBank</strong> asignado
+                  automáticamente<br />
+                  <strong>💳 Tarjeta virtual</strong> disponible al instante en
+                  tu panel
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="big-step">
-          <div class="big-step-left"><div class="big-step-num">3</div><div class="big-step-connector"></div></div>
-          <div class="big-step-body">
-            <div class="big-step-title">Verificación OTP por SMS</div>
-            <div class="big-step-desc">Un segundo código de 6 dígitos se envía por SMS a tu teléfono móvil. Esta doble verificación en dos canales independientes garantiza que tanto el email como el número de teléfono son tuyos.</div>
-            <div class="big-step-detail">
-              <strong>Formato aceptado:</strong> números españoles (+34 6XX / 7XX XXX XXX).<br/>
-              <strong>¿Por qué dos canales?</strong> La verificación en dos factores de registro es un estándar de seguridad bancaria PSD2.
+        <!-- REQUISITOS -->
+        <div style="margin-bottom: 64px">
+          <h2
+            style="
+              font-family: var(--font-display);
+              font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+              font-weight: 800;
+              text-align: center;
+              margin-bottom: 8px;
+            "
+          >
+            Requisitos para abrir tu cuenta
+          </h2>
+          <p
+            style="
+              text-align: center;
+              color: var(--text-2);
+              font-size: 0.88rem;
+              margin-bottom: 28px;
+            "
+          >
+            Comprueba que cumples estos requisitos antes de empezar
+          </p>
+          <div class="req-grid">
+            <div class="req-card">
+              <div class="req-icon">🎂</div>
+              <div class="req-title">Mayor de 18 años</div>
+              <div class="req-desc">
+                Debes tener 18 años o más. Verificamos la fecha de nacimiento
+                automáticamente.
+              </div>
             </div>
-            <div class="big-step-chips">
-              <span class="chip">SMS instantáneo</span><span class="chip">Números españoles</span><span class="chip">PSD2 compliant</span>
+            <div class="req-card">
+              <div class="req-icon">🇪🇸</div>
+              <div class="req-title">Residencia en España</div>
+              <div class="req-desc">
+                La cuenta está disponible para personas físicas residentes en
+                territorio español.
+              </div>
+            </div>
+            <div class="req-card">
+              <div class="req-icon">🪪</div>
+              <div class="req-title">Documento de identidad</div>
+              <div class="req-desc">
+                DNI español, NIE o Pasaporte vigente. El documento no puede
+                estar caducado.
+              </div>
+            </div>
+            <div class="req-card">
+              <div class="req-icon">📱</div>
+              <div class="req-title">Número de móvil</div>
+              <div class="req-desc">
+                Necesitas un número de teléfono móvil español activo para
+                recibir el SMS de verificación.
+              </div>
+            </div>
+            <div class="req-card">
+              <div class="req-icon">✉</div>
+              <div class="req-title">Dirección de email</div>
+              <div class="req-desc">
+                Una dirección de email válida y accesible para recibir el código
+                OTP y las notificaciones.
+              </div>
+            </div>
+            <div class="req-card">
+              <div class="req-icon">📷</div>
+              <div class="req-title">Cámara o escáner</div>
+              <div class="req-desc">
+                Para fotografiar tu documento de identidad y hacer el selfie de
+                verificación KYC.
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="big-step">
-          <div class="big-step-left"><div class="big-step-num">4</div><div class="big-step-connector"></div></div>
-          <div class="big-step-body">
-            <div class="big-step-title">Verificación de identidad KYC</div>
-            <div class="big-step-desc">Sube una foto del anverso y reverso de tu documento de identidad, más un selfie sosteniéndolo. Puedes hacerlo directamente con la cámara de tu móvil o subiendo una imagen desde tu dispositivo.</div>
-            <div class="big-step-detail">
-              <strong>Formatos:</strong> JPG, PNG, PDF · Máximo 5 MB por archivo.<br/>
-              <strong>Requisitos:</strong> documentos vigentes, legibles, sin reflejos ni sombras.<br/>
-              <strong>¿Qué pasa con mis documentos?</strong> Se cifran en tránsito, se usan solo para la verificación y se eliminan de forma segura. No se almacenan permanentemente.
-            </div>
-            <div class="big-step-chips">
-              <span class="chip">DNI anverso + reverso</span><span class="chip">Selfie con documento</span><span class="chip">Cifrado AES-256</span>
-            </div>
-          </div>
+        <!-- FAQ -->
+        <div
+          style="
+            margin-bottom: 64px;
+            max-width: 760px;
+            margin-left: auto;
+            margin-right: auto;
+          "
+        >
+          <h2
+            style="
+              font-family: var(--font-display);
+              font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+              font-weight: 800;
+              text-align: center;
+              margin-bottom: 28px;
+            "
+          >
+            Preguntas <span class="text-gradient">frecuentes</span>
+          </h2>
+          <div id="faqList"></div>
         </div>
 
-        <div class="big-step">
-          <div class="big-step-left"><div class="big-step-num">5</div><div class="big-step-connector"></div></div>
-          <div class="big-step-body">
-            <div class="big-step-title">Contraseña y activación</div>
-            <div class="big-step-desc">Crea una contraseña segura (mínimo 8 caracteres, una mayúscula y un número), acepta los términos y condiciones y ¡listo! Recibirás un email de bienvenida con todos los detalles de tu nueva cuenta.</div>
-            <div class="big-step-detail">
-              Tras completar el registro recibirás de inmediato:<br/>
-              <strong>✉ Email de bienvenida</strong> con los datos de tu cuenta<br/>
-              <strong>📋 Número de cuenta VivaBank</strong> asignado automáticamente<br/>
-              <strong>💳 Tarjeta virtual</strong> disponible al instante en tu panel
-            </div>
+        <!-- CTA -->
+        <div
+          style="
+            text-align: center;
+            padding: 60px;
+            background: linear-gradient(
+              135deg,
+              rgba(255, 81, 47, 0.08),
+              rgba(240, 152, 25, 0.04)
+            );
+            border: 1px solid rgba(255, 81, 47, 0.15);
+            border-radius: var(--r-xl);
+          "
+        >
+          <h3
+            style="
+              font-family: var(--font-display);
+              font-size: 1.8rem;
+              font-weight: 800;
+              margin-bottom: 12px;
+            "
+          >
+            ¿Tienes todo listo?
+          </h3>
+          <p
+            style="
+              color: var(--text-2);
+              margin-bottom: 28px;
+              max-width: 420px;
+              margin-left: auto;
+              margin-right: auto;
+              line-height: 1.7;
+            "
+          >
+            El proceso completo lleva menos de 5 minutos. Solo necesitas tu DNI
+            y tu móvil.
+          </p>
+          <div
+            style="
+              display: flex;
+              gap: 12px;
+              justify-content: center;
+              flex-wrap: wrap;
+            "
+          >
+            <a href="register.html" class="btn btn-primary btn-lg"
+              >Abrir mi cuenta ahora →</a
+            >
+            <button
+              class="btn-simulate"
+              data-loan-sim
+              style="padding: 17px 28px"
+            >
+              🏦 Simular un crédito
+            </button>
           </div>
         </div>
-
       </div>
-    </div>
+    </main>
 
-    <!-- REQUISITOS -->
-    <div style="margin-bottom:64px;">
-      <h2 style="font-family:var(--font-display);font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:800;text-align:center;margin-bottom:8px;">Requisitos para abrir tu cuenta</h2>
-      <p style="text-align:center;color:var(--text-2);font-size:0.88rem;margin-bottom:28px;">Comprueba que cumples estos requisitos antes de empezar</p>
-      <div class="req-grid">
-        <div class="req-card"><div class="req-icon">🎂</div><div class="req-title">Mayor de 18 años</div><div class="req-desc">Debes tener 18 años o más. Verificamos la fecha de nacimiento automáticamente.</div></div>
-        <div class="req-card"><div class="req-icon">🇪🇸</div><div class="req-title">Residencia en España</div><div class="req-desc">La cuenta está disponible para personas físicas residentes en territorio español.</div></div>
-        <div class="req-card"><div class="req-icon">🪪</div><div class="req-title">Documento de identidad</div><div class="req-desc">DNI español, NIE o Pasaporte vigente. El documento no puede estar caducado.</div></div>
-        <div class="req-card"><div class="req-icon">📱</div><div class="req-title">Número de móvil</div><div class="req-desc">Necesitas un número de teléfono móvil español activo para recibir el SMS de verificación.</div></div>
-        <div class="req-card"><div class="req-icon">✉</div><div class="req-title">Dirección de email</div><div class="req-desc">Una dirección de email válida y accesible para recibir el código OTP y las notificaciones.</div></div>
-        <div class="req-card"><div class="req-icon">📷</div><div class="req-title">Cámara o escáner</div><div class="req-desc">Para fotografiar tu documento de identidad y hacer el selfie de verificación KYC.</div></div>
+    <footer style="border-top: 1px solid var(--border); padding: 36px 0 24px">
+      <div
+        class="container"
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 16px;
+        "
+      >
+        <a href="index.html"
+          ><img
+            src="assets/logo.svg"
+            alt="VivaBank"
+            height="30"
+            style="display: block"
+        /></a>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap">
+          <a
+            href="funcionalidades.html"
+            style="
+              font-size: 0.83rem;
+              color: var(--text-2);
+              text-decoration: none;
+            "
+            >Funcionalidades</a
+          >
+          <a
+            href="seguridad.html"
+            style="
+              font-size: 0.83rem;
+              color: var(--text-2);
+              text-decoration: none;
+            "
+            >Seguridad</a
+          >
+          <a
+            href="como-funciona.html"
+            style="
+              font-size: 0.83rem;
+              color: var(--primary);
+              font-weight: 600;
+              text-decoration: none;
+            "
+            >Cómo funciona</a
+          >
+          <a
+            href="tarifas.html"
+            style="
+              font-size: 0.83rem;
+              color: var(--text-2);
+              text-decoration: none;
+            "
+            >Tarifas</a
+          >
+        </div>
+        <p style="font-size: 0.77rem; color: var(--text-3)">
+          © 2025 VivaBank S.L.
+        </p>
       </div>
-    </div>
+    </footer>
 
-    <!-- FAQ -->
-    <div style="margin-bottom:64px;max-width:760px;margin-left:auto;margin-right:auto;">
-      <h2 style="font-family:var(--font-display);font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:800;text-align:center;margin-bottom:28px;">Preguntas <span class="text-gradient">frecuentes</span></h2>
-      <div id="faqList"></div>
-    </div>
-
-    <!-- CTA -->
-    <div style="text-align:center;padding:60px;background:linear-gradient(135deg,rgba(255,81,47,0.08),rgba(240,152,25,0.04));border:1px solid rgba(255,81,47,0.15);border-radius:var(--r-xl);">
-      <h3 style="font-family:var(--font-display);font-size:1.8rem;font-weight:800;margin-bottom:12px;">¿Tienes todo listo?</h3>
-      <p style="color:var(--text-2);margin-bottom:28px;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.7;">El proceso completo lleva menos de 5 minutos. Solo necesitas tu DNI y tu móvil.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <a href="register.html" class="btn btn-primary btn-lg">Abrir mi cuenta ahora →</a>
-        <button class="btn-simulate" data-loan-sim style="padding:17px 28px;">🏦 Simular un crédito</button>
-      </div>
-    </div>
-
-  </div>
-</main>
-
-<footer style="border-top:1px solid var(--border);padding:36px 0 24px;">
-  <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
-    <a href="index.html"><img src="assets/logo.svg" alt="VivaBank" height="30" style="display:block;"/></a>
-    <div style="display:flex;gap:20px;flex-wrap:wrap;">
-      <a href="funcionalidades.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Funcionalidades</a>
-      <a href="seguridad.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Seguridad</a>
-      <a href="como-funciona.html" style="font-size:0.83rem;color:var(--primary);font-weight:600;text-decoration:none;">Cómo funciona</a>
-      <a href="tarifas.html" style="font-size:0.83rem;color:var(--text-2);text-decoration:none;">Tarifas</a>
-    </div>
-    <p style="font-size:0.77rem;color:var(--text-3);">© 2025 VivaBank S.L.</p>
-  </div>
-</footer>
-
-<script>
-const faqs=[
-  {q:'¿Cuánto tiempo tarda la verificación KYC?',a:'El proceso automatizado de verificación de documentos suele completarse en menos de 24 horas hábiles. En la mayoría de los casos, la cuenta queda activa en menos de 2 horas durante el horario laboral.'},
-  {q:'¿Puedo abrir una cuenta desde el extranjero?',a:'Actualmente VivaBank está disponible solo para residentes en España. Necesitas un documento de identidad español (DNI o NIE) o un pasaporte válido junto con un domicilio en España.'},
-  {q:'¿Qué hago si mi código OTP no llega?',a:'Espera 60 segundos y usa el botón de reenvío. Si sigues sin recibirlo, comprueba que el email o el número de móvil son correctos. Los SMS pueden tardar hasta 2 minutos en épocas de alta demanda.'},
-  {q:'¿Puedo tener varias cuentas en VivaBank?',a:'No, cada persona física solo puede tener una cuenta activa en VivaBank. Esto forma parte de nuestro proceso de verificación de identidad única.'},
-  {q:'¿Qué pasa si mi documento está caducado?',a:'No podemos aceptar documentos de identidad caducados. Debes renovar tu DNI, NIE o pasaporte antes de iniciar el proceso de apertura de cuenta.'},
-];
-const list=document.getElementById('faqList');
-faqs.forEach(f=>{
-  const d=document.createElement('div');
-  d.className='faq-item';
-  d.innerHTML=`<button onclick="toggleFaq(this)" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;background:none;border:none;cursor:pointer;text-align:left;"><span style="font-family:var(--font-display);font-size:0.92rem;font-weight:700;color:var(--text-1);">${f.q}</span><span class="fa" style="font-size:1rem;flex-shrink:0;transition:transform 0.25s;color:var(--text-3);">▼</span></button><div class="fb" style="display:none;padding:0 22px 18px;font-size:0.86rem;color:var(--text-2);line-height:1.7;">${f.a}</div>`;
-  list.appendChild(d);
-});
-function toggleFaq(b){const body=b.nextElementSibling,arr=b.querySelector('.fa'),open=body.style.display==='block';body.style.display=open?'none':'block';arr.style.transform=open?'rotate(0)':'rotate(180deg)';arr.style.color=open?'var(--text-3)':'var(--primary)';}
-</script>
-<script src="js/loan-simulator.js"></script>
-</body>
+    <script>
+      const faqs = [
+        {
+          q: "¿Cuánto tiempo tarda la verificación KYC?",
+          a: "El proceso automatizado de verificación de documentos suele completarse en menos de 24 horas hábiles. En la mayoría de los casos, la cuenta queda activa en menos de 2 horas durante el horario laboral.",
+        },
+        {
+          q: "¿Puedo abrir una cuenta desde el extranjero?",
+          a: "Actualmente VivaBank está disponible solo para residentes en España. Necesitas un documento de identidad español (DNI o NIE) o un pasaporte válido junto con un domicilio en España.",
+        },
+        {
+          q: "¿Qué hago si mi código OTP no llega?",
+          a: "Espera 60 segundos y usa el botón de reenvío. Si sigues sin recibirlo, comprueba que el email o el número de móvil son correctos. Los SMS pueden tardar hasta 2 minutos en épocas de alta demanda.",
+        },
+        {
+          q: "¿Puedo tener varias cuentas en VivaBank?",
+          a: "No, cada persona física solo puede tener una cuenta activa en VivaBank. Esto forma parte de nuestro proceso de verificación de identidad única.",
+        },
+        {
+          q: "¿Qué pasa si mi documento está caducado?",
+          a: "No podemos aceptar documentos de identidad caducados. Debes renovar tu DNI, NIE o pasaporte antes de iniciar el proceso de apertura de cuenta.",
+        },
+      ];
+      const list = document.getElementById("faqList");
+      faqs.forEach((f) => {
+        const d = document.createElement("div");
+        d.className = "faq-item";
+        d.innerHTML = `<button onclick="toggleFaq(this)" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;background:none;border:none;cursor:pointer;text-align:left;"><span style="font-family:var(--font-display);font-size:0.92rem;font-weight:700;color:var(--text-1);">${f.q}</span><span class="fa" style="font-size:1rem;flex-shrink:0;transition:transform 0.25s;color:var(--text-3);">▼</span></button><div class="fb" style="display:none;padding:0 22px 18px;font-size:0.86rem;color:var(--text-2);line-height:1.7;">${f.a}</div>`;
+        list.appendChild(d);
+      });
+      function toggleFaq(b) {
+        const body = b.nextElementSibling,
+          arr = b.querySelector(".fa"),
+          open = body.style.display === "block";
+        body.style.display = open ? "none" : "block";
+        arr.style.transform = open ? "rotate(0)" : "rotate(180deg)";
+        arr.style.color = open ? "var(--text-3)" : "var(--primary)";
+      }
+    </script>
+    <script src="js/loan-simulator.js"></script>
+  </body>
 </html>
